@@ -1,0 +1,130 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: ssivtsov
+ * Date: 21.06.2017
+ * Time: 12:51
+ */
+
+namespace app\models;
+
+use Yii;
+use yii\base\Model;
+use yii\db\ActiveRecord;
+
+
+class Calc extends ActiveRecord
+{
+    public $cost;
+    public $nom_tr;
+    public $transport;
+    public $proezd;
+    public $prostoy;
+    public $rabota;
+    public $a;
+    public $nomer;
+    public $id;
+    public $nom;
+   // public $usluga;
+            
+
+    public static function tableName()
+    {
+        return 'costwork';
+    }
+
+    public function rules()
+    {
+        return [
+
+            ['work','usluga','safe'],
+            ['kod_uslug', 'safe'],
+            ['brig', 'safe'],
+            ['time_transp', 'safe'],
+            ['stavka_grn', 'safe'],
+            ['exec', 'safe'],
+
+        ];
+    }
+
+//  Формирование строки SQL запроса для связи с несколькими таблицами
+    public static function Calc($vid_work, $res, $distance)
+    {   $m = intval(date('n'));
+        $v = '';
+        $r = 'a.T_';
+        if ($m == 4 || $m == 5 || $m == 9 || $m == 10 || $m == 11) $v = $v . '+a.cast_1';
+        if ($m == 3) $v = $v . '+a.cast_2';
+        if ($m == 3 || $m == 4 ||  $m == 5 || $m == 9 || $m == 10 || $m == 11) $v = $v . '+a.cast_3';
+        if ($m == 6 || $m == 7 ||  $m == 8) $v = $v . '+a.cast_4';
+        if ($m == 12) $v = $v . '+a.cast_5';
+        if ($m == 1 || $m == 2) $v = $v . '+a.cast_6';
+        if(substr($v, 0, 1)=='+') $v = substr($v, 1);
+        switch ($res) {
+            case 1:
+                $r = $r . 'Ap';
+                break;
+            case 2:
+                $r = $r . 'Vg';
+                break;
+            case 3:
+                $r = $r . 'Gv';
+                break;
+            case 4:
+                $r = $r . 'Dn';
+                break;
+            case 5:
+                $r = $r . 'Yv';
+                break;
+            case 6:
+                $r = $r . 'Pvg';
+                break;
+            case 7:
+                $r = $r . 'Ing';
+                break;
+            case 8:
+                $r = $r . 'Krr';
+                break;
+            case 9:
+                $r = 'a.Szoe';
+                break;
+            case 10:
+                $r = 'a.Sdizp';
+                break;
+            case 11:
+                $r = 'a.T_Zp';
+                break;
+        }
+        if($distance)
+          $sql = 'SELECT '.$v.' as cost,a.work,a.usluga,a.stavka_grn,a.time_transp,'.$r.' as nom_tr,b.transport,b.proezd,b.prostoy,b.rabota'.
+                ' from costwork a left join transport b on '.$r.'=ltrim(rtrim(b.nomer)) where a.id='.$vid_work;
+//        $sql = 'SELECT '.$v.' as cost,a.work,a.usluga,a.stavka_grn,a.time_transp,'.$r.' as nom_tr,b.transport,b.proezd,b.prostoy,b.rabota'.
+//        ' from costwork a,transport b where a.id='.$vid_work.
+//        ' and '.$r.'=ltrim(rtrim(b.nomer))';
+        else
+//            Если не указано расстояние - время простоя транспорта берется 0
+//        $sql = 'SELECT '.$v.' as cost,a.work,a.usluga,a.stavka_grn,0 as time_transp,'.$r.' as nom_tr,b.transport,b.proezd,b.prostoy,b.rabota'.
+//        ' from costwork a,transport b where a.id='.$vid_work.
+//        ' and '.$r.'=ltrim(rtrim(b.nomer))';
+        $sql = 'SELECT '.$v.' as cost,a.work,a.usluga,a.stavka_grn,0 as time_transp,'.$r.' as nom_tr,b.transport,b.proezd,b.prostoy,b.rabota'.
+            ' from costwork a left join transport b on '.$r.'=ltrim(rtrim(b.nomer)) where a.id='.$vid_work;
+
+        return $sql;
+    }
+    
+//    Не используется
+    public static function T_Stavka($vid_work)
+    {  
+        $sql = 'SELECT work from costwork where id='.$vid_work;
+
+        return $sql;
+    }
+
+    public static function getDb()
+    {
+        if (isset(Yii::$app->user->identity->role))
+            return Yii::$app->get('db');
+        else
+            return Yii::$app->get('db');
+    }
+
+}

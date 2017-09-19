@@ -57,8 +57,10 @@ class Refusal extends \yii\db\ActiveRecord
     {
         $query = refusal::find();
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,'pagination' => [
-            'pageSize' => 15,],
+            'query' => $query,
+            'pagination' => [
+             'pageSize' => 15,],
+            'sort'=> ['defaultOrder' => ['date'=>SORT_DESC]],
         ]);
         if (!($this->load($params) && $this->validate())) {
            

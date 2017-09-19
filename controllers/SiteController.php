@@ -131,8 +131,9 @@ class SiteController extends Controller
 
         $model = new InputDataForm();
 
-        $sql = 'select id as nom,usluga from costwork where work='.'"'.$work.'"';
-        $model2 = Calc::findBySql($sql)->all();
+//        $sql = 'select id as nom,usluga from costwork where work='.'"'.$work.'"';
+        $sql = 'select id as nom,usluga from costwork where work=:search';
+        $model2 = Calc::findBySql($sql,[':search'=>"$work"])->all();
         $model_usl = spr_costwork::findbysql('Select min(id) as id,usluga from costwork where LENGTH(ltrim(rtrim(usluga)))<>1 group by usluga order by usluga')
             ->all();
         $usl = $model2[0]->usluga;
@@ -142,7 +143,7 @@ class SiteController extends Controller
             if($u==$usl) {$id_usl = $arr->id;
                 break;}
         }
-        $model_res = spr_res::find()->where(['nazv' => $res])->all();
+        $model_res = spr_res::find()->where('nazv=:nazv',[':nazv' => $res])->all();
 
 //        debug($model_usl);
 //        return;
@@ -188,10 +189,17 @@ class SiteController extends Controller
 
             if ($model->load(Yii::$app->request->post())) {
                 $inn = $model->inn;
-                $iklient = klient::find()->select(['nazv', 'addr', 'okpo', 'regsvid', 'priz_nds', 'email', 'tel'])
-                    ->where(['inn' => $inn])->all();
+//                debug($model);
+//                die;
 
-                $model1 = potrebitel::findOne(['inn' => $inn]);
+                $iklient = klient::find()->select(['nazv', 'addr', 'okpo', 'regsvid', 'priz_nds', 'email', 'tel'])
+                    ->where('inn=:inn',[':inn' => $inn])->all();
+
+                //$model1 = potrebitel::findOne('inn=:inn',[':inn' => $inn]);
+                $model1 = potrebitel::find()->where('inn=:inn',[':inn' => $inn])->one();
+
+//                debug($model1);
+//                die;
 
                 if (!isset($iklient[0]->nazv)) {
 
@@ -227,7 +235,7 @@ class SiteController extends Controller
             }
         }
         if($refresh==1) {  // Сохранение пересчитанной заявки
-            $model = schet::find()->where(['schet'=>$schet])->one();
+            $model = schet::find()->where('schet=:schet',[':schet'=>$schet])->one();
             $model->summa = $g;
             $model->usluga = $u;
             $model->summa_beznds = $all;
@@ -289,15 +297,22 @@ class SiteController extends Controller
                                $time_prostoy,$nazv,$adr_work,$geo,$refresh,$schet)
     {
         $sql = Calc::Calc($id,$res,$distance);
-        $model1 = Calc::findBySql($sql)->all();
+        $pos = strripos($sql, 'a.id=');
+        $work_value = substr($sql,$pos+5);
+        $sql = substr($sql,0,$pos-1).' a.id=:id';
+
 //        debug($sql);
 //        return;
 
-       
+        $model1 = Calc::findBySql($sql,[':id' => $work_value])->all();
+
         $vid_w = $model1[0]->work;
-        $sql = 'select sum(stavka_grn) as stavka_grn from costwork where work='.'"'.$vid_w.'"';
-        $model2 = Calc::findBySql($sql)->all();
-        $name_res = spr_res::find()->where(['id'=>$res])->all();
+//        $sql = 'select sum(stavka_grn) as stavka_grn from costwork where work='.'"'.$vid_w.'"';
+        $sql = 'select sum(stavka_grn) as stavka_grn from costwork where work=:search';
+//        $model2 = Calc::findBySql($sql)->all();
+        $model2 = Calc::findBySql($sql,[':search'=>"$vid_w"])->all();
+//        $name_res = spr_res::find()->where(['id'=>$res])->all();
+        $name_res = spr_res::find()->where('id=:id',[':id'=>$res])->all();
 
         return $this->render('resultCalc', ['model1' => $model1,'model2' => $model2,
             'name_res' => $name_res,'kol' => $kol,'distance' => $distance*$poezdka,
@@ -328,10 +343,10 @@ class SiteController extends Controller
             $s = str_pad('0', 8 - $y,'0') . $s;
 
             $data_res = spr_res::find()->select(['relat'])
-                ->where(['nazv' => $res])->all();
+                ->where('nazv=:nazv',[':nazv' => $res])->all();
             $cut_nazv = $data_res[0]->relat;  // Сокращ название РЭСа
             $data_usluga = spr_work::find()->select(['kod_uslug'])
-                ->where(['work' => $u])->all();
+                ->where('work=:work',['work' => $u])->all();
 
 
             $kod_usluga = $data_usluga[0]->kod_uslug;  // Код услуги
@@ -351,7 +366,9 @@ class SiteController extends Controller
             $model->inn = $inn;
             $model->res = $res;
             $model->adres = $adr_work;
-            $model->date_z = date("Y-m-d", strtotime($date_z));
+            if(!empty($date_z))
+                $model->date_z = date("Y-m-d", strtotime($date_z));
+
             $model->comment = $comment;
             $model->geo = $geo;
             $model->kol = $kol;
@@ -389,8 +406,9 @@ class SiteController extends Controller
 //        debug($sch);
 //        return;
 
-        $sql = 'select * from vschet where schet=' . "'" . $sch . "'" ;
-        $model = viewschet::findBySql($sql)->one();
+        //$sql = 'select * from vschet where schet=' . "'" . $sch . "'" ;
+        $sql = 'select * from vschet where schet=:search';
+        $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
 //        return $this->redirect(['sch_opl','is' => $is,'nazv' => $priz->schet]);
         return $this->render('sch_opl',['model' => $model,'style_title' => 'd9']);
     }
@@ -513,6 +531,7 @@ class SiteController extends Controller
     {
         $searchModel = new Refusal();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
         return $this->render('viewcancel', [
             'model' => $searchModel,'dataProvider' => $dataProvider,'searchModel' => $searchModel,
         ]);
@@ -523,7 +542,7 @@ class SiteController extends Controller
         
     Yii::$app->response->format = Response::FORMAT_JSON;
     if (Yii::$app->request->isAjax) {
-        $usluga = Calc::find()->select(['usluga'])->where(['id' => $id])->all();
+        $usluga = Calc::find()->select(['usluga'])->where('id=:id',[':id' => $id])->all();
         $usl = $usluga[0]->usluga;
         
         if(empty($usl))
@@ -609,7 +628,7 @@ class SiteController extends Controller
         if (Yii::$app->request->isAjax) {
             $iklient = klient::find()->select(['nazv','addr','okpo','regsvid','priz_nds',
                 'email','tel','person','fio_dir','contact_person'])
-                ->where(['inn' => $inn])->all();
+                ->where('inn=:inn',[':inn' => $inn])->all();
             if(!isset($iklient[0]->nazv)) {
                 $nazv = '';
                 $addr = '';
@@ -678,7 +697,7 @@ class SiteController extends Controller
          * */
         $model = spr_res::find()->select(['geo_koord','geo_fromwhere_sd',
             'geo_fromwhere_sz','town_fromwhere_sd','town_fromwhere_sz'])
-            ->where(['id' => $id])->all();
+            ->where('id=:id',[':id' => $id])->all();
         $geo_koord = $model[0]->geo_koord;
         $n = strpos($geo_koord, ',');
         $lat = substr($geo_koord,0,$n);
@@ -789,7 +808,7 @@ class SiteController extends Controller
         // $id  id записи
         // $mod - название модели
         if($mod=='schet')
-            $model = viewschet::find()->where(['id'=>$id])->one();
+            $model = viewschet::find()->where('id=:id',[':id'=>$id])->one();
             $nazv = $model->schet;
             $inn = $model->inn;
             $model->date = date("d.m.Y", strtotime($model->date));
@@ -798,7 +817,7 @@ class SiteController extends Controller
             $model->date_z = date("d.m.Y", strtotime($model->date_z));
         if ($model->load(Yii::$app->request->post()))
         {
-            $model1 = schet::find()->where(['id'=>$id])->one();
+            $model1 = schet::find()->where('id=:id',[':id'=>$id])->one();
             $model1->status = $model->status;
             $model1->adres = $model->adres;
             $model1->date_z = date("Y-m-d", strtotime($model->date_z));
@@ -828,8 +847,9 @@ class SiteController extends Controller
         date_default_timezone_set('Europe/Kiev');
         $sch = Yii::$app->request->post('sch');
 
-        $sql = 'select * from vschet where schet=' . "'" . $sch . "'" ;
-        $model = viewschet::findBySql($sql)->one();
+        //$sql = 'select * from vschet where schet=' . "'" . $sch . "'" ;
+        $sql = 'select * from vschet where schet=:search';
+        $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
 
         $pdf = new Pdf([
             'mode' => Pdf::MODE_UTF8 , // leaner size using standard fonts
@@ -852,8 +872,9 @@ class SiteController extends Controller
         $sch = Yii::$app->request->post('sch');
         $email = Yii::$app->request->post('email');
 
-        $sql = 'select * from vschet where schet=' . "'" . $sch . "'" ;
-        $model = viewschet::findBySql($sql)->one();
+        //$sql = 'select * from vschet where schet=' . "'" . $sch . "'" ;
+        $sql = 'select * from vschet where schet=:search';
+        $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
         $content=$this->renderPartial('sch_opl_print',['model' => $model,'style_title' => 'd9']);
         $cssFile = __DIR__ . '/../vendor/'.'kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css';
         $pdf = new Pdf([
@@ -894,7 +915,8 @@ class SiteController extends Controller
             ->send();
 
         // Запись признака в статус заявки, что заявка в обработке (status=2)
-        $data = schet::findBySql($sql)->one();
+        $sql = 'select * from schet where schet=:search';
+        $data = schet::findBySql($sql,[':search'=>"$sch"])->one();
         $data->status = 2;
         $data->save();
 

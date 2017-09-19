@@ -1605,7 +1605,7 @@ $.extend(Datepicker.prototype, {
 			drawYear = inst.drawYear,holidays_str,len_holidays,
 			i_holidays,c_holidays,hol_day='',hol_month='',hol_eval='',
 			x_a,x_b,x_c,x_d,x_e,x_y,x_z,x_month,x_day,x_year,x_easter,
-			x_trinity,x_nom,X_EASTER_CONST;
+			x_trinity,x_nom,off_PaintSaturDay,begin_Weekday,sw_holidays,X_EASTER_CONST;
 
 
 		if (drawMonth < 0) {
@@ -1628,89 +1628,90 @@ $.extend(Datepicker.prototype, {
 		inst.drawYear = drawYear;
 
 		holidays_str = this._get(inst, "holidays");
+		sw_holidays = this._get(inst, "paint_holidays");
+		off_PaintSaturDay = this._get(inst, "off_PaintSaturDay");
+		paint_without_weekday = this._get(inst, "paint_without_weekday");
 		len_holidays = holidays_str.length;
-
-		for(i_holidays=0;i_holidays<len_holidays;i_holidays++) {
-			if(hol_eval!='') hol_eval+=' || ';
-			c_holidays = holidays_str[i_holidays];
-			hol_day = +c_holidays.substring(0,2);
-			hol_month = +c_holidays.substring(3);
-
-			//LPARAMETERS g,m   && Входные данные год и месяц
-			//PRIVATE y,c,d
-			x_d=1;
-			if((+hol_month)>=3) {
-				x_month = +hol_month - 2;
-				x_year = drawYear;
-			}
-			else {
-				x_month = +hol_month + 10;
-				x_year = drawYear - 1;
-			}
-
-			x_y=x_year%100;
-			x_c=Math.floor(x_year/100);
-			// Формула вечного календаря
-			x_nom=(x_d+Math.floor(0.2*(13*x_month-1))+x_y+Math.floor(x_y/4)+Math.floor(x_c/4)-2*x_c);
-			x_nom = ((x_nom%7)+7)%7 ;
-			if(x_nom==0) x_nom=7;
-			x_nom = (x_nom + hol_day -1)%7;
-			if(x_nom==0) x_nom=7;
-
-			hol_eval += '((drawMonth+1)=='+hol_month+' && printDate.getDate()=='+hol_day+')';
-			//alert(x_nom);
-			if(x_nom>5) {
-				if (x_nom == 7) {
-					x_nom = new Date(drawYear, +hol_month, +hol_day + 1);
-				}
-				if (x_nom == 6) {
-					x_nom = new Date(drawYear, +hol_month, +hol_day + 2);
-				}
-				x_month = +x_nom.getMonth();
-				hol_day = +x_nom.getDate();
-				hol_eval+=' || ';
-				hol_eval += '((drawMonth+1)==' + x_month + ' && printDate.getDate()==' + hol_day + ')';
-				//alert(hol_eval);
-			}
-
-		}
-		//alert(hol_eval);
-		if(drawYear<2100)
-			X_EASTER_CONST = 13;
+		if(!off_PaintSaturDay)
+			begin_Weekday = 5;
 		else
-			X_EASTER_CONST = 14;
+			begin_Weekday = 6;
 
-		x_a = drawYear%19;
-		x_b = drawYear%4;
-		x_c = drawYear%7;
-		x_d = (19 * x_a + 15)%30;
-		x_e = (2 * x_b + 4 * x_c + 6 * x_d + 6)%7;
-		x_z = x_d + x_e;
-		x_month = Math.floor((x_z + 25)/35) + 3;
-		x_day = x_z + 22 - 31 * Math.floor(x_month/4);
-		//x_easter=x_month+'.'+x_day+'.'+drawYear;
-		x_easter = new Date(drawYear,x_month-1,x_day+X_EASTER_CONST+1);
-		x_trinity = new Date(drawYear,x_month-1,x_day+X_EASTER_CONST+50);
-		x_month = +x_easter.getMonth() + 1;
-		x_month = '0' + x_month;
-		x_easter = x_easter.getDate()+'.'+x_month;  // Date Easter
-		x_month = +x_trinity.getMonth() + 1;
-		x_month = '0' + x_month;
-		x_trinity = x_trinity.getDate()+'.'+x_month; // Date Trinity
-		//alert(x_easter);
+		if(sw_holidays) {
+			for (i_holidays = 0; i_holidays < len_holidays; i_holidays++) {
+				if (hol_eval != '') hol_eval += ' || ';
+				c_holidays = holidays_str[i_holidays];
+				hol_day = +c_holidays.substring(0, 2);
+				hol_month = +c_holidays.substring(3);
 
-		hol_eval+=' || ';
-		c_holidays = x_easter;
-		hol_day = +c_holidays.substring(0,2);
-		hol_month = +c_holidays.substring(3);
-		hol_eval += '((drawMonth+1)=='+hol_month+' && printDate.getDate()=='+hol_day+')';
+				x_d = 1;
+				if ((+hol_month) >= 3) {
+					x_month = +hol_month - 2;
+					x_year = drawYear;
+				}
+				else {
+					x_month = +hol_month + 10;
+					x_year = drawYear - 1;
+				}
 
-		hol_eval+=' || ';
-		c_holidays = x_trinity;
-		hol_day = +c_holidays.substring(0,2);
-		hol_month = +c_holidays.substring(3);
-		hol_eval += '((drawMonth+1)=='+hol_month+' && printDate.getDate()=='+hol_day+')';
-		//alert(hol_eval);
+				x_y = x_year % 100;
+				x_c = Math.floor(x_year / 100);
+				// Формула вечного календаря
+				x_nom = (x_d + Math.floor(0.2 * (13 * x_month - 1)) + x_y + Math.floor(x_y / 4) + Math.floor(x_c / 4) - 2 * x_c);
+				x_nom = ((x_nom % 7) + 7) % 7;
+				if (x_nom == 0) x_nom = 7;
+				x_nom = (x_nom + hol_day - 1) % 7;
+				if (x_nom == 0) x_nom = 7;
+
+				hol_eval += '((drawMonth+1)==' + hol_month + ' && printDate.getDate()==' + hol_day + ')';
+				if (x_nom > 5) {
+					if (x_nom == 7) {
+						x_nom = new Date(drawYear, +hol_month, +hol_day + 1);
+					}
+					if (x_nom == 6) {
+						x_nom = new Date(drawYear, +hol_month, +hol_day + 2);
+					}
+					x_month = +x_nom.getMonth();
+					hol_day = +x_nom.getDate();
+					hol_eval += ' || ';
+					hol_eval += '((drawMonth+1)==' + x_month + ' && printDate.getDate()==' + hol_day + ')';
+				}
+
+			}
+			if (drawYear < 2100)
+				X_EASTER_CONST = 13;
+			else
+				X_EASTER_CONST = 14;
+
+			x_a = drawYear % 19;
+			x_b = drawYear % 4;
+			x_c = drawYear % 7;
+			x_d = (19 * x_a + 15) % 30;
+			x_e = (2 * x_b + 4 * x_c + 6 * x_d + 6) % 7;
+			x_z = x_d + x_e;
+			x_month = Math.floor((x_z + 25) / 35) + 3;
+			x_day = x_z + 22 - 31 * Math.floor(x_month / 4);
+			x_easter = new Date(drawYear, x_month - 1, x_day + X_EASTER_CONST + 1);
+			x_trinity = new Date(drawYear, x_month - 1, x_day + X_EASTER_CONST + 50);
+			x_month = +x_easter.getMonth() + 1;
+			x_month = '0' + x_month;
+			x_easter = x_easter.getDate() + '.' + x_month;  // Date Easter
+			x_month = +x_trinity.getMonth() + 1;
+			x_month = '0' + x_month;
+			x_trinity = x_trinity.getDate() + '.' + x_month; // Date Trinity
+
+			hol_eval += ' || ';
+			c_holidays = x_easter;
+			hol_day = +c_holidays.substring(0, 2);
+			hol_month = +c_holidays.substring(3);
+			hol_eval += '((drawMonth+1)==' + hol_month + ' && printDate.getDate()==' + hol_day + ')';
+
+			hol_eval += ' || ';
+			c_holidays = x_trinity;
+			hol_day = +c_holidays.substring(0, 2);
+			hol_month = +c_holidays.substring(3);
+			hol_eval += '((drawMonth+1)==' + hol_month + ' && printDate.getDate()==' + hol_day + ')';
+		}
 
 		prevText = this._get(inst, "prevText");
 		prevText = (!navigationAsDateFormat ? prevText : this.formatDate(prevText,
@@ -1815,30 +1816,97 @@ $.extend(Datepicker.prototype, {
 						otherMonth = (printDate.getMonth() !== drawMonth);
 						unselectable = (otherMonth && !selectOtherMonths) || !daySettings[0] ||
 							(minDate && printDate < minDate) || (maxDate && printDate > maxDate);
-						if(eval(hol_eval))
-						//if(((drawMonth+1)==8 && printDate.getDate()==24) || ((drawMonth+1)==6 && printDate.getDate()==28)) {
-							tbody += "<td class='" +
-								((dow + firstDay + 6) % 7 >= 5 ? " ui-datepicker-week-end" : "") + // highlight weekends
-								(otherMonth ? " ui-datepicker-other-month" : "") + // highlight days from other months
-								((printDate.getTime() === selectedDate.getTime() && drawMonth === inst.selectedMonth && inst._keyEvent) || // user pressed key
-								(defaultDate.getTime() === printDate.getTime() && defaultDate.getTime() === selectedDate.getTime()) ?
-									// or defaultDate is current printedDate and defaultDate is selectedDate
-								" " + this._dayOverClass : "") + // highlight selected day
-								(unselectable ? " " + this._unselectableClass + " ui-state-disabled" : "") +  // highlight unselectable days
-								(otherMonth && !showOtherMonths ? "" : " " + daySettings[1] + // highlight custom dates
-								(printDate.getTime() === currentDate.getTime() ? " " + this._currentClass : "") + // highlight selected day
-								(printDate.getTime() === today.getTime() ? " ui-datepicker-today" : "")) + "'" + // highlight today (if different)
-								((!otherMonth || showOtherMonths) && daySettings[2] ? " title='" + daySettings[2].replace(/'/g, "&#39;") + "'" : "") + // cell title
-								(unselectable ? "" : " data-handler='selectDay' data-event='click' data-month='" + printDate.getMonth() + "' data-year='" + printDate.getFullYear() + "'") + ">" + // actions
-								(otherMonth && !showOtherMonths ? "&#xa0;" : // display for other months
-									(unselectable ? "<span class='ui-state-celebrate'>" + printDate.getDate() + "</span>" : "<a class='ui-state-celebrate" +
-									(printDate.getTime() === today.getTime() ? " ui-state-highlight" : "") +
-									(printDate.getTime() === currentDate.getTime() ? " ui-state-active" : "") + // highlight selected day
-									(otherMonth ? " ui-priority-secondary" : "") + // distinguish dates from other months
-									"' href='#'>" + printDate.getDate() + "</a>")) + "</td>";
-						// display selectable date
-						else
-							if((dow + firstDay + 6) % 7 >= 5)
+						if(sw_holidays) {
+							// alert(hol_eval);
+							if (eval(hol_eval))
+							//if(((drawMonth+1)==8 && printDate.getDate()==24) || ((drawMonth+1)==6 && printDate.getDate()==28)) {
+								tbody += "<td class='" +
+									((dow + firstDay + 6) % 7 >= 5 ? " ui-datepicker-week-end" : "") + // highlight weekends
+									(otherMonth ? " ui-datepicker-other-month" : "") + // highlight days from other months
+									((printDate.getTime() === selectedDate.getTime() && drawMonth === inst.selectedMonth && inst._keyEvent) || // user pressed key
+									(defaultDate.getTime() === printDate.getTime() && defaultDate.getTime() === selectedDate.getTime()) ?
+										// or defaultDate is current printedDate and defaultDate is selectedDate
+									" " + this._dayOverClass : "") + // highlight selected day
+									(unselectable ? " " + this._unselectableClass + " ui-state-disabled" : "") +  // highlight unselectable days
+									(otherMonth && !showOtherMonths ? "" : " " + daySettings[1] + // highlight custom dates
+									(printDate.getTime() === currentDate.getTime() ? " " + this._currentClass : "") + // highlight selected day
+									(printDate.getTime() === today.getTime() ? " ui-datepicker-today" : "")) + "'" + // highlight today (if different)
+									((!otherMonth || showOtherMonths) && daySettings[2] ? " title='" + daySettings[2].replace(/'/g, "&#39;") + "'" : "") + // cell title
+									(unselectable ? "" : " data-handler='selectDay' data-event='click' data-month='" + printDate.getMonth() + "' data-year='" + printDate.getFullYear() + "'") + ">" + // actions
+									(otherMonth && !showOtherMonths ? "&#xa0;" : // display for other months
+										(unselectable ? "<span class='ui-state-celebrate'>" + printDate.getDate() + "</span>" : "<a class='ui-state-celebrate" +
+										(printDate.getTime() === today.getTime() ? " ui-state-highlight" : "") +
+										(printDate.getTime() === currentDate.getTime() ? " ui-state-active" : "") + // highlight selected day
+										(otherMonth ? " ui-priority-secondary" : "") + // distinguish dates from other months
+										"' href='#'>" + printDate.getDate() + "</a>")) + "</td>";
+							// display selectable date
+							else
+							if(!paint_without_weekday) {
+								if ((dow + firstDay + 6) % 7 >= begin_Weekday)
+									tbody += "<td class='" +
+										((dow + firstDay + 6) % 7 >= 5 ? " ui-datepicker-week-end" : "") + // highlight weekends
+										(otherMonth ? " ui-datepicker-other-month" : "") + // highlight days from other months
+										((printDate.getTime() === selectedDate.getTime() && drawMonth === inst.selectedMonth && inst._keyEvent) || // user pressed key
+										(defaultDate.getTime() === printDate.getTime() && defaultDate.getTime() === selectedDate.getTime()) ?
+											// or defaultDate is current printedDate and defaultDate is selectedDate
+										" " + this._dayOverClass : "") + // highlight selected day
+										(unselectable ? " " + this._unselectableClass + " ui-state-disabled" : "") +  // highlight unselectable days
+										(otherMonth && !showOtherMonths ? "" : " " + daySettings[1] + // highlight custom dates
+										(printDate.getTime() === currentDate.getTime() ? " " + this._currentClass : "") + // highlight selected day
+										(printDate.getTime() === today.getTime() ? " ui-datepicker-today" : "")) + "'" + // highlight today (if different)
+										((!otherMonth || showOtherMonths) && daySettings[2] ? " title='" + daySettings[2].replace(/'/g, "&#39;") + "'" : "") + // cell title
+										(unselectable ? "" : " data-handler='selectDay' data-event='click' data-month='" + printDate.getMonth() + "' data-year='" + printDate.getFullYear() + "'") + ">" + // actions
+										(otherMonth && !showOtherMonths ? "&#xa0;" : // display for other months
+											(unselectable ? "<span class='ui-state-celebrate'>" + printDate.getDate() + "</span>" : "<a class='ui-state-celebrate" +
+											(printDate.getTime() === today.getTime() ? " ui-state-highlight" : "") +
+											(printDate.getTime() === currentDate.getTime() ? " ui-state-active" : "") + // highlight selected day
+											(otherMonth ? " ui-priority-secondary" : "") + // distinguish dates from other months
+											"' href='#'>" + printDate.getDate() + "</a>")) + "</td>"; // display selectable date
+								else
+									tbody += "<td class='" +
+										((dow + firstDay + 6) % 7 >= 5 ? " ui-datepicker-week-end" : "") + // highlight weekends
+										(otherMonth ? " ui-datepicker-other-month" : "") + // highlight days from other months
+										((printDate.getTime() === selectedDate.getTime() && drawMonth === inst.selectedMonth && inst._keyEvent) || // user pressed key
+										(defaultDate.getTime() === printDate.getTime() && defaultDate.getTime() === selectedDate.getTime()) ?
+											// or defaultDate is current printedDate and defaultDate is selectedDate
+										" " + this._dayOverClass : "") + // highlight selected day
+										(unselectable ? " " + this._unselectableClass + " ui-state-disabled" : "") +  // highlight unselectable days
+										(otherMonth && !showOtherMonths ? "" : " " + daySettings[1] + // highlight custom dates
+										(printDate.getTime() === currentDate.getTime() ? " " + this._currentClass : "") + // highlight selected day
+										(printDate.getTime() === today.getTime() ? " ui-datepicker-today" : "")) + "'" + // highlight today (if different)
+										((!otherMonth || showOtherMonths) && daySettings[2] ? " title='" + daySettings[2].replace(/'/g, "&#39;") + "'" : "") + // cell title
+										(unselectable ? "" : " data-handler='selectDay' data-event='click' data-month='" + printDate.getMonth() + "' data-year='" + printDate.getFullYear() + "'") + ">" + // actions
+										(otherMonth && !showOtherMonths ? "&#xa0;" : // display for other months
+											(unselectable ? "<span class='ui-state-default'>" + printDate.getDate() + "</span>" : "<a class='ui-state-default" +
+											(printDate.getTime() === today.getTime() ? " ui-state-highlight" : "") +
+											(printDate.getTime() === currentDate.getTime() ? " ui-state-active" : "") + // highlight selected day
+											(otherMonth ? " ui-priority-secondary" : "") + // distinguish dates from other months
+											"' href='#'>" + printDate.getDate() + "</a>")) + "</td>"; // display selectable date
+							}
+							else{
+								tbody += "<td class='" +
+									((dow + firstDay + 6) % 7 >= 5 ? " ui-datepicker-week-end" : "") + // highlight weekends
+									(otherMonth ? " ui-datepicker-other-month" : "") + // highlight days from other months
+									((printDate.getTime() === selectedDate.getTime() && drawMonth === inst.selectedMonth && inst._keyEvent) || // user pressed key
+									(defaultDate.getTime() === printDate.getTime() && defaultDate.getTime() === selectedDate.getTime()) ?
+										// or defaultDate is current printedDate and defaultDate is selectedDate
+									" " + this._dayOverClass : "") + // highlight selected day
+									(unselectable ? " " + this._unselectableClass + " ui-state-disabled" : "") +  // highlight unselectable days
+									(otherMonth && !showOtherMonths ? "" : " " + daySettings[1] + // highlight custom dates
+									(printDate.getTime() === currentDate.getTime() ? " " + this._currentClass : "") + // highlight selected day
+									(printDate.getTime() === today.getTime() ? " ui-datepicker-today" : "")) + "'" + // highlight today (if different)
+									((!otherMonth || showOtherMonths) && daySettings[2] ? " title='" + daySettings[2].replace(/'/g, "&#39;") + "'" : "") + // cell title
+									(unselectable ? "" : " data-handler='selectDay' data-event='click' data-month='" + printDate.getMonth() + "' data-year='" + printDate.getFullYear() + "'") + ">" + // actions
+									(otherMonth && !showOtherMonths ? "&#xa0;" : // display for other months
+										(unselectable ? "<span class='ui-state-default'>" + printDate.getDate() + "</span>" : "<a class='ui-state-default" +
+										(printDate.getTime() === today.getTime() ? " ui-state-highlight" : "") +
+										(printDate.getTime() === currentDate.getTime() ? " ui-state-active" : "") + // highlight selected day
+										(otherMonth ? " ui-priority-secondary" : "") + // distinguish dates from other months
+										"' href='#'>" + printDate.getDate() + "</a>")) + "</td>"; // display selectable date
+							}
+						}
+
+						if(!sw_holidays) {
 							tbody += "<td class='" +
 								((dow + firstDay + 6) % 7 >= 5 ? " ui-datepicker-week-end" : "") + // highlight weekends
 								(otherMonth ? " ui-datepicker-other-month" : "") + // highlight days from other months
@@ -1853,32 +1921,12 @@ $.extend(Datepicker.prototype, {
 								((!otherMonth || showOtherMonths) && daySettings[2] ? " title='" + daySettings[2].replace(/'/g, "&#39;") + "'" : "") + // cell title
 								(unselectable ? "" : " data-handler='selectDay' data-event='click' data-month='" + printDate.getMonth() + "' data-year='" + printDate.getFullYear() + "'") + ">" + // actions
 								(otherMonth && !showOtherMonths ? "&#xa0;" : // display for other months
-									(unselectable ? "<span class='ui-state-celebrate'>" + printDate.getDate() + "</span>" : "<a class='ui-state-celebrate" +
+									(unselectable ? "<span class='ui-state-default'>" + printDate.getDate() + "</span>" : "<a class='ui-state-default" +
 									(printDate.getTime() === today.getTime() ? " ui-state-highlight" : "") +
 									(printDate.getTime() === currentDate.getTime() ? " ui-state-active" : "") + // highlight selected day
 									(otherMonth ? " ui-priority-secondary" : "") + // distinguish dates from other months
-									"' href='#'>" + printDate.getDate() + "</a>")) + "</td>"; // display selectable date
-						  else
-								tbody += "<td class='" +
-									((dow + firstDay + 6) % 7 >= 5 ? " ui-datepicker-week-end" : "") + // highlight weekends
-									(otherMonth ? " ui-datepicker-other-month" : "") + // highlight days from other months
-									((printDate.getTime() === selectedDate.getTime() && drawMonth === inst.selectedMonth && inst._keyEvent) || // user pressed key
-									(defaultDate.getTime() === printDate.getTime() && defaultDate.getTime() === selectedDate.getTime()) ?
-										// or defaultDate is current printedDate and defaultDate is selectedDate
-									" " + this._dayOverClass : "") + // highlight selected day
-									(unselectable ? " " + this._unselectableClass + " ui-state-disabled": "") +  // highlight unselectable days
-									(otherMonth && !showOtherMonths ? "" : " " + daySettings[1] + // highlight custom dates
-									(printDate.getTime() === currentDate.getTime() ? " " + this._currentClass : "") + // highlight selected day
-									(printDate.getTime() === today.getTime() ? " ui-datepicker-today" : "")) + "'" + // highlight today (if different)
-									((!otherMonth || showOtherMonths) && daySettings[2] ? " title='" + daySettings[2].replace(/'/g, "&#39;") + "'" : "") + // cell title
-									(unselectable ? "" : " data-handler='selectDay' data-event='click' data-month='" + printDate.getMonth() + "' data-year='" + printDate.getFullYear() + "'") + ">" + // actions
-									(otherMonth && !showOtherMonths ? "&#xa0;" : // display for other months
-										(unselectable ? "<span class='ui-state-default'>" + printDate.getDate() + "</span>" : "<a class='ui-state-default" +
-										(printDate.getTime() === today.getTime() ? " ui-state-highlight" : "") +
-										(printDate.getTime() === currentDate.getTime() ? " ui-state-active" : "") + // highlight selected day
-										(otherMonth ? " ui-priority-secondary" : "") + // distinguish dates from other months
-										"' href='#'>" + printDate.getDate() + "</a>")) + "</td>"; // display selectable date
-
+									"' href='#'>" + printDate.getDate() + "</a>")) + "</td>"; // display selectable date				"' href='#'>" + printDate.getDate() + "</a>")) + "</td>"; // display selectable date
+						}
 						printDate.setDate(printDate.getDate() + 1);
 						printDate = this._daylightSavingAdjust(printDate);
 					}

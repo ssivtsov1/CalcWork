@@ -20,7 +20,7 @@ jQuery(function($){
 		weekHeader: 'Wk',
 		dateFormat: 'dd/mm/yy',
 		firstDay: 1,
-		isRTL: false,
+                isRTL: false,
 		showMonthAfterYear: false,
 		yearSuffix: ''};
 	$.datepicker.setDefaults($.datepicker.regional['af']);
@@ -1693,7 +1693,10 @@ jQuery(function($){
 		firstDay: 1,
 		isRTL: false,
 		showMonthAfterYear: false,
-		holidays: ['01.01','07.01','08.03','01.05','02.05','09.05','28.06','24.08','14.10'],
+		holidays: ['01.01','07.01','08.03','01.05','02.05','09.05','28.06','24.08','14.10'], // Даты праздников
+		paint_holidays: 1,    // 1 - Раскрашивать праздники красным цветом,в том числе субботу/воскресенье, 0 - выключить полностью раскраску
+		off_PaintSaturDay: 0, // 1 - Выключать раскраску субботы (применимо только если разрешена раскраска праздников paint_holidays: 1)
+		paint_without_weekday: 0, // 1 - Раскрашивать только праздники по датам из пункта holidays (без субботы/воскресенья) (применимо только если разрешена раскраска праздников paint_holidays: 1)
 		yearSuffix: ''};
 	$.datepicker.setDefaults($.datepicker.regional['uk']);
 });

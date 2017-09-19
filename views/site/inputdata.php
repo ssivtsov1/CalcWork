@@ -251,13 +251,21 @@ $this->title = 'Розрахунок вартості робіт';
                     ) ?>
             
                 
+<!--            --><?//=$form->field($model, 'work')->
+//            dropDownList(ArrayHelper::map(
+//               app\models\spr_costwork::findbysql('Select min(id) as id,work from costwork where '
+//                       . 'hide=0 and work is not null group by work order by work')
+//                   ->all(), 'id', 'work'),
+//                ['onchange' => 'hidepole_rabota($("#inputdataform-work :selected").text());']
+//                ) ?>
+
             <?=$form->field($model, 'work')->
             dropDownList(ArrayHelper::map(
-               app\models\spr_costwork::findbysql('Select min(id) as id,work from costwork where '
-                       . 'hide=0 and work is not null group by work order by work')
-                   ->all(), 'id', 'work'),
-                ['onchange' => 'hidepole_rabota($("#inputdataform-work :selected").text());']
-                ) ?>
+            app\models\spr_costwork::findbysql('Select min(id) as id,work from costwork where '
+            . 'hide=:hide and work is not null group by work order by work',[':hide' => 0])
+            ->all(), 'id', 'work'),
+            ['onchange' => 'hidepole_rabota($("#inputdataform-work :selected").text());']
+            ) ?>
             
             <?= $form->field($model, 'kol') ?>
             <?= $form->field($model, 'time_work') ?>

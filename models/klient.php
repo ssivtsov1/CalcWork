@@ -71,11 +71,9 @@ class Klient extends \yii\db\ActiveRecord
              //   'compareAttribute' => date('d.m.Y'), 'format' => 'd.m.Y', 'operator' => '>='],
             //['date_z', 'only_forward1', 'skipOnEmpty'=> false],
             //[ ['ddate'],'default','value' => strtotime('date_z')],
-            ['date_z','date', 'format' => 'Y-m-d'],
-            ['date_z', 'compare',
-                'compareValue' => date('Y-m-d'), 'operator' => '>=',
-                'type' => 'string','message' => "Введено минулу дату"],
-            ['date_z','date', 'format' => 'd.m.Y'],
+           // ['date_z','date', 'format' => 'Y-m-d'],
+           
+            ['date_z','default', 'value' => date('Y-m-d')],
             ['inn', 'unique','targetAttribute' => 'inn'],
             ['email', 'email','message'=>'Не корректний адрес почти'],
 

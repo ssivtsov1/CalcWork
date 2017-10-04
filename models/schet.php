@@ -38,6 +38,9 @@ class Schet extends \yii\db\ActiveRecord
             'comment' => 'Коментарій споживача:',
             'time' => 'Час створення',
             'date_z' => 'Дата виконання послуги',
+            'date_opl' => 'Дата оплати:',
+            'date_akt' => 'Дата акта виконаних робіт:',
+            'act_work' => '№ акта виконаних робіт:',
             'status' => 'Статус заявки:',
             'contract' => '№ договору:',
             'summa_work' => 'Вартість робіт:',
@@ -55,11 +58,12 @@ class Schet extends \yii\db\ActiveRecord
         date_default_timezone_set('Europe/Kiev');
         return [
 
-            [['inn','schet','usluga','summa','date','summa_work',
+            [['inn','schet','usluga','summa','date','summa_work','act_work','date_akt',
                 'summa_delivery','summa_transport','summa_beznds',
               'time','res','adres','comment','date_z','status',
-                'contract','geo','kol'], 'safe'],
+                'contract','geo','kol','date_opl'], 'safe'],
             [['date'], 'default', 'value' => date('Y-m-d')],
+            [['date_akt'], 'default', 'value' => date('Y-m-d')],
             ['date_z', 'compare',
                 'compareValue' => date('Y-m-d'), 'operator' => '>=',
                 'type' => 'string','message' => "Введено минулу дату"],

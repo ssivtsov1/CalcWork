@@ -40,7 +40,9 @@ $this->params['breadcrumbs'][] = $this->title;
                   'delete'=>function ($url, $model) {
                         $customurl=Yii::$app->getUrlManager()->createUrl(['/sprav/delete','id'=>$model['id'],'mod'=>'sprtransp']); //$model->id для AR
                         return \yii\helpers\Html::a( '<span class="glyphicon glyphicon-remove-circle"></span>', $customurl,
-                                                ['title' => Yii::t('yii', 'Видалити'), 'data-pjax' => '0']);
+                                                ['title' => Yii::t('yii', 'Видалити'),'data' => [
+                                                'confirm' => 'Ви впевнені, що хочете видалити цей запис ?',
+                                                ], 'data-pjax' => '0']);
                   },
                   
                   'update'=>function ($url, $model) {

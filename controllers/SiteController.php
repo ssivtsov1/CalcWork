@@ -203,7 +203,11 @@ class SiteController extends Controller
 
                 if (!isset($iklient[0]->nazv)) {
 
-                    $model->save();
+                     $model->save();
+//                     $model->validate();
+//                     print_r($model->getErrors());
+//                     return;
+                    
                 } else {
 
                     $model1->tel = $model->tel;
@@ -245,7 +249,7 @@ class SiteController extends Controller
             $model->res = $res;
             $model->geo = $geo;
             $model->kol = $kol;
-            $model->status = 6;
+            $model->status = -1;
             $model->adres = $adr;
             if(!$model->save(false)) {
                 debug($model);
@@ -321,6 +325,40 @@ class SiteController extends Controller
             'geo' => $geo,'refresh' => $refresh,'schet' => $schet]);
     }
 
+    public function actionCron_schet() {
+      // called every ten minutes
+        $f = fopen('cron_schet.dat','r');
+        $s = fgets($f);
+       // echo $s;
+        $model = new schet();
+        $sql = 'select max(cast(id as unsigned)) as id from schet';
+        $sch = schet::findBySql($sql)->one();
+        $id = $sch->id;
+        //echo $id;
+        if($id>$s)
+        {
+            echo " З’явилась нова заявка №$id";
+            fclose($f);
+            $f = fopen('cron_schet.dat','w');
+            fputs($f,$id);
+            passthru("mpg123 zvukovye-effekty-korotkie-fanfary.mp3");
+            $model = new info();
+            $model->title = "З’явилась нова заявка №$id";
+            $model->info1 = "";
+            $model->style1 = "d15";
+            $model->style_title = "d9";
+            return $this->render('info', [
+                'model' => $model]);
+
+
+        }
+        else
+            //$this->refresh();
+
+        fclose($f);
+      
+    }
+    
     // Формирование счета
     public function actionCnt($rabota,$delivery,$transp,$all,$g,$u,$inn,$res,$adr_work,$comment,$date_z,$geo,$kol)
     {
@@ -412,6 +450,58 @@ class SiteController extends Controller
 //        return $this->redirect(['sch_opl','is' => $is,'nazv' => $priz->schet]);
         return $this->render('sch_opl',['model' => $model,'style_title' => 'd9']);
     }
+    
+    // Формирование акта выполненных работ
+    public function actionAct_work()
+    {
+        $sch = Yii::$app->request->post('sch');
+
+        //$sql = 'select * from vschet where schet=' . "'" . $sch . "'" ;
+        $sql = 'select a.*,b.Director,b.parrent_nazv,b.mail from vschet a,spr_res b'
+                . ' where a.res=b.nazv and schet=:search';
+        $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
+        //debug($model);
+        //return;
+        
+//        return $this->redirect(['sch_opl','is' => $is,'nazv' => $priz->schet]);
+        return $this->render('act_work',['model' => $model,'style_title' => 'd9']);
+    }
+
+    // Формирование договора
+    public function actionContract()
+    {
+        $sch = Yii::$app->request->post('sch');
+
+        $sql = 'select a.*,b.Director,b.parrent_nazv,b.mail,'
+                . 'c.exec_person,c.exec_person_pp,c.exec_post,c.exec_post_pp'
+                . ' from vschet a,spr_res b,spr_uslug c,costwork d'
+                . ' where a.res=b.nazv and a.usluga=d.work '
+                . ' and c.usluga=d.usluga'
+                . ' and schet=:search ';
+        
+        $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
+        //debug($model);
+        //return;
+
+//        return $this->redirect(['sch_opl','is' => $is,'nazv' => $priz->schet]);
+        return $this->render('contract',['model' => $model,'style_title' => 'd9']);
+    }
+
+    // Формирование инф. сообщения
+    public function actionMessage()
+    {
+        $sch = Yii::$app->request->post('sch');
+
+        //$sql = 'select * from vschet where schet=' . "'" . $sch . "'" ;
+        $sql = 'select a.*,b.Director,b.parrent_nazv,b.mail from vschet a,spr_res b'
+            . ' where a.res=b.nazv and schet=:search';
+        $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
+        //debug($model);
+        //return;
+
+//        return $this->redirect(['sch_opl','is' => $is,'nazv' => $priz->schet]);
+        return $this->render('message',['model' => $model,'style_title' => 'd9']);
+    }
 
     // Страница контактов
        public function actionContact()
@@ -484,11 +574,34 @@ class SiteController extends Controller
     {
 
         $searchModel = new viewschet();
-        $data = $searchModel::find()->all();
+        $flag=1;
+        $role=0;
+        if(!isset(Yii::$app->user->identity->role))
+        {      $flag=0;}
+        else{
+            $role=Yii::$app->user->identity->role;
+        }
+
+        switch($role) {
+             case 3: // Полный доступ
+                $data = $searchModel::find()->orderBy(['status' => SORT_ASC])->all();
+                break;
+             case 2:  // финансовый отдел
+                $data = $searchModel::find()->where('status=:status',[':status' => 2])->
+                orderBy(['status' => SORT_ASC])->all();
+                break;
+             case 1:  // бухгалтерия
+                $data = $searchModel::find()->where('status=:status',[':status' => 5])->
+                orderBy(['status' => SORT_ASC])->all();
+                break;
+
+        }
+
+
 //        debug($searchModel);
 //        return;
 
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,$role);
 
         if (Yii::$app->request->get('item') == 'Excel' )
         {
@@ -674,11 +787,38 @@ class SiteController extends Controller
         curl_setopt($ch, CURLOPT_URL,$url ); 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
         $output = curl_exec($ch); 
+        //debug($output);
         curl_close($ch);   
         $output = json_decode($output,true);
       
         return ['success' => true, 'output' => $output];
     }
+
+    }
+
+    // Определяем населенные пункты, найденные после ввода поискового адреса,
+    // необходимо для поиска на карте по введенному адресу
+    public function actionGetloc($loc,$key,$address) {
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if (Yii::$app->request->isAjax) {
+
+//            $url = $url . '&origins='.$origins.'&destinations='.$destinations;
+            $address = str_replace(' ', '+', $address);
+            $loc = $loc . '&key='.$key.'&address='.$address;
+            $loc = $loc . '&language=ru&region=UA';
+            //echo $loc;
+            $ch = curl_init($loc);
+            //curl_setopt($ch, CURLOPT_URL,$loc);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            $output = curl_exec($ch);
+            $s = curl_error ($ch);
+            //debug($output);
+            curl_close($ch);
+            $output = json_decode($output,true);
+            
+            return ['success' => true, 'output' => $output];
+        }
 
     }
     
@@ -750,12 +890,15 @@ class SiteController extends Controller
 //    Страница о программе
     public function actionAbout()
     {
+       // phpinfo();
         $model = new info();
         $model->title = 'Про програму';
         $model->info1 = "Ця програма здійснює розрахунок робіт відповідно вибраному виду роботи, а також транспортні витрати.";
         $model->style1 = "d15";
+        $model->style2 = "info-text";
         $model->style_title = "d9";
-        return $this->render('info', [
+
+        return $this->render('about', [
             'model' => $model]);
 
 //        return $this->render('about');
@@ -811,21 +954,40 @@ class SiteController extends Controller
             $model = viewschet::find()->where('id=:id',[':id'=>$id])->one();
             $nazv = $model->schet;
             $inn = $model->inn;
-            $model->date = date("d.m.Y", strtotime($model->date));
-            $model->date_z = date("d.m.Y", strtotime($model->date_z));
+            if(!empty($model->date))
+                $model->date = date("d.m.Y", strtotime($model->date));
+            
             if(!empty($model->date_z))
-            $model->date_z = date("d.m.Y", strtotime($model->date_z));
+                $model->date_z = date("d.m.Y", strtotime($model->date_z));
+            
         if ($model->load(Yii::$app->request->post()))
         {
             $model1 = schet::find()->where('id=:id',[':id'=>$id])->one();
             $model1->status = $model->status;
             $model1->adres = $model->adres;
-            $model1->date_z = date("Y-m-d", strtotime($model->date_z));
+            $model1->why_refusal = $model->why_refusal;
+            if(!empty($model->date_z))
+                $model1->date_z = date("Y-m-d", strtotime($model->date_z));
+            if(!empty($model->date_opl))
+             $model1->date_opl = date("Y-m-d", strtotime($model->date_opl));
+            if(!empty($model->date_exec))
+                $model1->date_exec = date("Y-m-d", strtotime($model->date_exec));
             $model1->comment = $model->comment;
 
 //            debug($model1);
 //            return;
 
+            if($model->status==5)
+            {
+               // Создаем № акта выполненных работ, если меняется статус заявки на выполненную
+                if(empty($model->act_work)) {
+                    $sql = 'select max(cast(act_work as unsigned)) as act_work from schet';
+                    $sch = schet::findBySql($sql)->one();
+                    $s = $sch->act_work+1;
+                    $model1->act_work = $s;
+                    $model1->date_akt = date('Y-m-d');
+                }
+            }
             if(!$model1->save(false))
             {  var_dump($model1);return;}
 
@@ -841,6 +1003,83 @@ class SiteController extends Controller
                 ]);
         }
     }
+
+    //    Распечатка акта выполненных работ
+    public function actionAct_print(){
+        date_default_timezone_set('Europe/Kiev');
+        $sch = Yii::$app->request->post('sch');
+        $sql = 'select a.*,b.Director,b.parrent_nazv,b.mail from vschet a,spr_res b'
+            . ' where a.res=b.nazv and schet=:search';
+        $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
+
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_UTF8 , // leaner size using standard fonts
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            'content' => $this->renderPartial('act_work_print',['model' => $model,'style_title' => 'd9']),
+            'options' => [
+                'title' => 'Друк акту виконаних робіт',
+                'subject' => ''
+            ],
+            'methods' => [
+                'SetHeader' => ['Створено для печаті: ' . date("d.m.Y H:i:s")],
+                'SetFooter' => ['|Page {PAGENO}|'],
+            ]
+        ]);
+        return $pdf->render();
+    }
+    
+    //    Распечатка инф. сообщения
+    public function actionMessage_print(){
+        date_default_timezone_set('Europe/Kiev');
+        $sch = Yii::$app->request->post('sch');
+        $sql = 'select a.*,b.Director,b.parrent_nazv,b.mail from vschet a,spr_res b'
+            . ' where a.res=b.nazv and schet=:search';
+        $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
+
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_UTF8 , // leaner size using standard fonts
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            'content' => $this->renderPartial('message_print',['model' => $model,'style_title' => 'd9']),
+            'options' => [
+                'title' => 'Друк повідомлення',
+                'subject' => ''
+            ],
+            'methods' => [
+                'SetHeader' => ['Створено для печаті: ' . date("d.m.Y H:i:s")],
+                'SetFooter' => ['|Page {PAGENO}|'],
+            ]
+        ]);
+        return $pdf->render();
+    }
+    
+    //    Распечатка договора
+    public function actionContract_print(){
+        date_default_timezone_set('Europe/Kiev');
+        $sch = Yii::$app->request->post('sch');
+        $sql = 'select a.*,b.Director,b.parrent_nazv,b.mail,'
+                . 'c.exec_person,c.exec_person_pp,c.exec_post,c.exec_post_pp'
+                . ' from vschet a,spr_res b,spr_uslug c,costwork d'
+                . ' where a.res=b.nazv and a.usluga=d.work '
+                . ' and c.usluga=d.usluga'
+                . ' and schet=:search ';
+        $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
+
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_UTF8 , // leaner size using standard fonts
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            'content' => $this->renderPartial('contract_print',['model' => $model,'style_title' => 'd9']),
+            'options' => [
+                'title' => 'Друк договора',
+                'subject' => ''
+            ],
+            'methods' => [
+                'SetHeader' => ['Створено для печаті: ' . date("d.m.Y H:i:s")],
+                'SetFooter' => ['|Page {PAGENO}|'],
+            ]
+        ]);
+        return $pdf->render();
+    }
+    
 
     //    Распечатка счета
     public function actionSch_print(){
@@ -897,7 +1136,7 @@ class SiteController extends Controller
         $mpdf->WriteHTML($stylesheet,1);
         $mpdf->WriteHTML($content,2);
 
-        $mpdf->Output('schet.pdf', 'F');
+        $mpdf->Output('./schet.pdf', 'F');
         Yii::$app->mailer->compose()
             ->setFrom('usluga@cek.dp.ua')
             ->setTo($email)
@@ -917,8 +1156,17 @@ class SiteController extends Controller
         // Запись признака в статус заявки, что заявка в обработке (status=2)
         $sql = 'select * from schet where schet=:search';
         $data = schet::findBySql($sql,[':search'=>"$sch"])->one();
-        $data->status = 2;
-        $data->save();
+        
+        if($data->status<2)
+            $data->status = 2;
+        $model->date = date("d.m.Y", strtotime($model->date));
+       
+        if(!empty($date_z))
+                $model->date_z = date("Y-m-d", strtotime($date_z));
+        $data->save(false);
+//        $data->validate();
+//            print_r($data->getErrors());
+//           return;
 
         $model = new info();
         $model->title = "Рахунок №$sch відправлено";
@@ -931,14 +1179,337 @@ class SiteController extends Controller
 
     }
 
+    //  Отправка акта вып. работ по Email
+    public function actionAct_email(){
+        $sch = Yii::$app->request->post('sch');
+        $email = Yii::$app->request->post('email');
+
+        $sql = 'select a.*,b.Director,b.parrent_nazv,b.mail from vschet a,spr_res b'
+            . ' where a.res=b.nazv and schet=:search';
+        $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
+        $content=$this->renderPartial('act_work_print',['model' => $model,'style_title' => 'd9']);
+        $cssFile = __DIR__ . '/../vendor/'.'kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css';
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_UTF8 , // leaner size using standard fonts
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            'content' => $content,
+
+            'options' => [
+                'title' => 'Друк акту',
+                'subject' => ''
+            ],
+            'methods' => [
+                'SetHeader' => ['Generated By: Krajee Pdf Component||Generated On: ' . date("r")],
+                'SetFooter' => ['|Page {PAGENO}|'],
+            ]
+        ]);
+
+        $mpdf = $pdf->getApi();
+        $stylesheet = file_get_contents($cssFile);
+        $mpdf->WriteHTML($stylesheet,1);
+        $mpdf->WriteHTML($content,2);
+
+        $mpdf->Output('./act.pdf', 'F');
+        Yii::$app->mailer->compose()
+            ->setFrom('usluga@cek.dp.ua')
+            ->setTo($email)
+            ->setSubject('Акт виконаних робіт за послуги від ПрАТ «ПЕЕМ «ЦЕК»')
+            ->setHtmlBody('<b>Бажаємо здоров’я.</b><br>У вкладеному файлі знаходиться акт виконаних робіт за послугу.')
+            ->attach('./act.pdf')
+            ->send();
+
+        $model = new info();
+        $model->title = "Акт виконаних робіт по рахунку №$sch відправлено";
+        $model->info1 = "";
+        $model->style1 = "d15";
+        $model->style_title = "d9";
+        return $this->render('info', [
+            'model' => $model]);
+
+
+    }
+
+    //  Отправка инф. сообщения по Email
+    public function actionMessage_email(){
+        $sch = Yii::$app->request->post('sch');
+        $email = Yii::$app->request->post('email');
+
+        $sql = 'select a.*,b.Director,b.parrent_nazv,b.mail from vschet a,spr_res b'
+            . ' where a.res=b.nazv and schet=:search';
+        $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
+        $content=$this->renderPartial('message_print',['model' => $model,'style_title' => 'd9']);
+        $cssFile = __DIR__ . '/../vendor/'.'kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css';
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_UTF8 , // leaner size using standard fonts
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            'content' => $content,
+
+            'options' => [
+                'title' => 'Друк повідомлення',
+                'subject' => ''
+            ],
+            'methods' => [
+                'SetHeader' => ['Generated By: Krajee Pdf Component||Generated On: ' . date("r")],
+                'SetFooter' => ['|Page {PAGENO}|'],
+            ]
+        ]);
+
+        $mpdf = $pdf->getApi();
+        $stylesheet = file_get_contents($cssFile);
+        $mpdf->WriteHTML($stylesheet,1);
+        $mpdf->WriteHTML($content,2);
+
+        $mpdf->Output('./message.pdf', 'F');
+        Yii::$app->mailer->compose()
+            ->setFrom('usluga@cek.dp.ua')
+            ->setTo($email)
+            ->setSubject('Інформаційне повідомлення')
+            ->setHtmlBody('<b>Бажаємо здоров’я.</b><br>У вкладеному файлі знаходиться інформаційне повідомлення.')
+            ->attach('./message.pdf')
+            ->send();
+
+       
+        $model = new info();
+        $model->title = "Інформаційне повідомлення по рахунку №$sch відправлено";
+        $model->info1 = "";
+        $model->style1 = "d15";
+        $model->style_title = "d9";
+        return $this->render('info', [
+            'model' => $model]);
+
+
+    }
+
+     //  Отправка договора по Email
+    
+    public function actionContract_email(){
+        $sch = Yii::$app->request->post('sch');
+        $email = Yii::$app->request->post('email');
+
+       $sql = 'select a.*,b.Director,b.parrent_nazv,b.mail,'
+                . 'c.exec_person,c.exec_person_pp,c.exec_post,c.exec_post_pp'
+                . ' from vschet a,spr_res b,spr_uslug c,costwork d'
+                . ' where a.res=b.nazv and a.usluga=d.work '
+                . ' and c.usluga=d.usluga'
+                . ' and schet=:search ';
+       
+        $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
+        $content=$this->renderPartial('contract_print',['model' => $model,'style_title' => 'd9']);
+        $cssFile = __DIR__ . '/../vendor/'.'kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css';
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_UTF8 , // leaner size using standard fonts
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            'content' => $content,
+
+            'options' => [
+                'title' => 'Друк договора',
+                'subject' => ''
+            ],
+            'methods' => [
+                'SetHeader' => ['Generated By: Krajee Pdf Component||Generated On: ' . date("r")],
+                'SetFooter' => ['|Page {PAGENO}|'],
+            ]
+        ]);
+
+        $mpdf = $pdf->getApi();
+        $stylesheet = file_get_contents($cssFile);
+        $mpdf->WriteHTML($stylesheet,1);
+        $mpdf->WriteHTML($content,2);
+
+        $mpdf->Output('./contract.pdf', 'F');
+        Yii::$app->mailer->compose()
+            ->setFrom('usluga@cek.dp.ua')
+            ->setTo($email)
+            ->setSubject('Договір від ПрАТ «ПЕЕМ «ЦЕК»')
+            ->setHtmlBody('<b>Бажаємо здоров’я.</b><br>У вкладеному файлі знаходиться договір за послугу.')
+            ->attach('./contract.pdf')
+            ->send();
+
+        $model = new info();
+        $model->title = "Договір по рахунку №$sch відправлено";
+        $model->info1 = "";
+        $model->style1 = "d15";
+        $model->style_title = "d9";
+        return $this->render('info', [
+            'model' => $model]);
+
+    }
+
+    //  Отправка всех документов по Email
+    public function actionDoc_email(){
+        $sch = Yii::$app->request->post('sch');
+        
+        $sql = 'select a.*,b.Director,b.parrent_nazv,b.mail,'
+                . 'c.exec_person,c.exec_person_pp,c.exec_post,c.exec_post_pp'
+                . ' from vschet a,spr_res b,spr_uslug c,costwork d'
+                . ' where a.res=b.nazv and a.usluga=d.work '
+                . ' and c.usluga=d.usluga'
+                . ' and schet=:search ';
+        
+        $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
+        $mail = $model->mail;
+        if(empty($model->date_exec)) {
+            $model = new info();
+            $model->title = "Увага! По заявці №$sch не введено дату виконання роботи."
+                    . " Формування документів не можливе.";
+            $model->info1 = "";
+            $model->style1 = "d15";
+            $model->style_title = "d9_danger";
+            return $this->render('info', [
+            'model' => $model]);
+        }            
+        
+        $content=$this->renderPartial('sch_opl_print',['model' => $model,'style_title' => 'd9']);
+        $cssFile = __DIR__ . '/../vendor/'.'kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css';
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_UTF8 , // leaner size using standard fonts
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            'content' => $content,
+
+            'options' => [
+                'title' => 'Друк рахунку',
+                'subject' => ''
+            ],
+            'methods' => [
+                'SetHeader' => ['Generated By: Krajee Pdf Component||Generated On: ' . date("r")],
+                'SetFooter' => ['|Page {PAGENO}|'],
+            ]
+        ]);
+
+        $mpdf = $pdf->getApi();
+        $stylesheet = file_get_contents($cssFile);
+        $mpdf->WriteHTML($stylesheet,1);
+        $mpdf->WriteHTML($content,2);
+
+
+//        Yii::$app->mailer->compose()
+//            ->setFrom('usluga@cek.dp.ua')
+//            ->setTo('usluga@cek.dp.ua')
+//            ->setSubject("Рахунок за послуги від ПрАТ «ПЕЕМ «ЦЕК» №$sch відправлено")
+//            ->setHtmlBody("Рахунок за послуги від ПрАТ «ПЕЕМ «ЦЕК» №$sch відправлено.")
+//            ->attach('./schet.pdf')
+//            ->send();
+
+        // Запись признака в статус заявки, что заявка в обработке (status=2)
+        $sql = 'select * from schet where schet=:search';
+        $data = schet::findBySql($sql,[':search'=>"$sch"])->one();
+
+        if($data->status<2)
+            $data->status = 2;
+        
+        $model->date = date("d.m.Y", strtotime($model->date));
+        
+        if(!empty($date_z))
+            $model->date_z = date("Y-m-d", strtotime($date_z));
+        $data->save(false);
+//        $data->validate();
+//            print_r($data->getErrors());
+//           return;
+
+
+        $mpdf->Output('./schet.pdf', 'F');
+
+        $content=$this->renderPartial('contract_print',['model' => $model,'style_title' => 'd9']);
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_UTF8 , // leaner size using standard fonts
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            'content' => $content,
+
+            'options' => [
+                'title' => 'Друк договора',
+                'subject' => ''
+            ],
+            'methods' => [
+                'SetHeader' => ['Generated By: Krajee Pdf Component||Generated On: ' . date("r")],
+                'SetFooter' => ['|Page {PAGENO}|'],
+            ]
+        ]);
+
+        $mpdf = $pdf->getApi();
+        $stylesheet = file_get_contents($cssFile);
+        $mpdf->WriteHTML($stylesheet,1);
+        $mpdf->WriteHTML($content,2);
+        $mpdf->Output('./contract.pdf', 'F');
+
+        $content=$this->renderPartial('act_work_print',['model' => $model,'style_title' => 'd9']);
+        $cssFile = __DIR__ . '/../vendor/'.'kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css';
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_UTF8 , // leaner size using standard fonts
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            'content' => $content,
+
+            'options' => [
+                'title' => 'Друк рахунку',
+                'subject' => ''
+            ],
+            'methods' => [
+                'SetHeader' => ['Generated By: Krajee Pdf Component||Generated On: ' . date("r")],
+                'SetFooter' => ['|Page {PAGENO}|'],
+            ]
+        ]);
+
+        $mpdf = $pdf->getApi();
+        $stylesheet = file_get_contents($cssFile);
+        $mpdf->WriteHTML($stylesheet,1);
+        $mpdf->WriteHTML($content,2);
+
+        $mpdf->Output('./act.pdf', 'F');
+
+        
+        $content=$this->renderPartial('message_print',['model' => $model,'style_title' => 'd9']);
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_UTF8 , // leaner size using standard fonts
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            'content' => $content,
+
+            'options' => [
+                'title' => 'Друк повідомлення',
+                'subject' => ''
+            ],
+            'methods' => [
+                'SetHeader' => ['Generated By: Krajee Pdf Component||Generated On: ' . date("r")],
+                'SetFooter' => ['|Page {PAGENO}|'],
+            ]
+        ]);
+
+        $mpdf = $pdf->getApi();
+        $stylesheet = file_get_contents($cssFile);
+        $mpdf->WriteHTML($stylesheet,1);
+        $mpdf->WriteHTML($content,2);
+        $mpdf->Output('./message.pdf', 'F');
+        
+        Yii::$app->mailer->compose()
+            ->setFrom('usluga@cek.dp.ua')
+            ->setTo($mail)
+            ->setSubject('Документи за послуги від ПрАТ «ПЕЕМ «ЦЕК»')
+            ->setHtmlBody('<b>Дякуємо за звернення до ПрАТ «ПЕЕМ «ЦЕК».</b><br>
+                        У вкладеному файлі знаходяться: рахунок за послугу,акт виконаних робіт та договір')
+            ->attach('./schet.pdf')
+            ->attach('./act.pdf')
+            ->attach('./contract.pdf')
+            ->attach('./message.pdf')
+            ->send();
+
+        $model = new info();
+        $model->title = "Документи по рахунку №$sch відправлено";
+        $model->info1 = "";
+        $model->style1 = "d15";
+        $model->style_title = "d9";
+        return $this->render('info', [
+            'model' => $model]);
+
+
+    }
+
+
 // Добавление новых пользователей
     public function actionAddAdmin() {
-        $model = User::find()->where(['username' => 'main'])->one();
+        $model = User::find()->where(['username' => 'buh1'])->one();
         if (empty($model)) {
             $user = new User();
-            $user->username = 'main';
-            $user->email = 'globalserg@ukr.net';
-            $user->setPassword('dlj[yjdtybt');
+            $user->username = 'buh1';
+            $user->email = 'buh1@ukr.net';
+            $user->setPassword('afynfpbz');
             $user->generateAuthKey();
             if ($user->save()) {
                 echo 'good';

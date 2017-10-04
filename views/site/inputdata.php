@@ -34,8 +34,46 @@ $this->title = 'Розрахунок вартості робіт';
     }
     }
 
+    function find_on_map(addr){
+
+        localStorage.setItem("addr_work", addr);
+                var addr_work = addr;
+                var region = $("#inputdataform-region option:selected").text();
+                if(typeof(addr_work)!='undefuned' && addr_work!=''){
+                    addr_work = addr_work+region+' область';
+                    var addr_request = 'https://maps.googleapis.com/maps/api/geocode/json?'+
+                            'components=country:UA'+'&key='+'AIzaSyDSyQ_ATqeReytiFrTiqQAS9FyIIwuHQS4'+
+                            '&address='+addr_work;
+
+
+                    //alert(addr_request);
+                    $.getJSON('/CalcWork/web/site/getloc?loc='+addr_request, function(data) {
+
+                        var lat1 = data.output.results[0].geometry.location.lat;
+                        var lng1 = data.output.results[0].geometry.location.lng;
+                        localStorage.setItem("lat1",lat1);
+                        localStorage.setItem("lng1",lng1);
+                        //alert("blur");
+                        
+                         //var location = {lat: alat, lng: alng};
+
+                    });
+
+                    //alert(location);
+                }
+       
+        setTimeout(function () {
+                        initMap();
+                    }, 1700); // время в мс
+                    
+
+    }
+
     window.onload=function(){
         //$("#inputdataform-potrebitel").hide();
+        $("#inputdataform-region").val(3);
+        localStorage.setItem("lat1", '');
+        localStorage.setItem("lng1", '');
         localStorage.setItem("geo_res", '');
         localStorage.setItem("geo_lat", '');
         localStorage.setItem("geo_lng", '');
@@ -75,6 +113,8 @@ $this->title = 'Розрахунок вартості робіт';
         p = u.length;
         if(p!=0)
         $("#inputdataform-potrebitel").blur();
+        //alert("load");
+                
     }
 
 
@@ -97,12 +137,17 @@ $this->title = 'Розрахунок вартості робіт';
                 ]]); ?>
 
            
-            <?=$form->field($model, 'res')->dropDownList(ArrayHelper::map(app\models\spr_res::find()->all(), 'id', 'nazv'), 
+            <?=$form->field($model, 'res')->dropDownList(
+                    ArrayHelper::map(app\models\spr_res::findbysql(
+                            "select id,concat(town,'  (',nazv,')') as nazv from spr_res")->all(), 'id', 'nazv'), 
             [
             'prompt' => 'Виберіть виробничий підрозділ, який обслуговує Ваш регіон.',
             'onchange' => '$.get("' . Url::to('/CalcWork/web/site/getres?id=') . 
              '"+$(this).val(),
                     function(data) {
+                     $("#inputdataform-addr_work").empty();
+                     localStorage.setItem("lat1", "");
+                     localStorage.setItem("lng1", "");
                      localStorage.setItem("geo_res", data.geo_koord);
                      var geo_marker = localStorage.getItem("geo_marker");
 
@@ -137,9 +182,52 @@ $this->title = 'Розрахунок вартості робіт';
                     $(".dst").val(0); 
                     $(".primech").text("");
                     $(".adr_potr").text("");
+                    
+//                var addr_work = localStorage.getItem("addr_work");
+//                //alert("change_res");
+//                if(typeof(addr_work)!="undefuned" && addr_work!=""){
+//                    addr_work = addr_work+"+Дніпропетровська+область";
+//                    var addr_request = "https://maps.googleapis.com/maps/api/geocode/json?"+
+//                            "components=country:UA"+"&key="+"AIzaSyDSyQ_ATqeReytiFrTiqQAS9FyIIwuHQS4"+
+//                            "&address="+addr_work;
+//
+//
+//                    //alert(addr_request);
+//                    $.getJSON("/CalcWork/web/site/getloc?loc="+addr_request, function(data) {
+//
+//                        var lat1 = data.output.results[0].geometry.location.lat;
+//                        var lng1 = data.output.results[0].geometry.location.lng;
+//                        localStorage.setItem("lat1",lat1);
+//                        localStorage.setItem("lng1",lng1);
+//                        //alert("blur lng1");
+//                        
+//                         //var location = {lat: alat, lng: alng};
+//
+//                    });
+//
+//                    //alert(location);
+//                }
+
                     setTimeout(function () {
                         initMap();
-                    }, 700); // время в мс
+                    }, 1000); // время в мс
+                    
+                    var punct = $("#inputdataform-res :selected").text();
+                    var pos = punct.indexOf("(");
+                    punct = punct.substr(0,pos);
+                    $("#inputdataform-addr_work").val(punct);
+                    
+                    //var region_res = $("#inputdataform-res option:selected").text();
+                    if(punct == "м. Запоріжжя  ")
+                        $("#inputdataform-region").val(7);
+                    else
+                        $("#inputdataform-region").val(3);
+                        
+                    //if(!$("#inputdataform-addr_work").val()){
+                        
+                    
+                    $("#inputdataform-addr_work").blur();
+                    
                        
                 });',
                      ]
@@ -273,6 +361,18 @@ $this->title = 'Розрахунок вартості робіт';
 
             <?= $form->field($model, 'geo') ?>
 
+             <?=$form->field($model, 'region')->
+            dropDownList(ArrayHelper::map(
+               app\models\regions::findbysql('Select id,obl from regions')
+                   ->all(), 'id', 'obl'),
+                    [
+                    'prompt' => 'Виберіть область',
+                     ]
+                    ) ?>
+            <?php $model->region = 3 //"Дніпропетровська";  ?>
+
+            <?= $form->field($model, 'addr_work')->textInput(['maxlength' => true,'onBlur' => 'find_on_map($(this).val())']) ?>
+
             <p>Виберіть на карті місце виконання робіт (для обліку транспортних витрат):</p>
             <div id="map_q"></div>
 
@@ -312,8 +412,12 @@ $this->title = 'Розрахунок вартості робіт';
                 localStorage.setItem("geo_lng", 35.002512);
             }
         }
+         
         // Функция initMap которая отрисует карту на странице
         function initMap() {
+            
+            
+            
             var geo_marker = localStorage.getItem("geo_marker");
             if(geo_marker!='') {
             var lat1 = +localStorage.getItem("geo_lat");
@@ -324,7 +428,16 @@ $this->title = 'Розрахунок вартості робіт';
             }
             var idr = localStorage.getItem("id_res");
 
-
+            var addr_work = localStorage.getItem("addr_work");
+            //var addr_work = $("#inputdataform-addr_work").text();
+            if(typeof(addr_work)!='undefuned' && addr_work!=''){
+                 var lat1 = +localStorage.getItem("lat1");
+                 var lng1 = +localStorage.getItem("lng1");
+                 var vzoom = 0;
+                 if ( addr_work.search(/\d/) != -1 ) vzoom = 1;
+             }
+            
+                        
             if(lat1==48.446203)
             {    
             // В переменной map создаем объект карты GoogleMaps и вешаем эту переменную на <div id="map"></div>
@@ -340,15 +453,35 @@ $this->title = 'Розрахунок вартості робіт';
             }
             else
             {    
+               
+               
+                // alert(lng1);
+                if(!vzoom)
                 map = new google.maps.Map(document.getElementById('map_q'), {
                 // При создании объекта карты необходимо указать его свойства
                 // center - определяем точку на которой карта будет центрироваться
+                //
+                
                 center: {lat: lat1, lng: lng1},
                
                 // zoom - определяет масштаб. 0 - видно всю платнеу. 18 - видно дома и улицы города.
-                zoom: 15
+                
+                 zoom: 15
                 
             });
+                else
+                 map = new google.maps.Map(document.getElementById('map_q'), {
+                // При создании объекта карты необходимо указать его свойства
+                // center - определяем точку на которой карта будет центрироваться
+                //
+                
+                center: {lat: lat1, lng: lng1},
+               
+                // zoom - определяет масштаб. 0 - видно всю платнеу. 18 - видно дома и улицы города.
+                
+                 zoom: 17
+                
+            });   
             }
           
            
@@ -360,6 +493,9 @@ $this->title = 'Розрахунок вартості робіт';
             var geo_k = localStorage.getItem("geo_k");
             var geo_marker = localStorage.getItem("geo_marker");
 
+             
+        
+        
         if(geo_marker!='') {
             //alert(geo_k);
 //            var lat_save = localStorage.getItem("geo_lat_save");
@@ -432,11 +568,16 @@ $this->title = 'Розрахунок вартості робіт';
          google.maps.event.addListener(map, 'click', function(e) {
        
          var location = e.latLng;
+         
          //localStorage.setItem("geo_marker","");
          $("#inputdataform-geo").val('1');
          $('.distance').val(location);
          
-         if(marker != undefined) marker.setMap(null);
+       
+               
+        
+        
+        if(marker != undefined) marker.setMap(null);
                          
          marker = new google.maps.Marker({
              position: location,

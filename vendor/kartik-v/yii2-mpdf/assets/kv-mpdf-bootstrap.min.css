@@ -19,3 +19,86 @@
     margin-top: 6px;
     font: normal 14px verdana, "Trebuchet MS", Helvetica, arial, sans-serif;
 }
+.single_red{
+    font-weight: 600;
+    color:red;
+    margin-top: 20px;
+}
+.act_left {
+    margin-left: 12px;
+    margin-top: 6px;
+    font: normal 11px verdana, "Trebuchet MS", Helvetica, arial, sans-serif;
+}
+.act_footer_top {
+    margin-left: 12px;
+    font: normal 11px verdana, "Trebuchet MS", Helvetica, arial, sans-serif;
+}
+.act_center {
+    margin-left: 20px;
+    font: bold 15px verdana, "Trebuchet MS", Helvetica, arial, sans-serif;
+}
+.act_center_text {
+    margin-left: 20px;
+    font: normal 11px verdana, "Trebuchet MS", Helvetica, arial, sans-serif;
+}
+.act_center_text_right {
+    margin-left: 20px;
+    font: normal 11px verdana, "Trebuchet MS", Helvetica, arial, sans-serif;
+    text-align:  right;
+}
+.act_center_itog {
+    margin-left: 82%;
+    font: bold 11px verdana, "Trebuchet MS", Helvetica, arial, sans-serif;
+}
+.act_center_end {
+    margin-left: 5%;
+    margin-right: 5%;
+    font: normal 11px verdana, "Trebuchet MS", Helvetica, arial, sans-serif;
+}
+.act_line {
+    border: none; /* Убираем границу */
+    background-color: black; /* Цвет линии */
+    color: black; /* Цвет линии для IE6-7 */
+    height: 1px; /* Толщина линии */
+    width: 200px;
+    align: left;
+}
+.act_line_main {
+    border: none; /* Убираем границу */
+    background-color: black; /* Цвет линии */
+    color: black; /* Цвет линии для IE6-7 */
+    height: 2px; /* Толщина линии */
+}
+.act_hr {
+    width:150px;
+}
+.th_r {
+    text-align: left;
+    height: 180px;
+    vertical-align: text-top ;
+}
+.contract_center_text_bold {
+    margin-left: 20px;
+    font: bold 10px verdana, "Trebuchet MS", Helvetica, arial, sans-serif;
+    width: 100%;
+    line-height: 1;
+}
+.contract_center_text {
+    margin-left: 20px;
+    font: normal 10px verdana, "Trebuchet MS", Helvetica, arial, sans-serif;
+    width: 100%;
+    line-height: 1px;
+}
+.contract_text_footer {
+    font: normal 10px verdana, "Trebuchet MS", Helvetica, arial, sans-serif;
+    width: 100%;
+   
+}
+.table-hap{
+    border: 0px solid white;
+    margin-top: 10px;
+}
+.contract_center{
+    width: 100%;
+    text-align: center;;
+}

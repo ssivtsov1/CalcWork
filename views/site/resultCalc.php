@@ -16,7 +16,12 @@ $time_t = round($distance / 45,2);
 $time_work = str_replace(',','.',$time_work);
 $time_prostoy = str_replace(',','.',$time_prostoy);
 $flag =1;
-if(!isset(Yii::$app->user->identity->role)) $flag = 0;
+$role=0;
+if(!isset(Yii::$app->user->identity->role))
+{      $flag=0;}
+else{
+    $role=Yii::$app->user->identity->role;
+}
 ?>
 
 <div class="site-login">
@@ -381,10 +386,12 @@ if(!isset(Yii::$app->user->identity->role)) $flag = 0;
         <?php endif; ?>
 
         <?php if($model1[0]->usluga!="Транспортні послуги"): ?>
-        <?php if(!$refresh): ?>
-            <?= Html::a('Відмовитись',["cancel?&nazv=$model->nazv&summa=$model->all_nds&res=".$name_res[0]->nazv.
-                "&adr_work=$adr_work"], ['class' => 'btn btn-primary']); ?>
+        <?php if(!($role==1||$role==2)): ?>    
+            <?php if(!$refresh): ?>
+                <?= Html::a('Відмовитись',["cancel?&nazv=$model->nazv&summa=$model->all_nds&res=".$name_res[0]->nazv.
+                    "&adr_work=$adr_work"], ['class' => 'btn btn-primary']); ?>
             <?php endif; ?>
+        <?php endif; ?>
             <?php if($flag): ?>
               <?= Html::a('Сброс в Excel', ["site/excel?&kind=1&nazv=$model->nazv&rabota=$model->rabota&
              delivery=$model->delivery&transp=$model->transp&
@@ -395,13 +402,14 @@ if(!isset(Yii::$app->user->identity->role)) $flag = 0;
 
 <!--        --><?//= Html::a('Замовити послугу',['cnt?g='
 //            .$all_grn.'&u='.$model1[0]->work.'&inn='.$potrebitel.'&res='.$name_res[0]->nazv], ['class' => 'btn btn-primary']); ?>
+        <?php if(!($role==1||$role==2)): ?>
         <?= Html::a(($refresh==0) ? 'Замовити послугу' : 'Зберегти',['proposal?rabota='.$model->rabota.'&delivery='.$model->delivery.
             '&transp='.$model->transp.'&all='.$model->all.'&g=' .$all_grn.
             '&u='.$model1[0]->work.'&res='.$name_res[0]->nazv.
             '&adr='.$model->adr_work.'&geo='.$geo.'&kol='.$kol.'&refresh='.$refresh.'&schet='.$schet],
             ['class' => 'btn btn-primary']); ?>
 <!--        --><?//= Html::a('Зв’язатись з оператором',['callcenter'], ['class' => 'btn btn-primary']); ?>
-        
+        <?php endif; ?>
     </div>
    
 </div>

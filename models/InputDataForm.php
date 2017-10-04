@@ -20,6 +20,7 @@ class InputDataForm extends Model
     public $potrebitel;
     public $inn;
     public $addr;
+    public $addr_work;   // Адрес работ (вводится для поиска на карте)
     public $nazv = '';
     public $work;
     public $usluga;
@@ -31,6 +32,7 @@ class InputDataForm extends Model
     public $time_prostoy = 1;  // Время простоя в часах (для транспортных услуг)
     public $adr_potr = '';     // Адрес с карты
     public $geo = '';     // Координаты с карты
+    public $region;     // Область
     public $refresh = 0;  // Признак перерасчета заявки
     private $_user;
 
@@ -49,7 +51,9 @@ class InputDataForm extends Model
             'time_work' => 'Кількість годин роботи (тільки для транспортних послуг):',
             'time_prostoy' => 'Кількість годин простою (тільки для транспортних послуг):',
             'nazv' => 'Споживач назва: ',
-            'addr' => 'Адреса споживача: '
+            'addr' => 'Адреса споживача: ',
+            'addr_work' => 'Адреса виконання робіт (для пошуку на карті) - Пишіть українською мовою : ',
+            'region' => 'Область:'
         ];
     }
 
@@ -68,6 +72,7 @@ class InputDataForm extends Model
             ['adr_potr', 'safe'],
             ['geo', 'safe'],
             ['refresh', 'safe'],
+            ['region', 'safe'],
             ['time_prostoy', 'safe'],
 
         ];

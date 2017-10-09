@@ -16,10 +16,16 @@ $this->title = 'Розрахунок вартості робіт';
     // для этого автомобиля не проставлена.
     function hidepole_rabota(p){
        
+        if(p.length>94){
         $('.img_uslug').show();
         $('.span_work').text(p);
         $('.span_work').slideDown('slow');
-        
+        }
+        else
+        {
+          $('.img_uslug').hide();  
+          $('.span_work').text('');
+        }    
     
     if(localStorage.getItem("usluga")=="transp") {
         if (f == '-') {

@@ -1,7 +1,5 @@
 <?php
 use yii\helpers\Html;
-
-/* @var $this yii\web\View */
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -19,8 +17,5 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <h3><?= Html::encode($model->info2) ?></h3>
     </div>
-
-
     <code><?//= __FILE__ ?></code>
-
 <!--</div>-->

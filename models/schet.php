@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ssivtsov
- * Date: 21.06.2017
- * Time: 9:49
- */
+// Заявки пользователей
 namespace app\models;
 
 use Yii;
@@ -15,10 +10,6 @@ use yii\data\ActiveDataProvider;
 
 class Schet extends \yii\db\ActiveRecord
 {
-
-    /**
-     * @inheritdoc
-     */
    
     public static function tableName()
     {
@@ -47,11 +38,8 @@ class Schet extends \yii\db\ActiveRecord
             'summa_transport' => 'Транспорт всього,грн.:',
             'summa_delivery' => 'Доставка бригади,грн.:',
             'summa_beznds' => 'Сума без ПДВ:',
-
-
         ];
     }
-
 
     public function rules()
     {
@@ -107,8 +95,7 @@ class Schet extends \yii\db\ActiveRecord
 
     public static function getDb()
     {
-        
-            return Yii::$app->get('db');
+        return Yii::$app->get('db');
     }
 
 }

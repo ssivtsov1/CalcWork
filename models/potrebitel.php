@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ssivtsov
- * Date: 21.06.2017
- * Time: 9:49
- */
 namespace app\models;
 
 use Yii;
@@ -12,16 +6,10 @@ use yii\base\Model;
 use yii\behaviors\TimestampBehavior;
 use yii\data\ActiveDataProvider;
 
-
 class Potrebitel extends \yii\db\ActiveRecord
 {
-
-    /**
-     * @inheritdoc
-     */
-    public $adr_work;
-    public $comment;
-
+    public $adr_work;  // Адрес выполнения работ
+    public $comment;   // Комментарий заказчика услуги
 
     public static function tableName()
     {
@@ -48,7 +36,6 @@ class Potrebitel extends \yii\db\ActiveRecord
 
         ];
     }
-
 
     public function rules()
     {
@@ -97,10 +84,7 @@ class Potrebitel extends \yii\db\ActiveRecord
 
     public static function getDb()
     {
-        if (isset(Yii::$app->user->identity->role))
-            return Yii::$app->get('db');
-        else
-            return Yii::$app->get('db');
+        return Yii::$app->get('db');
     }
 }
 

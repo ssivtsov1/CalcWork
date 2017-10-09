@@ -1,7 +1,5 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: ssivtsov
  * Используется для просмотра счетов из вида
  */
 namespace app\models;
@@ -11,13 +9,8 @@ use yii\base\Model;
 use yii\behaviors\TimestampBehavior;
 use yii\data\ActiveDataProvider;
 
-
 class Viewschet extends \yii\db\ActiveRecord
 {
-
-    /**
-     * @inheritdoc
-     */
     public $Director;
     public $parrent_nazv;
     public $mail;
@@ -26,7 +19,6 @@ class Viewschet extends \yii\db\ActiveRecord
     public $exec_post;
     public $exec_post_pp;
     public $plat_yesno = 'ні';
-
 
     public static function tableName()
     {
@@ -68,10 +60,8 @@ class Viewschet extends \yii\db\ActiveRecord
             'summa_delivery' => 'Доставка бригади,грн.:',
             'summa_beznds' => 'Сума без ПДВ,грн.:',
             'why_refusal' => '* Причина відмови:',
-
         ];
     }
-
 
     public function rules()
     {
@@ -95,8 +85,6 @@ class Viewschet extends \yii\db\ActiveRecord
 
     public function search($params,$role)
     {
-        //$query = viewschet::find();
-
         switch($role) {
             case 3: // Полный доступ
                 $query = viewschet::find();
@@ -119,7 +107,6 @@ class Viewschet extends \yii\db\ActiveRecord
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
-
         $query->andFilterWhere(['like', 'usluga', $this->usluga]);
         $query->andFilterWhere(['like', 'status_sch', $this->status_sch]);
         $query->andFilterWhere(['like', 'inn', $this->inn]);
@@ -146,10 +133,8 @@ class Viewschet extends \yii\db\ActiveRecord
 
     public static function getDb()
     {
-       
             return Yii::$app->get('db');
     }
-
 
 }
 

@@ -1,25 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ssivtsov
- * Date: 21.06.2017
- * Time: 9:49
- */
+// Модель для хранения последнего номера заявки
 namespace app\models;
 
 use Yii;
-use yii\base\Model;
-use yii\behaviors\TimestampBehavior;
 use yii\data\ActiveDataProvider;
-
 
 class Max_schet extends \yii\db\ActiveRecord
 {
 
-    /**
-     * @inheritdoc
-     */
-   
     public static function tableName()
     {
         return 'max_schet';
@@ -33,12 +21,10 @@ class Max_schet extends \yii\db\ActiveRecord
         ];
     }
 
-
     public function rules()
     {
         date_default_timezone_set('Europe/Kiev');
         return [
-
             [['id','value'], 'safe'],
         ];
     }
@@ -51,7 +37,6 @@ class Max_schet extends \yii\db\ActiveRecord
 
     public static function getDb()
     {
-        
             return Yii::$app->get('db');
     }
 

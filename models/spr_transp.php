@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ssivtsov
- * Date: 03.07.2017
- * Time: 9:49
- */
+// Справочник транспорта (используется для просмотра)
 namespace app\models;
 
 use Yii;
@@ -13,10 +8,8 @@ use yii\behaviors\TimestampBehavior;
 use yii\data\ActiveDataProvider;
 use yii\data\SqlDataProvider;
 
-
 class Spr_transp extends \yii\db\ActiveRecord
 {
-
    
     public static function tableName()
     {
@@ -59,7 +52,6 @@ class Spr_transp extends \yii\db\ActiveRecord
            
             return $dataProvider;
         }
-
         $query->andFilterWhere(['like', 'transport', $this->transport]);
         $query->andFilterWhere(['like', 'nomer', $this->nomer]);
 
@@ -73,10 +65,7 @@ class Spr_transp extends \yii\db\ActiveRecord
 
     public static function getDb()
     {
-        if (isset(Yii::$app->user->identity->role))
-            return Yii::$app->get('db');
-        else
-            return Yii::$app->get('db');
+        return Yii::$app->get('db');
     }
 
 }

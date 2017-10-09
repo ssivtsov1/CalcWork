@@ -257,31 +257,25 @@ class SpravController extends Controller
            
             return $this->render('update_res', [
                 'model' => $model]);
-
-            
         }
     }
 
     //    Срабатывает при нажатии кнопки добавления статуса заявки
     public function actionCreatestatus_sch()
     {
-
         $model = new status_sch();
 
         if ($model->load(Yii::$app->request->post()))
         {
-
             if($model->save(false)) //var_dump($model->getErrors());
                 return $this->redirect(['sprav/status_sch']);
-
         } else {
 
             return $this->render('update_status_sch', [
                 'model' => $model]);
-
-
         }
     }
+
     //    Срабатывает при нажатии кнопки добавления в справ. транспорта
     public function actionCreatetransp()
     {
@@ -290,28 +284,21 @@ class SpravController extends Controller
        
         if ($model->load(Yii::$app->request->post()))
         {  
-                       
             if($model->save(false))
                return $this->redirect(['sprav/sprav_transp']);
-           
         } else {
            
             return $this->render('update_transp', [
                 'model' => $model]);
-
-            
         }
     }
 
     //    Срабатывает при нажатии кнопки добавления в справ. видов работ
     public function actionCreatework()
     {
-        
         $model = new spr_work();
-       
         if ($model->load(Yii::$app->request->post()))
         {  
-                       
             if($model->save(false))
                return $this->redirect(['sprav/sprav_work']);
            
@@ -319,30 +306,21 @@ class SpravController extends Controller
            
             return $this->render('update_work', [
                 'model' => $model]);
-
-            
         }
     }
+
     //    Срабатывает при нажатии кнопки добавления в справ. контрагентов
     public function actionCreateklient()
     {
-
         $model = new klient();
-
         if ($model->load(Yii::$app->request->post()))
         {
-
             if($model->save(false))
                 return $this->redirect(['sprav/sprav_klient']);
-
         } else {
-
             return $this->render('update_klient', [
                 'model' => $model]);
-
-
         }
     }
 
-  
 }

@@ -1,11 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ssivtsov
- * Date: 21.06.2017
- * Time: 9:53
- */
-
+// Справочник видов работ
 namespace app\models;
 
 use Yii;

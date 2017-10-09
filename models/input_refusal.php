@@ -21,7 +21,6 @@ class Input_refusal extends Model
         return [
             'sel' => '',
             'cause' => 'Введіть причину відмови:',
-
         ];
     }
 

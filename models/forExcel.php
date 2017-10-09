@@ -1,6 +1,6 @@
 <?php
 /**
- Для сброса основных показателей в Excel
+ Для сброса основных показателей по рассчету стоимости работ в Excel
  */
 
 namespace app\models;
@@ -8,7 +8,6 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use yii\db\ActiveRecord;
-
 
 class ForExcel extends Model
 {
@@ -36,13 +35,11 @@ class ForExcel extends Model
         ];
     }
 
-
     public function rules()
     {
         return [
             [['nazv','rabota','delivery','transp',
                 'all','nds','all_nds','adr_work','comment'], 'safe']
-
         ];
     }
 

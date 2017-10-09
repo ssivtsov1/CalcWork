@@ -106,11 +106,9 @@ else{
     <h4><?= Html::encode("Вартість транспорту (простой): ".$model1[0]->prostoy.' грн.') ?></h4>
     <?php endif; ?>
     <?php endif; ?>
-
     <br>
     <div class="main_schet">
         <h3><?= Html::encode(" Результат розрахунку: ") ?></h3>
-
     </div>
     <br>
 <!--    <h4>--><?//= Html::encode("Координати: ".$geo) ?><!--</h4>-->
@@ -178,29 +176,6 @@ else{
     array_map('unlink', glob("Calc_*.csv"));
     $file_xls = 'Calc_'.date('d').date('m').date('y').'_'.date('H').date('i').date('s').'.csv';
     $f = fopen($file_xls,'w');
-    /*
-    fputs($f,"Результат розрахунку для:  ".$name_res[0]->nazv.' споживач '.$potrebitel.',,,,,'."\r\n");
-    fputs($f,$model1[0]->work.',,,,,'."\r\n");
-    fputs($f,',,,,,'."\r\n");
-    fputs($f,'Вартість роботи на 1 кальк. од.(грн),Кільк. калькуляц. одиниць,Сумарна вартість роботи грн. без ПДВ'.
-            ',,,'."\r\n");
-    fputs($f,$model1[0]->cost.','.$kol.','.$kol*$model1[0]->cost."\r\n");
-    fputs($f,',,,,,'."\r\n");
-    fputs($f,"Розрахунок доставки бригади:  ".round($time_t*$model2[0]->stavka_grn,2).' грн.'.',,,,,'."\r\n");
-    fputs($f,"Часова тарифна ставка виконавців робіт (грн/год),Відстань від бази до місця провед. робіт(км),Термін проїзду до місця робіт (год),Вартість доставки бригади (грн),,"."\r\n");
-    fputs($f,$model2[0]->stavka_grn.','.$distance.','.$time_t.','.round($time_t*$model2[0]->stavka_grn,2).',,'."\r\n");
-    fputs($f,',,,,,'."\r\n");
-    fputs($f,'Транспортні послуги: '.$model1[0]->transport.' Номер '.$model1[0]->nom_tr.
-            "\r\n"."Всього: ".(round($model1[0]->proezd*$time_t,2)+
-                round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)).'грн.'."\r\n".
-                "Проїзд: ".round($model1[0]->proezd*$time_t,2).'грн.'."\r\n");
-    
-    fputs($f,'Термін проїзду до місця робіт (год),Вартість транспорту (проїзд) грн,Термін простою на 1 калькул. один (год).,Кількість калькуляційних одиниць,Вартість транспорту (простой) грн,Простой грн'."\r\n");
-    fputs($f,$time_t.','.$model1[0]->proezd.','.$model1[0]->time_transp.','.$kol.','.$model1[0]->prostoy.','.
-            round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2));
-    fputs($f,',,,,,'."\r\n");
-    fputs($f,',,,,,'."\r\n");
-    */
 
     fputs($f," РАХУНОК: ");
     fputs($f,"\r\n");
@@ -370,8 +345,6 @@ else{
     <?php endif; ?>
         
     <div class="form-group">
-<!--        --><?//= Html::a('Файл '.$file_xls.' з результатами після завантаження буде знаходиться в каталозі Загрузки  '); ?>
-<!--        --><?//= Html::a('Завантажити результат',['download?f='.$file_xls], ['class' => 'btn btn-primary']); ?>
         <?php if($model1[0]->usluga=="Транспортні послуги"): ?>
             <?php if(!$refresh): ?>
                  <?= Html::a('Відмовитись',["cancel?&nazv=$model->nazv&summa=$model->all_nds&res=".$name_res[0]->nazv.
@@ -400,19 +373,15 @@ else{
             <?php endif; ?>
         <?php endif; ?>
 
-<!--        --><?//= Html::a('Замовити послугу',['cnt?g='
-//            .$all_grn.'&u='.$model1[0]->work.'&inn='.$potrebitel.'&res='.$name_res[0]->nazv], ['class' => 'btn btn-primary']); ?>
         <?php if(!($role==1||$role==2)): ?>
         <?= Html::a(($refresh==0) ? 'Замовити послугу' : 'Зберегти',['proposal?rabota='.$model->rabota.'&delivery='.$model->delivery.
             '&transp='.$model->transp.'&all='.$model->all.'&g=' .$all_grn.
             '&u='.$model1[0]->work.'&res='.$name_res[0]->nazv.
             '&adr='.$model->adr_work.'&geo='.$geo.'&kol='.$kol.'&refresh='.$refresh.'&schet='.$schet],
             ['class' => 'btn btn-primary']); ?>
-<!--        --><?//= Html::a('Зв’язатись з оператором',['callcenter'], ['class' => 'btn btn-primary']); ?>
+
         <?php endif; ?>
     </div>
    
 </div>
 
-<!--$sql = 'update data_pokaz set month='.$month.',year='.$year.',day='.$number.' where month=13';-->
-<!--Yii::$app->db->createCommand($sql)->execute();-->

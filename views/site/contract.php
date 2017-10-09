@@ -1,7 +1,6 @@
 <?php
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
 $this->title = "Договір";
 $this->params['breadcrumbs'][] = $this->title;
 $year = date('Y');

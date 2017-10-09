@@ -84,7 +84,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         ['site/refresh?work='.$model->usluga.
                             '&res='.$model->res.'&geo='.$model->geo.
                             '&kol='.$model->kol.
-                            '&schet='.$model->schet],
+                            '&schet='.$model->schet.
+                            '&adr='.$model->adres],
                         ['title' => Yii::t('yii', 'Перерахувати заявку'), 'data-pjax' => '0']
                     );
                 }

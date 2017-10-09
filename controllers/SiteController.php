@@ -39,8 +39,6 @@ class SiteController extends Controller
  *
  */
 
-
-
     //public $defaultAction = 'index';
 
     public function behaviors()
@@ -79,18 +77,14 @@ class SiteController extends Controller
         ];
     }
 
-
     //  Происходит при запуске сайта
     public function actionIndex()
     {
-
         if (!\Yii::$app->user->isGuest) {
             return $this->redirect(['site/more']);
         }
-
         if(strpos(Yii::$app->request->url,'/cek')==0)
             return $this->redirect(['site/more']);
-
         $model = new loginform();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->redirect(['site/more']);
@@ -99,17 +93,14 @@ class SiteController extends Controller
                 'model' => $model,
             ]);
         }
-
     }
 
     //  Происходит после ввода пароля
     public function actionMore()
     {
-
         $model = new InputDataForm();
         if ($model->load(Yii::$app->request->post()))
-        {   //var_dump($model);
-
+        {
             return $this->redirect([ 'calc','id' => $model->work,'kol' => $model->kol,'poezdka' => $model->poezdka,
                 'distance' => $model->distance,'res' => $model->res ,
                 'potrebitel' => $model->potrebitel,
@@ -125,13 +116,11 @@ class SiteController extends Controller
             ]);
         }
     }
+
     //  Происходит при перерасчете заявки
-    public function actionRefresh($work,$res,$geo,$kol=1,$schet='')
+    public function actionRefresh($work,$res,$geo,$kol=1,$schet='',$adr)
     {
-
         $model = new InputDataForm();
-
-//        $sql = 'select id as nom,usluga from costwork where work='.'"'.$work.'"';
         $sql = 'select id as nom,usluga from costwork where work=:search';
         $model2 = Calc::findBySql($sql,[':search'=>"$work"])->all();
         $model_usl = spr_costwork::findbysql('Select min(id) as id,usluga from costwork where LENGTH(ltrim(rtrim(usluga)))<>1 group by usluga order by usluga')
@@ -144,22 +133,16 @@ class SiteController extends Controller
                 break;}
         }
         $model_res = spr_res::find()->where('nazv=:nazv',[':nazv' => $res])->all();
-
-//        debug($model_usl);
-//        return;
-
         $model->work = $model2[0]->nom;
-//        debug($model->work);
-//        return;
         $model->usluga = $id_usl;
         $model->res = $model_res[0]->id;
         $model->geo = $geo;
         $model->kol = $kol;
+        $model->addr_work = $adr;
         $model->refresh = 1;
 
         if ($model->load(Yii::$app->request->post()))
-        {   //var_dump($model);
-
+        {
             return $this->redirect([ 'calc','id' => $model->work,'kol' => $model->kol,'poezdka' => $model->poezdka,
                 'distance' => $model->distance,'res' => $model->res ,
                 'potrebitel' => $model->potrebitel,
@@ -169,7 +152,6 @@ class SiteController extends Controller
                 'geo' => $model->geo,'refresh' => $model->refresh,'schet' => $schet]);
         }
         else {
-
             return $this->render('inputdata', [
                 'model' => $model,
             ]);
@@ -182,34 +164,18 @@ class SiteController extends Controller
         if($delivery==-1) $delivery = 0;
         if($rabota==-1) $rabota = 0;
         if($transp==-1) $transp = 0;
-
         if($refresh==0) {
             $model = new Klient();
             $model->adr_work = str_replace('Адреса виконання робіт:', '', $adr);
-
             if ($model->load(Yii::$app->request->post())) {
                 $inn = $model->inn;
-//                debug($model);
-//                die;
-
                 $iklient = klient::find()->select(['nazv', 'addr', 'okpo', 'regsvid', 'priz_nds', 'email', 'tel'])
                     ->where('inn=:inn',[':inn' => $inn])->all();
-
-                //$model1 = potrebitel::findOne('inn=:inn',[':inn' => $inn]);
                 $model1 = potrebitel::find()->where('inn=:inn',[':inn' => $inn])->one();
-
-//                debug($model1);
-//                die;
-
                 if (!isset($iklient[0]->nazv)) {
-
                      $model->save();
-//                     $model->validate();
-//                     print_r($model->getErrors());
-//                     return;
-                    
-                } else {
 
+                } else {
                     $model1->tel = $model->tel;
                     $model1->inn = $model->inn;
                     $model1->email = $model->email;
@@ -229,10 +195,7 @@ class SiteController extends Controller
                     'inn' => $inn, 'res' => $res, 'adr_work' => $model->adr_work,
                     'comment' => $model->comment, 'date_z' => $model->date_z,
                     'geo' => $geo, 'kol' => $kol]);
-
-
             } else {
-
                 return $this->render('inputregistr', [
                     'model' => $model,
                 ]);
@@ -259,7 +222,7 @@ class SiteController extends Controller
         }
     }
 
-    // регистрация пользователя
+    // регистрация пользователя (сейчас не используется)
     public function actionRegistr()
     {
         $model = new Klient();
@@ -269,9 +232,7 @@ class SiteController extends Controller
             $model->save();
             $model = new InputDataForm();
             $model->potrebitel = $inn;
-
             $this->refresh();
-        
         }
         else {
 
@@ -280,20 +241,20 @@ class SiteController extends Controller
             ]);
         }
     }
+
+    // регистрация пользователя (сейчас не используется)
+    public function actionOk_reg($nazv)
+    {
+            return $this->render('registr', ['nazv' => $nazv]);
+    }
+
     // Отображение сформированого счета
     public function actionSch($is,$nazv)
     {
 
-            return $this->render('sch', [
-                'is' => $is,'nazv' => $nazv
-            ]);
-
-    }
-
-    public function actionOk_reg($nazv)
-    {
-
-            return $this->render('registr', ['nazv' => $nazv]);
+        return $this->render('sch', [
+            'is' => $is,'nazv' => $nazv
+        ]);
     }
 
     // Расчет показателей (происходит при нажатии на кн. OK)
@@ -304,18 +265,10 @@ class SiteController extends Controller
         $pos = strripos($sql, 'a.id=');
         $work_value = substr($sql,$pos+5);
         $sql = substr($sql,0,$pos-1).' a.id=:id';
-
-//        debug($sql);
-//        return;
-
         $model1 = Calc::findBySql($sql,[':id' => $work_value])->all();
-
         $vid_w = $model1[0]->work;
-//        $sql = 'select sum(stavka_grn) as stavka_grn from costwork where work='.'"'.$vid_w.'"';
         $sql = 'select sum(stavka_grn) as stavka_grn from costwork where work=:search';
-//        $model2 = Calc::findBySql($sql)->all();
         $model2 = Calc::findBySql($sql,[':search'=>"$vid_w"])->all();
-//        $name_res = spr_res::find()->where(['id'=>$res])->all();
         $name_res = spr_res::find()->where('id=:id',[':id'=>$res])->all();
 
         return $this->render('resultCalc', ['model1' => $model1,'model2' => $model2,
@@ -325,8 +278,9 @@ class SiteController extends Controller
             'geo' => $geo,'refresh' => $refresh,'schet' => $schet]);
     }
 
+//  Эксперементальный метод для отображения новых заявок через заданное время
+//  срабатывание проичходит по крону - службе в Unix
     public function actionCron_schet() {
-      // called every ten minutes
         $f = fopen('cron_schet.dat','r');
         $s = fgets($f);
        // echo $s;
@@ -334,7 +288,6 @@ class SiteController extends Controller
         $sql = 'select max(cast(id as unsigned)) as id from schet';
         $sch = schet::findBySql($sql)->one();
         $id = $sch->id;
-        //echo $id;
         if($id>$s)
         {
             echo " З’явилась нова заявка №$id";
@@ -349,14 +302,9 @@ class SiteController extends Controller
             $model->style_title = "d9";
             return $this->render('info', [
                 'model' => $model]);
-
-
         }
         else
-            //$this->refresh();
-
         fclose($f);
-      
     }
     
     // Формирование счета
@@ -368,8 +316,6 @@ class SiteController extends Controller
 
         $adr_work = str_replace('Адреса виконання робіт:','',$adr_work);
         $priz = schet::findBySql($sql)->one();
-//        debug($priz);
-//        return;
         $model->schet = '';
         if (isset($priz->inn)) $is = 1; else $is = 0;
         // Сохраняем если нет такого счета в базе
@@ -379,18 +325,14 @@ class SiteController extends Controller
             $s = $sch->schet+1;
             $y = strlen($s);
             $s = str_pad('0', 8 - $y,'0') . $s;
-
             $data_res = spr_res::find()->select(['relat'])
                 ->where('nazv=:nazv',[':nazv' => $res])->all();
             $cut_nazv = $data_res[0]->relat;  // Сокращ название РЭСа
             $data_usluga = spr_work::find()->select(['kod_uslug'])
                 ->where('work=:work',['work' => $u])->all();
-
-
             $kod_usluga = $data_usluga[0]->kod_uslug;  // Код услуги
             // Создаём № договора
             $contract = mb_substr($cut_nazv,0,2,'UTF-8').$kod_usluga.'_'.$s;
-
             $model->usluga = $u;
             $model->summa = $g;
             $model->summa_work = $rabota;
@@ -404,6 +346,7 @@ class SiteController extends Controller
             $model->inn = $inn;
             $model->res = $res;
             $model->adres = $adr_work;
+
             if(!empty($date_z))
                 $model->date_z = date("Y-m-d", strtotime($date_z));
 
@@ -415,25 +358,18 @@ class SiteController extends Controller
 //            print_r($model->getErrors());
 //            return;
         }
-
-           //debug($model);
-            //return;
             return $this->redirect(['sch','is' => $is,'nazv' => $model->schet]);
     }
 
 // Связь с оператором
     public function actionRelat($sch)
     {
-        //$model = new schet();
         $sql = 'select * from schet where schet=' . "'" . $sch . "'" ;
         $is = 2;
         $priz = schet::findBySql($sql)->one();
         //    ->where(['schet' => $sch])->one();
-
         $priz->surely = 1;
         $priz->save();
-        //\Yii::$app->session->addFlash('Якнайшвидше з Вами з’єднається оператор.');
-
         return $this->redirect(['sch','is' => $is,'nazv' => $priz->schet]);
     }
 
@@ -441,13 +377,8 @@ class SiteController extends Controller
     public function actionOpl()
     {
         $sch = Yii::$app->request->post('sch');
-//        debug($sch);
-//        return;
-
-        //$sql = 'select * from vschet where schet=' . "'" . $sch . "'" ;
         $sql = 'select * from vschet where schet=:search';
         $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
-//        return $this->redirect(['sch_opl','is' => $is,'nazv' => $priz->schet]);
         return $this->render('sch_opl',['model' => $model,'style_title' => 'd9']);
     }
     
@@ -455,15 +386,9 @@ class SiteController extends Controller
     public function actionAct_work()
     {
         $sch = Yii::$app->request->post('sch');
-
-        //$sql = 'select * from vschet where schet=' . "'" . $sch . "'" ;
         $sql = 'select a.*,b.Director,b.parrent_nazv,b.mail from vschet a,spr_res b'
                 . ' where a.res=b.nazv and schet=:search';
         $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
-        //debug($model);
-        //return;
-        
-//        return $this->redirect(['sch_opl','is' => $is,'nazv' => $priz->schet]);
         return $this->render('act_work',['model' => $model,'style_title' => 'd9']);
     }
 
@@ -471,7 +396,6 @@ class SiteController extends Controller
     public function actionContract()
     {
         $sch = Yii::$app->request->post('sch');
-
         $sql = 'select a.*,b.Director,b.parrent_nazv,b.mail,'
                 . 'c.exec_person,c.exec_person_pp,c.exec_post,c.exec_post_pp'
                 . ' from vschet a,spr_res b,spr_uslug c,costwork d'
@@ -480,10 +404,6 @@ class SiteController extends Controller
                 . ' and schet=:search ';
         
         $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
-        //debug($model);
-        //return;
-
-//        return $this->redirect(['sch_opl','is' => $is,'nazv' => $priz->schet]);
         return $this->render('contract',['model' => $model,'style_title' => 'd9']);
     }
 
@@ -491,15 +411,9 @@ class SiteController extends Controller
     public function actionMessage()
     {
         $sch = Yii::$app->request->post('sch');
-
-        //$sql = 'select * from vschet where schet=' . "'" . $sch . "'" ;
         $sql = 'select a.*,b.Director,b.parrent_nazv,b.mail from vschet a,spr_res b'
             . ' where a.res=b.nazv and schet=:search';
         $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
-        //debug($model);
-        //return;
-
-//        return $this->redirect(['sch_opl','is' => $is,'nazv' => $priz->schet]);
         return $this->render('message',['model' => $model,'style_title' => 'd9']);
     }
 
@@ -511,7 +425,6 @@ class SiteController extends Controller
         $dataProvider = new ActiveDataProvider([
          'query' => spr_res::find(),
         ]); 
-
             return $this->render('contact', [
                 'model' => $model,'dataProvider' => $dataProvider
             ]);
@@ -538,7 +451,6 @@ class SiteController extends Controller
         {
             $cause = $model->cause;
             $sel = $model->sel;
-
             $model = new Refusal();
             if($sel==1)
                 $model->cause = "Не влаштовує вартість послуги";
@@ -548,31 +460,22 @@ class SiteController extends Controller
             $model->work = $nazv;
             $model->adr_work = str_replace('Адрес споживача:','',$adr_work);
             $model->res_id = $res;
-
             $model->save();
-         
-            //return $this->goBack();
-
             if(!$_SERVER['REMOTE_ADDR']=='127.0.0.1')
                 return $this->redirect("http://192.168.55.1/index.php/cpojivaham/zahalna-informatsiia/nashi-posluhy.html");
             else
                 return $this->redirect("http://cek.dp.ua/index.php/cpojivaham/zahalna-informatsiia/nashi-posluhy.html");
-
-
         }
         else {
-
             return $this->render('input_refusal', [
                 'model' => $model,
             ]);
         }
-
     }
 
     // Просмотр счетов
     public function actionViewschet($item='')
     {
-
         $searchModel = new viewschet();
         $flag=1;
         $role=0;
@@ -594,23 +497,15 @@ class SiteController extends Controller
                 $data = $searchModel::find()->where('status=:status',[':status' => 5])->
                 orderBy(['status' => SORT_ASC])->all();
                 break;
-
         }
-
-
-//        debug($searchModel);
-//        return;
 
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams,$role);
 
         if (Yii::$app->request->get('item') == 'Excel' )
         {
-            //$models = $dataProvider->getModels();
             $newQuery = clone $dataProvider->query;
             $models = $newQuery->orderby(['date' => SORT_DESC])->all();
-
             $kind=1;
-            //$data_model =1;
             $k1 = 'Інформація по рахункам';
 //             Сброс в Excel
             if($kind==1){
@@ -629,10 +524,8 @@ class SiteController extends Controller
                         'summa_transport' => 'Транспорт всього,грн.:',
                         'res' => 'Виконавча служба:','date' => 'Дата'],
                 ]);}
-
             return;
         }
-
 
         return $this->render('viewschet', [
             'model' => $searchModel,'dataProvider' => $dataProvider,'searchModel' => $searchModel,
@@ -650,9 +543,14 @@ class SiteController extends Controller
         ]);
     }
 
+    // Просмотр типового договора
+    public function actionTypical_contract()
+    {
+        return $this->render('typical_contract',['style_title' => 'd9']);
+    }
+
     // Подгрузка видов работ - происходит при выборе услуги
     public function actionGetworks($id,$res) {
-        
     Yii::$app->response->format = Response::FORMAT_JSON;
     if (Yii::$app->request->isAjax) {
         $usluga = Calc::find()->select(['usluga'])->where('id=:id',[':id' => $id])->all();
@@ -663,7 +561,6 @@ class SiteController extends Controller
                 . "from costwork group by work ";
         else
         {
-
             switch($usl) {
                 case "Послуги з технічного обслуговування об'єктів":
                     $usl1 = "Послуги з технічного обслуговування об";
@@ -722,21 +619,14 @@ class SiteController extends Controller
             }
         
         }
-
-
-        $works = Calc::findBySql($sql)->all(); 
-       
-        
+        $works = Calc::findBySql($sql)->all();
         return ['success' => true, 'works' => $works,'usl' => $usl];
-        
     }
-
     return ['oh no' => 'you are not allowed :('];
     }
 
     // Подгрузка видов работ - происходит при вводе ИНН
     public function actionGetklient($inn) {
-
         Yii::$app->response->format = Response::FORMAT_JSON;
         if (Yii::$app->request->isAjax) {
             $iklient = klient::find()->select(['nazv','addr','okpo','regsvid','priz_nds',
@@ -779,7 +669,6 @@ class SiteController extends Controller
           
     Yii::$app->response->format = Response::FORMAT_JSON;
     if (Yii::$app->request->isAjax) {
-        
         $destinations = str_replace(' ', '', $destinations);
         $url = $url . '&origins='.$origins.'&destinations='.$destinations;
         $url = $url . '&language=ru&region=UA';
@@ -787,44 +676,32 @@ class SiteController extends Controller
         curl_setopt($ch, CURLOPT_URL,$url ); 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
         $output = curl_exec($ch); 
-        //debug($output);
-        curl_close($ch);   
+        curl_close($ch);
         $output = json_decode($output,true);
-      
         return ['success' => true, 'output' => $output];
     }
-
     }
 
     // Определяем населенные пункты, найденные после ввода поискового адреса,
     // необходимо для поиска на карте по введенному адресу
     public function actionGetloc($loc,$key,$address) {
-
         Yii::$app->response->format = Response::FORMAT_JSON;
         if (Yii::$app->request->isAjax) {
-
-//            $url = $url . '&origins='.$origins.'&destinations='.$destinations;
             $address = str_replace(' ', '+', $address);
             $loc = $loc . '&key='.$key.'&address='.$address;
             $loc = $loc . '&language=ru&region=UA';
-            //echo $loc;
             $ch = curl_init($loc);
-            //curl_setopt($ch, CURLOPT_URL,$loc);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             $output = curl_exec($ch);
             $s = curl_error ($ch);
-            //debug($output);
             curl_close($ch);
             $output = json_decode($output,true);
-            
             return ['success' => true, 'output' => $output];
         }
-
     }
     
     // Определяем гео-координаты выбранного РЭСа 
     public function actionGetres($id) {
-        
     Yii::$app->response->format = Response::FORMAT_JSON;
     if (Yii::$app->request->isAjax) {
         /*
@@ -842,17 +719,14 @@ class SiteController extends Controller
         $n = strpos($geo_koord, ',');
         $lat = substr($geo_koord,0,$n);
         $lng = substr($geo_koord,$n+1);
-
         $geo_sd = $model[0]->geo_fromwhere_sd;
         $n = strpos($geo_sd, ',');
         $lat_sd = substr($geo_sd,0,$n);
         $lng_sd = substr($geo_sd,$n+1);
-
         $geo_sz = $model[0]->geo_fromwhere_sz;
         $n = strpos($geo_sz, ',');
         $lat_sz = substr($geo_sz,0,$n);
         $lng_sz = substr($geo_sz,$n+1);
-
         $town_sd = $model[0]->town_fromwhere_sd;
         $town_sz = $model[0]->town_fromwhere_sz;
 
@@ -882,15 +756,12 @@ class SiteController extends Controller
     public function actionDownload($f)
     {
         $file = Yii::getAlias($f);
-        //Yii::$app->session->setFlash('message','Файл '.$f.' з результатами знаходиться в каталозі Загрузки ');
-        return Yii::$app->response->sendFile($file); 
-        
+        return Yii::$app->response->sendFile($file);
     }
 
 //    Страница о программе
     public function actionAbout()
     {
-       // phpinfo();
         $model = new info();
         $model->title = 'Про програму';
         $model->info1 = "Ця програма здійснює розрахунок робіт відповідно вибраному виду роботи, а також транспортні витрати.";
@@ -900,8 +771,6 @@ class SiteController extends Controller
 
         return $this->render('about', [
             'model' => $model]);
-
-//        return $this->render('about');
     }
 
     //    Сброс в Excel результатов рассчета
@@ -917,9 +786,6 @@ class SiteController extends Controller
         $model->all = $all;
         $model->nds = $nds;
         $model->all_nds = $all_nds;
-        //debug($model);
-        //return;
-       
         if ($kind == 1) {
             \moonland\phpexcel\Excel::widget([
                 'models' => $model,
@@ -974,9 +840,6 @@ class SiteController extends Controller
                 $model1->date_exec = date("Y-m-d", strtotime($model->date_exec));
             $model1->comment = $model->comment;
 
-//            debug($model1);
-//            return;
-
             if($model->status==5)
             {
                // Создаем № акта выполненных работ, если меняется статус заявки на выполненную
@@ -994,12 +857,10 @@ class SiteController extends Controller
             if($mod=='schet')
                 return $this->redirect(['site/viewschet']);
 
-
         } else {
             if($mod=='schet')
                 return $this->render('update_schet', [
                     'model' => $model,'nazv' => $nazv
-
                 ]);
         }
     }
@@ -1063,7 +924,6 @@ class SiteController extends Controller
                 . ' and c.usluga=d.usluga'
                 . ' and schet=:search ';
         $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
-
         $pdf = new Pdf([
             'mode' => Pdf::MODE_UTF8 , // leaner size using standard fonts
             'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
@@ -1079,17 +939,13 @@ class SiteController extends Controller
         ]);
         return $pdf->render();
     }
-    
 
     //    Распечатка счета
     public function actionSch_print(){
         date_default_timezone_set('Europe/Kiev');
         $sch = Yii::$app->request->post('sch');
-
-        //$sql = 'select * from vschet where schet=' . "'" . $sch . "'" ;
         $sql = 'select * from vschet where schet=:search';
         $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
-
         $pdf = new Pdf([
             'mode' => Pdf::MODE_UTF8 , // leaner size using standard fonts
             'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
@@ -1110,8 +966,6 @@ class SiteController extends Controller
     public function actionSch_email(){
         $sch = Yii::$app->request->post('sch');
         $email = Yii::$app->request->post('email');
-
-        //$sql = 'select * from vschet where schet=' . "'" . $sch . "'" ;
         $sql = 'select * from vschet where schet=:search';
         $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
         $content=$this->renderPartial('sch_opl_print',['model' => $model,'style_title' => 'd9']);
@@ -1167,7 +1021,6 @@ class SiteController extends Controller
 //        $data->validate();
 //            print_r($data->getErrors());
 //           return;
-
         $model = new info();
         $model->title = "Рахунок №$sch відправлено";
         $model->info1 = "";
@@ -1175,8 +1028,6 @@ class SiteController extends Controller
         $model->style_title = "d9";
         return $this->render('info', [
             'model' => $model]);
-
-
     }
 
     //  Отправка акта вып. работ по Email
@@ -1276,16 +1127,12 @@ class SiteController extends Controller
         $model->style_title = "d9";
         return $this->render('info', [
             'model' => $model]);
-
-
     }
 
      //  Отправка договора по Email
-    
     public function actionContract_email(){
         $sch = Yii::$app->request->post('sch');
         $email = Yii::$app->request->post('email');
-
        $sql = 'select a.*,b.Director,b.parrent_nazv,b.mail,'
                 . 'c.exec_person,c.exec_person_pp,c.exec_post,c.exec_post_pp'
                 . ' from vschet a,spr_res b,spr_uslug c,costwork d'
@@ -1338,7 +1185,6 @@ class SiteController extends Controller
     //  Отправка всех документов по Email
     public function actionDoc_email(){
         $sch = Yii::$app->request->post('sch');
-        
         $sql = 'select a.*,b.Director,b.parrent_nazv,b.mail,'
                 . 'c.exec_person,c.exec_person_pp,c.exec_post,c.exec_post_pp'
                 . ' from vschet a,spr_res b,spr_uslug c,costwork d'
@@ -1380,16 +1226,6 @@ class SiteController extends Controller
         $stylesheet = file_get_contents($cssFile);
         $mpdf->WriteHTML($stylesheet,1);
         $mpdf->WriteHTML($content,2);
-
-
-//        Yii::$app->mailer->compose()
-//            ->setFrom('usluga@cek.dp.ua')
-//            ->setTo('usluga@cek.dp.ua')
-//            ->setSubject("Рахунок за послуги від ПрАТ «ПЕЕМ «ЦЕК» №$sch відправлено")
-//            ->setHtmlBody("Рахунок за послуги від ПрАТ «ПЕЕМ «ЦЕК» №$sch відправлено.")
-//            ->attach('./schet.pdf')
-//            ->send();
-
         // Запись признака в статус заявки, что заявка в обработке (status=2)
         $sql = 'select * from schet where schet=:search';
         $data = schet::findBySql($sql,[':search'=>"$sch"])->one();
@@ -1402,11 +1238,6 @@ class SiteController extends Controller
         if(!empty($date_z))
             $model->date_z = date("Y-m-d", strtotime($date_z));
         $data->save(false);
-//        $data->validate();
-//            print_r($data->getErrors());
-//           return;
-
-
         $mpdf->Output('./schet.pdf', 'F');
 
         $content=$this->renderPartial('contract_print',['model' => $model,'style_title' => 'd9']);
@@ -1455,7 +1286,6 @@ class SiteController extends Controller
 
         $mpdf->Output('./act.pdf', 'F');
 
-        
         $content=$this->renderPartial('message_print',['model' => $model,'style_title' => 'd9']);
         $pdf = new Pdf([
             'mode' => Pdf::MODE_UTF8 , // leaner size using standard fonts
@@ -1497,10 +1327,7 @@ class SiteController extends Controller
         $model->style_title = "d9";
         return $this->render('info', [
             'model' => $model]);
-
-
     }
-
 
 // Добавление новых пользователей
     public function actionAddAdmin() {
@@ -1516,11 +1343,11 @@ class SiteController extends Controller
             }
         }
     }
+
 // Выход пользователя
     public function actionLogout()
     {
         Yii::$app->user->logout();
-
         return $this->goHome();
     }
 }

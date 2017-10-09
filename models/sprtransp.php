@@ -1,21 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ssivtsov
- * Date: 03.07.2017
- * Time: 9:49
- */
+// Справочник транспорта (используется для редактирования)
 namespace app\models;
 
 use Yii;
 use yii\base\Model;
-use yii\behaviors\TimestampBehavior;
-
 
 class Sprtransp extends \yii\db\ActiveRecord
 {
 
-   
     public static function tableName()
     {
         return 'transport';
@@ -30,23 +22,15 @@ class Sprtransp extends \yii\db\ActiveRecord
             'locale' => 'Розположення',
             'prostoy' => 'Вартість простою',
             'proezd' => 'Вартість проїзду',
-           
-          
-           
         ];
     }
-    
 
     public function rules()
     {
         return [
-
             [['transport','nomer','proezd','prostoy','locale'], 'safe'],
-
-
         ];
     }
-
       
     public function getId()
     {
@@ -55,10 +39,7 @@ class Sprtransp extends \yii\db\ActiveRecord
 
     public static function getDb()
     {
-        if (isset(Yii::$app->user->identity->role))
-            return Yii::$app->get('db');
-        else
-            return Yii::$app->get('db');
+        return Yii::$app->get('db');
     }
     
 }

@@ -1,13 +1,11 @@
 <?php
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
 $this->title = "Типовий договір";
 $this->params['breadcrumbs'][] = $this->title;
 $year = date('Y');
 
 ?>
-<!--<div class="site-about">-->
     <div class=<?= $style_title ?> >
          <h3><?= Html::encode($this->title) ?></h3>
     </div>
@@ -41,7 +39,7 @@ $year = date('Y');
 <span class="contract_center_text" >
     <?= Html::encode(",іменоване надалі ".'"'." ВИКОНАВЕЦЬ".'"'.
     ", в особі _________________________________________, що діє на підставі довіреності, з одного боку, і ".
-        _______________________________________.", іменований надалі ".'"'." ЗАМОВНИК".'"'.", в особі ".
+       "_______________________________________".", іменований надалі ".'"'." ЗАМОВНИК".'"'.", в особі ".
         "_______________________________________________" .
     " , що діє на підставі ____________________________________________, з іншого боку, надалі ".'"'." Сторони".'"'.
     ", домовилися про нижченаведене:");?>
@@ -284,29 +282,6 @@ $year = date('Y');
         </th>
     </tr>
 </table>
-     
-    <?= Html::a('Роздрукувати',['site/contract_print'],
-
-        [
-            'data' => [
-                'method' => 'post',
-                'params' => [
-                'sch' => $model->schet,
-         ],],
-            'class' => 'btn btn-primary','target'=>'_blank', ]); ?>
-
-    <?= Html::a('Відправити по Email',['site/contract_email'],
-
-    [
-        'data' => [
-            'method' => 'post',
-            'params' => [
-                'sch' => $model->schet,
-                'email' => $model->mail,
-            ],],
-        'class' => 'btn btn-primary']); ?>
-
-
     <code><?//= __FILE__ ?></code>
 
-<!--</div>-->
+

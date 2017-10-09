@@ -1,15 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ssivtsov
- * Date: 21.06.2017
- * Time: 12:51
- */
-
+// Используется для рассчетов стоимости работ 
 namespace app\models;
 
 use Yii;
-use yii\base\Model;
 use yii\db\ActiveRecord;
 
 
@@ -25,8 +18,6 @@ class Calc extends ActiveRecord
     public $nomer;
     public $id;
     public $nom;
-   // public $usluga;
-            
 
     public static function tableName()
     {
@@ -36,14 +27,12 @@ class Calc extends ActiveRecord
     public function rules()
     {
         return [
-
             ['work','usluga','safe'],
             ['kod_uslug', 'safe'],
             ['brig', 'safe'],
             ['time_transp', 'safe'],
             ['stavka_grn', 'safe'],
             ['exec', 'safe'],
-
         ];
     }
 
@@ -115,16 +104,12 @@ class Calc extends ActiveRecord
     public static function T_Stavka($vid_work)
     {  
         $sql = 'SELECT work from costwork where id='.$vid_work;
-
         return $sql;
     }
 
     public static function getDb()
     {
-        if (isset(Yii::$app->user->identity->role))
-            return Yii::$app->get('db');
-        else
-            return Yii::$app->get('db');
+        return Yii::$app->get('db');
     }
 
 }

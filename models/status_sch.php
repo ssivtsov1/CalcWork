@@ -1,17 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ssivtsov
- * Date: 21.06.2017
- * Time: 9:49
- */
+// Справочник статусов заявки
 namespace app\models;
 
 use Yii;
 use yii\base\Model;
-use yii\behaviors\TimestampBehavior;
 use yii\data\ActiveDataProvider;
-
 
 class Status_sch extends \yii\db\ActiveRecord
 {
@@ -26,7 +19,6 @@ class Status_sch extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'nazv' => 'Назва статусу',
-
         ];
     }
 
@@ -65,11 +57,7 @@ class Status_sch extends \yii\db\ActiveRecord
 
     public static function getDb()
     {
-
-        if (isset(Yii::$app->user->identity->role))
-            return Yii::$app->get('db');
-        else
-            return Yii::$app->get('db');
+        return Yii::$app->get('db');
     }
 
 }

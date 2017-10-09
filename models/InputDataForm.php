@@ -1,41 +1,33 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ssivtsov
- * Date: 21.06.2017
- * Time: 9:41
- */
+/*Ввод основных данных для рассчета*/
 
 namespace app\models;
 
 use Yii;
 use yii\base\Model;
-use yii\db\ActiveRecord;
-
 
 class InputDataForm extends Model
 {
-    public $res;
+    public $res;               // Название РЭСа 
     public $id;
-    public $potrebitel;
-    public $inn;
+    public $potrebitel;        // ИНН потребителя 
+    public $inn;               // Индивидуальный налоговый номер 
     public $addr;
-    public $addr_work;   // Адрес работ (вводится для поиска на карте)
-    public $nazv = '';
-    public $work;
-    public $usluga;
-    public $kol = 1;
+    public $addr_work;         // Адрес работ (вводится для поиска на карте)
+    public $nazv = '';         // Название потребителя 
+    public $work;              // Вид работы
+    public $usluga;            // Вид услуги 
+    public $kol = 1;           // Кол-во калькуляционных единиц
     public $koord = '';
-    public $distance = 0;   // Расстояние до объекта туда и назад
-    public $poezdka = 1;    // Количество выездов бригады
-    public $time_work = 1;  // Время работы в часах (для транспортных услуг)
+    public $distance = 0;      // Расстояние до объекта туда и назад
+    public $poezdka = 1;       // Количество выездов бригады
+    public $time_work = 1;     // Время работы в часах (для транспортных услуг)
     public $time_prostoy = 1;  // Время простоя в часах (для транспортных услуг)
     public $adr_potr = '';     // Адрес с карты
-    public $geo = '';     // Координаты с карты
-    public $region;     // Область
-    public $refresh = 0;  // Признак перерасчета заявки
+    public $geo = '';          // Координаты с карты
+    public $region;            // Область
+    public $refresh = 0;       // Признак перерасчета заявки
     private $_user;
-
 
     public function attributeLabels()
     {
@@ -52,7 +44,7 @@ class InputDataForm extends Model
             'time_prostoy' => 'Кількість годин простою (тільки для транспортних послуг):',
             'nazv' => 'Споживач назва: ',
             'addr' => 'Адреса споживача: ',
-            'addr_work' => 'Адреса виконання робіт (для пошуку на карті) - Пишіть українською мовою : ',
+            'addr_work' => 'Адреса виконання робіт (для пошуку на карті) - Пишіть українською мовою (вихід з поля - Tab) ',
             'region' => 'Область:'
         ];
     }
@@ -63,8 +55,6 @@ class InputDataForm extends Model
             [['work', 'kol', 'distance','poezdka'], 'required'],
             ['res','required','message' => "Введіть РЕМ"],
             ['potrebitel','safe'],
-//            ['nazv','required','message' => "Потрібно зареєтруватись."],
-//            ['addr','required','message' => "Потрібно зареєтруватись."],
             ['res', 'default', 'value'=>'Дніпропетровський РЕМ'],
             ['potrebitel','string','length'=>[10,10],'tooShort'=>'ІНН повинно бути 10 значним',
                 'tooLong'=>'ІНН повинно бути 10 значним'],
@@ -74,7 +64,6 @@ class InputDataForm extends Model
             ['refresh', 'safe'],
             ['region', 'safe'],
             ['time_prostoy', 'safe'],
-
         ];
     }
 

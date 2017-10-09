@@ -15,10 +15,6 @@ use yii\data\ActiveDataProvider;
 
 class Klient extends \yii\db\ActiveRecord
 {
-
-    /**
-     * @inheritdoc
-     */
     public $adr_work;
     public $comment;
     public $date_z;
@@ -52,7 +48,6 @@ class Klient extends \yii\db\ActiveRecord
         ];
     }
 
-
     public function rules()
     {
         return [
@@ -67,19 +62,13 @@ class Klient extends \yii\db\ActiveRecord
             [['reg'], 'default', 'value' => 1],
             [['person'], 'default', 'value' => 1],
             [['priz_nds'], 'default', 'value' => 0],
-            //['date_z', \nepstor\validators\DateTimeCompareValidator::className(),
-             //   'compareAttribute' => date('d.m.Y'), 'format' => 'd.m.Y', 'operator' => '>='],
-            //['date_z', 'only_forward1', 'skipOnEmpty'=> false],
-            //[ ['ddate'],'default','value' => strtotime('date_z')],
-           // ['date_z','date', 'format' => 'Y-m-d'],
-           
             ['date_z','default', 'value' => date('Y-m-d')],
             ['inn', 'unique','targetAttribute' => 'inn'],
             ['email', 'email','message'=>'Не корректний адрес почти'],
-
         ];
     }
 
+// Служит для валидации по дате (сейчас не используется)
     public function only_forward1($attribute) {
         $d_tek = strtotime(date('d.m.Y'));
         $date = strtotime($this->$attribute);
@@ -87,18 +76,16 @@ class Klient extends \yii\db\ActiveRecord
 
     }
    
+//   Метод поиска
      public function search($params)
     {
         $query = klient::find();
-
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
-
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
-
         $query->andFilterWhere(['like', 'nazv', $this->nazv]);
         $query->andFilterWhere(['like', 'addr', $this->addr]);
         $query->andFilterWhere(['like', 'tel', $this->tel]);
@@ -126,9 +113,7 @@ class Klient extends \yii\db\ActiveRecord
 
     public function afterValidate()
     {
-
         $this->date_z = date("d.m.Y", strtotime($this->date_z));;
-
     }
 }
 

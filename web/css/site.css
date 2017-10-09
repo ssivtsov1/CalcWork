@@ -437,3 +437,21 @@ a.desc:after {
     width: 100%;
    
 }
+#inputdataform-work  {
+    font: normal 10px verdana, "Trebuchet MS", Helvetica, arial, sans-serif;
+    margin-bottom: -10px;
+    /*height:40px;*/
+    
+    /*color: red !important;*/
+
+}
+.control-label[for=inputdataform-addr_work] {
+    font-size: 12px;
+}
+.span_work {
+    font-size: 11px;
+    padding-bottom: 15px;    
+}
+.img_uslug{
+    display: none;
+}

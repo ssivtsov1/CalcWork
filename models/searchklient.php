@@ -16,12 +16,6 @@ use yii\data\ActiveDataProvider;
 class searchklient extends \yii\db\ActiveRecord
 {
 
-    /**
-     * @inheritdoc
-     */
-//    public $priz_nds;
-//    public $person;
-
     public static function tableName()
     {
         return 'klient';
@@ -52,7 +46,6 @@ class searchklient extends \yii\db\ActiveRecord
                 ];
     }
 
-   
      public function search($params)
     {
         $query = klient::find();
@@ -84,10 +77,7 @@ class searchklient extends \yii\db\ActiveRecord
 
     public static function getDb()
     {
-        if (isset(Yii::$app->user->identity->role))
-            return Yii::$app->get('db');
-        else
-            return Yii::$app->get('db');
+        return Yii::$app->get('db');
     }
 
 }

@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ssivtsov
- * Date: 21.06.2017
- * Time: 9:49
- */
+// Справочник видов работ (вспомагательная модель)
 namespace app\models;
 
 use Yii;
@@ -15,10 +10,6 @@ use yii\data\ActiveDataProvider;
 
 class Spr_work extends \yii\db\ActiveRecord
 {
-
-    /**
-     * @inheritdoc
-     */
 
     public static function tableName()
     {
@@ -45,15 +36,7 @@ class Spr_work extends \yii\db\ActiveRecord
            
         ];
     }
-    /*
-    public function behaviors()
-    {
-        return [
-            TimestampBehavior::className(),
-        ];
-    }
-    */
-
+    
     public function rules()
     {
         return [
@@ -105,10 +88,7 @@ class Spr_work extends \yii\db\ActiveRecord
 
     public static function getDb()
     {
-        if (isset(Yii::$app->user->identity->role))
-            return Yii::$app->get('db');
-        else
-            return Yii::$app->get('db');
+        return Yii::$app->get('db');
     }
     
 }

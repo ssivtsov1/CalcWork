@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: ssivtsov
- * Date: 03.07.2017
- * Time: 9:49
+ Отказы пользователя
  */
 namespace app\models;
 
@@ -20,7 +17,6 @@ class Refusal extends \yii\db\ActiveRecord
    
     public static function tableName()
     {
-//        Используется вид на SQL сервере
         return 'refusal';
     }
 
@@ -80,10 +76,7 @@ class Refusal extends \yii\db\ActiveRecord
 
     public static function getDb()
     {
-        if (isset(Yii::$app->user->identity->role))
-            return Yii::$app->get('db');
-        else
-            return Yii::$app->get('db');
+        return Yii::$app->get('db');
     }
 
 }

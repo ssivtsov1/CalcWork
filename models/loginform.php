@@ -1,13 +1,10 @@
 <?php
+// Ввод данных (логин, пароль)
 namespace app\models;
 
 use Yii;
 use yii\base\Model;
-//use app\model\User;
 
-/**
- * Login form
- */
 class Loginform extends Model
 {
     public $username;
@@ -23,9 +20,7 @@ class Loginform extends Model
             'password' => 'Пароль:',
         ];
     }
-    /**
-     * @inheritdoc
-     */
+
     public function rules()
     {
         return [

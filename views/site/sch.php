@@ -1,13 +1,9 @@
 <?php
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
 $this->title = 'Формування заявки';
-//$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-about">
-<!--    <h3>--><?//= Html::encode($this->title) ?><!--</h3>-->
-
     <p>
     <?php if($is==0): ?>
          <h4><?= Html::encode("Заявку сформовано. Дякуємо за звернення до ПрАТ «ПЕЕМ «ЦЕК».") ?></h4>
@@ -24,7 +20,6 @@ $this->title = 'Формування заявки';
         <h4><?= Html::encode("Ваша заявка в черзі на обробку. Якнайшвидше з Вами з’єднається оператор.") ?></h4>
         <h4><?= Html::encode("Чекайте на зворотній зв’язок з оператором.") ?></h4>
     <?php endif; ?>
-
     </p>
 
     <?php if($is==-1): ?>

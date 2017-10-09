@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ssivtsov
- * Date: 21.06.2017
- * Time: 9:49
- */
+// Справочник видов услуг
 namespace app\models;
 
 use Yii;
@@ -27,16 +22,13 @@ class Spr_uslug extends \yii\db\ActiveRecord
             'id' => 'ID',
             'usluga' => 'Назва послуги',
             'kod' => 'Код послуги',
-
         ];
     }
 
     public function rules()
     {
         return [
-
             [['nazv', 'id','kod'], 'required'],
-
         ];
     }
 
@@ -66,11 +58,7 @@ class Spr_uslug extends \yii\db\ActiveRecord
 
     public static function getDb()
     {
-
-        if (isset(Yii::$app->user->identity->role))
-            return Yii::$app->get('db');
-        else
-            return Yii::$app->get('db');
+        return Yii::$app->get('db');
     }
 
 }

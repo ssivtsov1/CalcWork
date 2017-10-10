@@ -30,8 +30,9 @@ $this->title = 'Дякуємо за звернення до ПрАТ «ПЕЕМ 
             <?= $form->field($model, 'sel')->radioList(['1' => 'Не влаштовує вартість послуги', '2' => 'Інше'],
                 ['onchange' => 'f_cause($(this).find("input:checked").val());']) ?>
 
-            <?= $form->field($model, 'cause')->textarea(['rows' => 3, 'cols' => 25]) ?>
-
+            <?= $form->field($model, 'cause')->textarea(['rows' => 3, 'cols' => 25,
+                'onDblClick' => 'rmenu($(this).val(),"#input_refusal-cause")']) ?>
+            <div class='rmenu' id='rmenu-input_refusal-cause'></div>
             <div class="form-group">
                 <?= Html::submitButton('OK', ['class' => 'btn btn-primary']); ?>
             </div>

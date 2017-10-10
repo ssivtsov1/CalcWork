@@ -8,6 +8,22 @@ use app\models\spr_res;
 use app\models\status_sch;
 $role = Yii::$app->user->identity->role;
 ?>
+<script>
+   window.onload=function(){
+    $(document).click(function(e){
+
+	  if ($(e.target).closest("#recode-menu").length) return;
+
+	   $("#rmenu").hide();
+
+	  e.stopPropagation();
+
+	  });
+   }        
+
+
+</script>
+
 <br>
 <div class="row">
     <div class="col-lg-6">
@@ -79,7 +95,8 @@ $role = Yii::$app->user->identity->role;
     <?= $form->field($model, 'summa_work')->textInput() ?>
     <?= $form->field($model, 'summa_delivery')->textInput() ?>
     <?= $form->field($model, 'summa_transport')->textInput() ?>
-    <?= $form->field($model, 'adres')->textarea() ?>
+    <?= $form->field($model, 'adres')->textarea(['onDblClick' => 'rmenu($(this).val(),"#viewschet-adres")']) ?>
+           <div class='rmenu' id='rmenu-viewschet-adres'></div>
     <?= $form->field($model, 'res')->textInput() ?>
 <!--    --><?//= $form->field($model, 'date_z')->textInput() ?>
 
@@ -153,7 +170,5 @@ $role = Yii::$app->user->identity->role;
     <?php ActiveForm::end(); ?>
     </div>
 </div>
-
-
 
 

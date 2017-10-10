@@ -15,8 +15,8 @@ $this->title = 'Розрахунок вартості робіт';
     // если первый символ текста выбр. машины '-', тогда работа прячется, т.к. сумма работы в табл. Transport
     // для этого автомобиля не проставлена.
     function hidepole_rabota(p){
-       
-        if(p.length>94){
+       var f = p.substr(1,1);
+        if(p.length>98){
         $('.img_uslug').show();
         $('.span_work').text(p);
         $('.span_work').slideDown('slow');
@@ -468,8 +468,9 @@ $this->title = 'Розрахунок вартості робіт';
 //                 $model->addr_work = $model->geo;
             ?>
 
-            <?= $form->field($model, 'addr_work')->textInput(['maxlength' => true,'onBlur' => 'find_on_map($(this).val())']) ?>
-
+            <?= $form->field($model, 'addr_work')->textInput(['maxlength' => true,
+                'onBlur' => 'find_on_map($(this).val())','onDblClick' => 'rmenu($(this).val(),"#inputdataform-addr_work")']) ?>
+                 <div class='rmenu' id='rmenu-inputdataform-addr_work'></div> 
             <p>Виберіть на карті місце виконання робіт (для обліку транспортних витрат):</p>
             <div id="map_q"></div>
 

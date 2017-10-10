@@ -183,12 +183,20 @@ $model->person = '1';
                 });',
                 ]) ?>
             <?= $form->field($model, 'regsvid') ?>
-            <?= $form->field($model, 'nazv')->textarea(['rows' => 3, 'cols' => 25]) ?>
-            <?= $form->field($model, 'addr')->textarea(['rows' => 3, 'cols' => 25]) ?>
+            <?= $form->field($model, 'nazv')->textarea(['rows' => 3, 'cols' => 25,
+                'onDblClick' => 'rmenu($(this).val(),"#klient-nazv")']) ?>
+             
+            
+            <div class='rmenu' id='rmenu-klient-nazv'></div>
+            
+            <?= $form->field($model, 'addr')->textarea(['rows' => 3, 'cols' => 25,
+                'onDblClick' => 'rmenu($(this).val(),"#klient-addr")']) ?>
+             <div class='rmenu' id='rmenu-klient-addr'></div>  
+             
             <?= $form->field($model, 'fio_dir')->textarea(['rows' => 1, 'cols' => 25]) ?>
             <?= $form->field($model, 'contact_person')->textarea(['rows' => 1, 'cols' => 25]) ?>
             <?= $form->field($model, 'tel')->textInput(
-                ['maxlength' => true,'onDblClick' => 'rmenu($(this).val())','onBlur' => 'norm_tel($(this).val())']) ?>
+                ['maxlength' => true,'onBlur' => 'norm_tel($(this).val())']) ?>
             <?= $form->field($model, 'email') ?>
 
 
@@ -196,8 +204,12 @@ $model->person = '1';
                 'language' => 'uk',
             ]) ?>
 
-            <?= $form->field($model, 'adr_work')->textarea(['rows' => 3, 'cols' => 25]) ?>
-            <?= $form->field($model, 'comment')->textarea(['rows' => 3, 'cols' => 25]) ?>
+            <?= $form->field($model, 'adr_work')->textarea(['rows' => 3, 'cols' => 25,
+                'onDblClick' => 'rmenu($(this).val(),"#adr_work")']) ?>
+             <div class='rmenu' id='rmenu-adr_work'></div>
+            <?= $form->field($model, 'comment')->textarea(['rows' => 3, 'cols' => 25,
+                'onDblClick' => 'rmenu($(this).val(),"#klient-comment")']) ?>
+             <div class='rmenu' id='rmenu-klient-comment'></div>
             <p class="text-warning">Увага! Перевірте правильність заповнення реєстраційних данних.</p>
 
             <div class="form-group">
@@ -318,101 +330,6 @@ $model->person = '1';
                 //$('.control-label[for=klient-inn]').text("ЄДРПОУ:");
             }
         }
-    }
-
-
-    function rmenu(p){
-        var y,i,c,nc='',phrase = '';
-
-        y = p.length;
-        for(i=0;i<y;i++)
-        {
-            c = p.substr(i,1);
-            switch(c) {
-                case 'q':  nc = 'й';
-                            break;
-                case 'w':  nc = 'ц';
-                            break;
-                case 'e':  nc = 'у';
-                             break;
-                case 'r':  nc = 'к';
-                    break;
-                case 't':  nc = 'е';
-                    break;
-
-                case 'y':  nc = 'н';
-                    break;
-                case 'u':  nc = 'г';
-                    break;
-                case 'i':  nc = 'ш';
-                    break;
-                case 'o':  nc = 'щ';
-                    break;
-                case 'p':  nc = 'з';
-                    break;
-
-                case '[':  nc = 'х';
-                    break;
-                case ']':  nc = 'ъ';
-                    break;
-                case 'a':  nc = 'ф';
-                    break;
-                case 's':  nc = 'ы';
-                    break;
-                case 'd':  nc = 'в';
-                    break;
-
-                case 'f':  nc = 'а';
-                    break;
-                case 'g':  nc = 'п';
-                    break;
-                case 'h':  nc = 'р';
-                    break;
-                case 'j':  nc = 'о';
-                    break;
-                case 'k':  nc = 'л';
-                    break;
-
-                case 'l':  nc = 'д';
-                    break;
-                case ';':  nc = 'ж';
-                    break;
-                case "'":  nc = 'э';
-                    break;
-                case 'z':  nc = 'я';
-                    break;
-                case 'x':  nc = 'ч';
-                    break;
-
-                case 'c':  nc = 'с';
-                    break;
-                case 'v':  nc = 'м';
-                    break;
-                case "b":  nc = 'и';
-                    break;
-                case 'n':  nc = 'т';
-                    break;
-                case 'm':  nc = 'ь';
-                    break;
-                case ',':  nc = 'б';
-                    break;
-                case '.':  nc = 'ю';
-                    break;
-
-                default:
-                     nc = '';
-                     break;
-            }
-            phrase = phrase + nc;
-        }
-
-        //alert(this.val);
-//        $(this).val()
-        //return phrase;
-    }
-
-    function aa(){
-        alert(fsdvewvwe);
     }
 
     function norm_tel(p){

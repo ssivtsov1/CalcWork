@@ -77,6 +77,7 @@ AppAsset::register($this);
                                 ['label' => 'Довідник транспорту', 'url' => ['/sprav/sprav_transp']],
                                 ['label' => 'Довідник контрагентів', 'url' => ['/sprav/sprav_klient']],
                                 ['label' => 'Довідник послуг', 'url' => ['/sprav/sprav_uslug']],
+                                ['label' => 'Довідник відповідальних осіб', 'url' => ['/sprav/sprav_spr_res_koord']],
                                 ['label' => 'Статуси заявки', 'url' => ['/sprav/status_sch']]
                         ]],
                     ['label' => 'Сервіс', 'url' => ['/site/index'],

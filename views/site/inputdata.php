@@ -370,7 +370,7 @@ $this->title = 'Розрахунок вартості робіт';
 
             <?=$form->field($model, 'usluga')->
             dropDownList(ArrayHelper::map(
-               app\models\spr_costwork::findbysql('Select min(id) as id,usluga from costwork where LENGTH(ltrim(rtrim(usluga)))<>1 group by usluga order by usluga')
+               app\models\spr_costwork::findbysql('Select min(id) as id,usluga from costwork where LENGTH(ltrim(rtrim(usluga)))<>0 group by usluga order by usluga')
                    ->all(), 'id', 'usluga'),
                     [
             'prompt' => 'Виберіть послугу',

@@ -12,6 +12,8 @@ use app\models\ContactForm;
 use app\models\InputDataForm;
 use app\models\Calc;
 use app\models\spr_res;
+use app\models\spr_res_koord;
+use app\models\vspr_res_koord;
 use app\models\spr_uslug;
 use app\models\spr_work;
 use app\models\spr_costwork;
@@ -265,6 +267,8 @@ class SiteController extends Controller
         $pos = strripos($sql, 'a.id=');
         $work_value = substr($sql,$pos+5);
         $sql = substr($sql,0,$pos-1).' a.id=:id';
+//        debug($sql);
+//        return;
         $model1 = Calc::findBySql($sql,[':id' => $work_value])->all();
         $vid_w = $model1[0]->work;
         $sql = 'select sum(stavka_grn) as stavka_grn from costwork where work=:search';
@@ -386,16 +390,18 @@ class SiteController extends Controller
     public function actionAct_work()
     {
         $sch = Yii::$app->request->post('sch');
+        $mail = Yii::$app->request->post('mail');
         $sql = 'select a.*,b.Director,b.parrent_nazv,b.mail from vschet a,spr_res b'
                 . ' where a.res=b.nazv and schet=:search';
         $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
-        return $this->render('act_work',['model' => $model,'style_title' => 'd9']);
+        return $this->render('act_work',['model' => $model,'style_title' => 'd9','mail' => $mail]);
     }
 
     // Формирование договора
     public function actionContract()
     {
         $sch = Yii::$app->request->post('sch');
+        $mail = Yii::$app->request->post('mail');
         $sql = 'select a.*,b.Director,b.parrent_nazv,b.mail,'
                 . 'c.exec_person,c.exec_person_pp,c.exec_post,c.exec_post_pp'
                 . ' from vschet a,spr_res b,spr_uslug c,costwork d'
@@ -404,17 +410,18 @@ class SiteController extends Controller
                 . ' and schet=:search ';
         
         $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
-        return $this->render('contract',['model' => $model,'style_title' => 'd9']);
+        return $this->render('contract',['model' => $model,'style_title' => 'd9','mail' => $mail]);
     }
 
     // Формирование инф. сообщения
     public function actionMessage()
     {
         $sch = Yii::$app->request->post('sch');
+        $mail = Yii::$app->request->post('mail');
         $sql = 'select a.*,b.Director,b.parrent_nazv,b.mail from vschet a,spr_res b'
             . ' where a.res=b.nazv and schet=:search';
         $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
-        return $this->render('message',['model' => $model,'style_title' => 'd9']);
+        return $this->render('message',['model' => $model,'style_title' => 'd9','mail' => $mail]);
     }
 
     // Страница контактов
@@ -473,7 +480,7 @@ class SiteController extends Controller
         }
     }
 
-    // Просмотр счетов
+    // Просмотр счетов (заявок)
     public function actionViewschet($item='')
     {
         $searchModel = new viewschet();
@@ -501,6 +508,7 @@ class SiteController extends Controller
 
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams,$role);
 
+       
         if (Yii::$app->request->get('item') == 'Excel' )
         {
             $newQuery = clone $dataProvider->query;
@@ -820,12 +828,46 @@ class SiteController extends Controller
             $model = viewschet::find()->where('id=:id',[':id'=>$id])->one();
             $nazv = $model->schet;
             $inn = $model->inn;
+            $res = $model->res;
+            $usl = $model->usluga;
             if(!empty($model->date))
                 $model->date = date("d.m.Y", strtotime($model->date));
             
             if(!empty($model->date_z))
                 $model->date_z = date("d.m.Y", strtotime($model->date_z));
             
+//      Определяем данные исполнительной службы
+        $usluga = spr_work::find()->select('usluga')->where('work=:usl',[':usl' => $usl])->all();
+        $usluga = $usluga[0]->usluga;
+
+        $exec = spr_uslug::find()->select('exec_office')->where('usluga=:usluga',[':usluga' => $usluga])->all();
+        $exec = $exec[0]->exec_office;
+        
+        
+        if($exec=='СД'){
+            $town = spr_res::find()->select('town_fromwhere_sd')->where('nazv=:nazv',[':nazv' => $res])->all();
+            $town_sd = $town[0]->town_fromwhere_sd;
+            if(!empty($town_sd))
+                $data_res = spr_res::find()->select('id,mail')->where(['like', 'town', "$town_sd"])->all();
+            else
+                $data_res = spr_res::find()->select('id,mail')->where('nazv=:nazv',[':nazv' => $res])->all(); 
+        }
+        if($exec=='СЗ'){
+            $town = spr_res::find()->select('town_fromwhere_sz')->where('nazv=:nazv',[':nazv' => $res])->all();
+            $town_sz = $town[0]->town_fromwhere_sz;
+            if(!empty($town_sz))
+                $data_res = spr_res::find()->select('id,mail')->where(['like', 'town', "$town_sz"])->all();
+            else
+                $data_res = spr_res::find()->select('id,mail')->where('nazv=:nazv',[':nazv' => $res])->all();
+        }
+        if($exec=='РЕМ'){
+           $data_res = spr_res::find()->select('id,mail')->where('nazv=:nazv',[':nazv' => $res])->all(); 
+        }  
+        $mail = $data_res[0]->mail;
+        $id_res = $data_res[0]->id;
+        $data_koord = vspr_res_koord::find()->where('id_res=:id',[':id' => $id_res])->all(); 
+       
+        
         if ($model->load(Yii::$app->request->post()))
         {
             $model1 = schet::find()->where('id=:id',[':id'=>$id])->one();
@@ -860,7 +902,7 @@ class SiteController extends Controller
         } else {
             if($mod=='schet')
                 return $this->render('update_schet', [
-                    'model' => $model,'nazv' => $nazv
+                    'model' => $model,'nazv' => $nazv,'mail'=> $mail,'data_koord' => $data_koord
                 ]);
         }
     }
@@ -1193,7 +1235,10 @@ class SiteController extends Controller
                 . ' and schet=:search ';
         
         $model = viewschet::findBySql($sql,[':search'=>"$sch"])->one();
-        $mail = $model->mail;
+        //$mail = $model->mail;
+        $usl = $model->usluga;
+        $res = $model->res;
+        
         if(empty($model->date_exec)) {
             $model = new info();
             $model->title = "Увага! По заявці №$sch не введено дату виконання роботи."
@@ -1204,6 +1249,34 @@ class SiteController extends Controller
             return $this->render('info', [
             'model' => $model]);
         }            
+        
+        //     Определяем данные исполнительной службы
+        $usluga = spr_work::find()->select('usluga')->where('work=:usl',[':usl' => $usl])->all();
+        $usluga = $usluga[0]->usluga;
+
+        $exec = spr_uslug::find()->select('exec_office')->where('usluga=:usluga',[':usluga' => $usluga])->all();
+        $exec = $exec[0]->exec_office;
+        
+        if($exec=='СД'){
+            $town = spr_res::find()->select('town_fromwhere_sd')->where('nazv=:nazv',[':nazv' => $res])->all();
+            $town_sd = $town[0]->town_fromwhere_sd;
+            if(!empty($town_sd))
+                $data_res = spr_res::find()->select('id,mail')->where(['like', 'town', "$town_sd"])->all();
+            else
+                $data_res = spr_res::find()->select('id,mail')->where('nazv=:nazv',[':nazv' => $res])->all(); 
+        }
+        if($exec=='СЗ'){
+            $town = spr_res::find()->select('town_fromwhere_sz')->where('nazv=:nazv',[':nazv' => $res])->all();
+            $town_sz = $town[0]->town_fromwhere_sz;
+            if(!empty($town_sz))
+                $data_res = spr_res::find()->select('id,mail')->where(['like', 'town', "$town_sz"])->all();
+            else
+                $data_res = spr_res::find()->select('id,mail')->where('nazv=:nazv',[':nazv' => $res])->all();
+        }
+        if($exec=='РЕМ'){
+           $data_res = spr_res::find()->select('id,mail')->where('nazv=:nazv',[':nazv' => $res])->all(); 
+        }  
+        $mail = $data_res[0]->mail;
         
         $content=$this->renderPartial('sch_opl_print',['model' => $model,'style_title' => 'd9']);
         $cssFile = __DIR__ . '/../vendor/'.'kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css';

@@ -27,7 +27,9 @@ class Spr_res extends \yii\db\ActiveRecord
             'town_fromwhere_sd'  => 'Місто звідки їде машина (лабораторія)',
             'town_fromwhere_sz' => 'Місто звідки їде машина (метрологи)',
             'tel' => 'Телефон',
-            'relat' => 'Коротка назва'
+            'relat' => 'Коротка назва',
+            'Director'  => 'Директор',
+            'parrent_nazv'  => 'Назва в родовому відмінку'
         ];
     }
 
@@ -38,7 +40,7 @@ class Spr_res extends \yii\db\ActiveRecord
             [['nazv', 'id', 'addr', 'tel'], 'required'],
             [['geo_fromwhere_sd','geo_fromwhere_sz',
                 'town_fromwhere_sd','town_fromwhere_sz',
-                'geo_koord','relat'],'safe'],
+                'geo_koord','relat','Director','parrent_nazv'],'safe'],
            
         ];
     }

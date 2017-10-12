@@ -239,7 +239,7 @@ $okpo='31793056';
             'method' => 'post',
             'params' => [
                 'sch' => $model->schet,
-                'email' => $model->mail,
+                'email' => $mail,
             ],],
         'class' => 'btn btn-primary']); ?>
 

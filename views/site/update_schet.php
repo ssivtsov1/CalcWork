@@ -70,6 +70,58 @@ $role = Yii::$app->user->identity->role;
     }
     ?>
 
+        <table width="600px" class="table table-bordered ">
+    <tr>
+        <th width="30%">
+             <?= Html::encode("Виконавча служба") ?>
+        </th> 
+        <th width="30%">
+             <?= Html::encode("Відповідальна особа") ?>
+        </th> 
+        <th width="10%">
+             <?= Html::encode("Моб. телефон") ?>
+        </th> 
+        <th width="10%">
+             <?= Html::encode("Міський телефон") ?>
+        </th>
+        <th width="10%">
+             <?= Html::encode("Внутр. телефон") ?>
+        </th>
+        <th width="10%">
+             <?= Html::encode("Доп. телефон") ?>
+        </th>
+     </tr> 
+     <?php
+        $y = count($data_koord);
+        for($i=0;$i<$y;$i++) {
+     ?>
+     <tr>
+    
+     <td>
+         <?= Html::encode($data_koord[$i]->nazv) ?>
+     </td>
+     <td>
+         <?= Html::encode($data_koord[$i]->name_koord) ?>
+     </td>
+     <td>
+         <?= Html::encode($data_koord[$i]->tel_mobile) ?>
+     </td>
+     <td>
+         <?= Html::encode($data_koord[$i]->tel_town) ?>
+     </td>
+     <td>
+         <?= Html::encode($data_koord[$i]->tel) ?>
+     </td>
+     <td>
+         <?= Html::encode($data_koord[$i]->tel_dop) ?>
+     </td>
+     
+     </tr>
+     <?php
+        }
+     ?>
+    </table>  
+        
     <?= $form->field($model, 'okpo')->textInput() ?>
     <?= $form->field($model, 'inn')->textInput() ?>
     <?= $form->field($model, 'regsvid')->textInput() ?>
@@ -97,7 +149,7 @@ $role = Yii::$app->user->identity->role;
     <?= $form->field($model, 'summa_transport')->textInput() ?>
     <?= $form->field($model, 'adres')->textarea(['onDblClick' => 'rmenu($(this).val(),"#viewschet-adres")']) ?>
            <div class='rmenu' id='rmenu-viewschet-adres'></div>
-    <?= $form->field($model, 'res')->textInput() ?>
+ <!--    -->   <?//= $form->field($model, 'res')->textInput() ?>
 <!--    --><?//= $form->field($model, 'date_z')->textInput() ?>
 
         <? if($model->status>1): ?>
@@ -145,6 +197,7 @@ $role = Yii::$app->user->identity->role;
                 'method' => 'post',
                 'params' => [
                     'sch' => $nazv,
+                    'mail'=> $mail
                 ],
             ],'class' => 'btn btn-info']); ?>
 
@@ -153,6 +206,7 @@ $role = Yii::$app->user->identity->role;
                         'method' => 'post',
                         'params' => [
                             'sch' => $nazv,
+                            'mail'=> $mail
                         ],
                     ],'class' => 'btn btn-info']); ?>
          
@@ -161,6 +215,7 @@ $role = Yii::$app->user->identity->role;
                         'method' => 'post',
                         'params' => [
                             'sch' => $nazv,
+                            'mail'=> $mail
                         ],
                     ],'class' => 'btn btn-info']); ?>
         <?php }} ?>

@@ -13,6 +13,8 @@ use app\models\ContactForm;
 use app\models\InputDataForm;
 use app\models\Calc;
 use app\models\spr_res;
+use app\models\vspr_res_koord;
+use app\models\spr_res_koord;
 use app\models\spr_work;
 use app\models\spr_uslug;
 use app\models\spr_transp;
@@ -93,6 +95,22 @@ class SpravController extends Controller
             ]);
     }
     
+    // Справочник ответственных лиц по РЄСам
+    public function actionSprav_spr_res_koord()
+    {
+        $model = new vspr_res_koord();
+        $model = $model::find()->all();
+        $dataProvider = new ActiveDataProvider([
+         'query' => vspr_res_koord::find(),
+        ]); 
+        $dataProvider->pagination->route = '/sprav/sprav_spr_res_koord';
+        $dataProvider->sort->route = '/sprav/sprav_spr_res_koord';
+        
+            return $this->render('sprav_spr_res_koord', [
+                'model' => $model,'dataProvider' => $dataProvider
+            ]);
+    }
+    
     // Справочник видов работ
     public function actionSprav_work()
     {
@@ -163,6 +181,8 @@ class SpravController extends Controller
             $model = klient::findOne($id);
         if($mod=='status_sch')
             $model = status_sch::findOne($id);
+        if($mod=='spr_res_koord')
+            $model = spr_res_koord::findOne($id);
         
         $model->delete();
         
@@ -176,6 +196,8 @@ class SpravController extends Controller
             return $this->redirect(['sprav/sprav_klient']);
         if($mod=='status_sch')
             return $this->redirect(['sprav/status_sch']);
+        if($mod=='spr_res_koord')
+            return $this->redirect(['sprav/sprav_spr_res_koord']);
 
     }
 
@@ -194,12 +216,17 @@ class SpravController extends Controller
             $model = klient::findOne($id);
         if($mod=='status_sch')
             $model = status_sch::findOne($id);
+        if($mod=='spr_res_koord')
+            $model = spr_res_koord::findOne($id);
 
         if ($model->load(Yii::$app->request->post()))
         {  
             
-            if(!$model->save(false))
-            {  var_dump($model);return;}
+            if(!$model->save())
+            {  $model->validate();
+               print_r($model->getErrors());
+               return;
+                var_dump($model);return;}
 
             if($mod=='spr_res')
                 return $this->redirect(['sprav/sprav_res']);
@@ -211,6 +238,8 @@ class SpravController extends Controller
                 return $this->redirect(['sprav/sprav_klient']);
             if($mod=='status_sch')
                 return $this->redirect(['sprav/status_sch']);
+            if($mod=='spr_res_koord')
+                return $this->redirect(['sprav/sprav_spr_res_koord']);
             
         } else {
             if($mod=='spr_res')
@@ -236,6 +265,11 @@ class SpravController extends Controller
 
             if($mod=='status_sch')
                 return $this->render('update_status_sch', [
+                    'model' => $model,
+
+                ]);
+            if($mod=='spr_res_koord')
+                return $this->render('update_spr_res_koord', [
                     'model' => $model,
 
                 ]);
@@ -292,8 +326,25 @@ class SpravController extends Controller
                 'model' => $model]);
         }
     }
+    
+    //    Срабатывает при нажатии кнопки добавления в справ. отв. лиц
+    public function actionCreatekoord()
+    {
+        
+        $model = new spr_res_koord();
+       
+        if ($model->load(Yii::$app->request->post()))
+        {  
+            if($model->save(false))
+               return $this->redirect(['sprav/sprav_spr_res_koord']);
+        } else {
+           
+            return $this->render('update_spr_res_koord', [
+                'model' => $model]);
+        }
+    }
 
-    //    Срабатывает при нажатии кнопки добавления в справ. видов работ
+    //    Срабатывает при нажатии кнопки добавления в справ. работ
     public function actionCreatework()
     {
         $model = new spr_work();

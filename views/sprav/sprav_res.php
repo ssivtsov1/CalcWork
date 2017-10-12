@@ -25,6 +25,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'nazv',
             'addr',
+            'Director',
+            'parrent_nazv',
             'geo_koord',
             [
                 'label' => 'Гео-коорд. звідки <br /> їде машина (лабор.)',

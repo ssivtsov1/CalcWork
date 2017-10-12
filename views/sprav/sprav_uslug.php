@@ -25,6 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'id',
             'kod',
             'usluga',
+            'exec_office'
 
         ],
     ]); ?>

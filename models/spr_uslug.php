@@ -22,13 +22,14 @@ class Spr_uslug extends \yii\db\ActiveRecord
             'id' => 'ID',
             'usluga' => 'Назва послуги',
             'kod' => 'Код послуги',
+            'exec_office' => 'Виконавча служба'
         ];
     }
 
     public function rules()
     {
         return [
-            [['nazv', 'id','kod'], 'required'],
+            [['nazv', 'id','kod','exec_office','usluga'], 'required'],
         ];
     }
 

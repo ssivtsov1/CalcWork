@@ -111,7 +111,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'method' => 'post',
             'params' => [
                 'sch' => $model->schet,
-                'email' => $model->mail,
+                'email' => $mail,
             ],],
         'class' => 'btn btn-primary']); ?>
 

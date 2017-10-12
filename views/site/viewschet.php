@@ -69,6 +69,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'method' => 'post',
                             'params' => [
                                 'sch' => $model->schet,
+                                //'mail'=> $mail
                             ]]],
                         ['title' => Yii::t('yii', 'Формування документів'), 'data-pjax' => '0']
                     );

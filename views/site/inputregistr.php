@@ -195,9 +195,11 @@ $model->person = '1';
              
             <?= $form->field($model, 'fio_dir')->textarea(['rows' => 1, 'cols' => 25]) ?>
             <?= $form->field($model, 'contact_person')->textarea(['rows' => 1, 'cols' => 25]) ?>
-            <?= $form->field($model, 'tel')->textInput(
+            <?= $form->field($model, 'tel',['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
+            . '<span class="glyphicon glyphicon-phone"></span></span>{input}</div>'])->textInput(
                 ['maxlength' => true,'onBlur' => 'norm_tel($(this).val())']) ?>
-            <?= $form->field($model, 'email') ?>
+            <?= $form->field($model, 'email',['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
+            . '<span class="glyphicon glyphicon-envelope"></span></span>{input}</div>']) ?>
 
 
             <?= $form->field($model, 'date_z')->widget(\yii\jui\DatePicker::classname(), [

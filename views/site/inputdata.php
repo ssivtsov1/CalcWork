@@ -455,7 +455,8 @@ $this->title = 'Розрахунок вартості робіт';
 
             <?= $form->field($model, 'geo') ?>
 
-             <?=$form->field($model, 'region')->
+             <?=$form->field($model, 'region',['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
+            . '<span class="glyphicon glyphicon-globe"></span></span>{input}</div>'])->
             dropDownList(ArrayHelper::map(
                app\models\regions::findbysql('Select id,obl from regions')
                    ->all(), 'id', 'obl'),
@@ -468,7 +469,8 @@ $this->title = 'Розрахунок вартості робіт';
 //                 $model->addr_work = $model->geo;
             ?>
 
-            <?= $form->field($model, 'addr_work')->textInput(['maxlength' => true,
+            <?= $form->field($model, 'addr_work',['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
+            . '<span class="glyphicon glyphicon-globe"></span></span>{input}</div>'])->textInput(['maxlength' => true,
                 'onBlur' => 'find_on_map($(this).val())','onDblClick' => 'rmenu($(this).val(),"#inputdataform-addr_work")']) ?>
                  <div class='rmenu' id='rmenu-inputdataform-addr_work'></div> 
             <p>Виберіть на карті місце виконання робіт (для обліку транспортних витрат):</p>

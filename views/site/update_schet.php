@@ -1,7 +1,8 @@
 <?php
 //namespace app\models;
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+//use yii\widgets\ActiveForm;
+use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use app\models\spr_res;
@@ -135,8 +136,13 @@ $role = Yii::$app->user->identity->role;
         <?= $form->field($model, 'plat_yesno')->textInput(['readonly' => true]) ?>
     <?php endif; ?>
 
+    <?= $form->field($model, 'tel',
+            ['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
+            . '<span class="glyphicon glyphicon-phone"></span></span>{input}</div>'] )->textInput() ?>
     <?= $form->field($model, 'addr')->textarea() ?>
-    <?= $form->field($model, 'email')->textInput() ?>
+    <?= $form->field($model, 'email',
+            ['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
+            . '<span class="glyphicon glyphicon-envelope"></span></span>{input}</div>'])->textInput() ?>
     <?= $form->field($model, 'comment')->textarea() ?>
     <?= $form->field($model, 'schet')->textInput() ?>
     <?= $form->field($model, 'contract')->textInput() ?>
@@ -171,9 +177,13 @@ $role = Yii::$app->user->identity->role;
         ]) ?>
         <? endif;?>
 
-    <?= $form->field($model, 'date')->textInput() ?>
+    <?= $form->field($model, 'date',
+                    ['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
+            . '<span class="glyphicon glyphicon-calendar"></span></span>{input}</div>'])->textInput() ?>
 
-    <?= $form->field($model, 'time')->textInput() ?>
+    <?= $form->field($model, 'time',
+                    ['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
+            . '<span class="glyphicon glyphicon-time"></span></span>{input}</div>'])->textInput() ?>
 
     
     <div class="form-group">

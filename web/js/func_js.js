@@ -12,7 +12,12 @@ function recode_txt(p,elem,mode){
 //   5 - Все маленькие
 
     $(".rmenu").hide();
+        
     var y,i,c,nc='',phrase = '',flag = 0;
+        if(!mode){
+             //phrase = localStorage.getItem("origin_val_"+elem.substr(1));
+             
+        }
         y = p.length;
         for(i=0;i<y;i++)
         {
@@ -542,14 +547,15 @@ function recode_txt(p,elem,mode){
 function rmenu(p,elem){
     var menu,div;
         div = '#rmenu-'+elem.substr(1);
+        
         y = p.length;
         if(y==0) return false;
         menu = '<ul id="recode-menu">'+
         '<li><a class="rcd_ru" href="#" onclick='+'"'+"recode_txt("+"'"+p+"'"+','+"'"+elem+"'"+",2);"+" return false;"+'"'+'>Укр.</a></li>'+
         '<li><a class="rcd_ua" href="#" onclick='+'"'+"recode_txt("+"'"+p+"'"+','+"'"+elem+"'"+",1);"+" return false;"+'"'+'>Рос.</a></li>'+
         '<li><a class="rcd_en" href="#" onclick='+'"'+"recode_txt("+"'"+p+"'"+','+"'"+elem+"'"+",3);"+" return false;"+'"'+'>Лат.</a></li>'+
-        '<li><a class="rcd_en" href="#" onclick='+'"'+"recode_txt("+"'"+p+"'"+','+"'"+elem+"'"+",4);"+" return false;"+'"'+'>Всі великі.</a></li>'+
-        '<li><a class="rcd_en" href="#" onclick='+'"'+"recode_txt("+"'"+p+"'"+','+"'"+elem+"'"+",5);"+" return false;"+'"'+'>Всі малі.</a></li>'+
+        '<li><a class="rcd_en" href="#" onclick='+'"'+"recode_txt("+"'"+p+"'"+','+"'"+elem+"'"+",4);"+" return false;"+'"'+'>Всі великі</a></li>'+
+        '<li><a class="rcd_en" href="#" onclick='+'"'+"recode_txt("+"'"+p+"'"+','+"'"+elem+"'"+",5);"+" return false;"+'"'+'>Всі малі</a></li>'+
         '</ul>';
       
 //       var div = document.createElement('div');

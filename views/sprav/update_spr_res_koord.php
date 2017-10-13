@@ -1,9 +1,10 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+//use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\models\spr_res;
+use yii\bootstrap\ActiveForm;
 
 ?>
 
@@ -12,12 +13,24 @@ use app\models\spr_res;
     <?php $form = ActiveForm::begin([
         'options' => ['enctype' => 'multipart/form-data'],
         'enableAjaxValidation' => false,]); ?>
-  
-    <?= $form->field($model, 'name_koord')->textInput() ?>
-    <?= $form->field($model, 'tel_mobile')->textInput(['onBlur' => 'norm_tel($(this).val())']) ?>
-    <?= $form->field($model, 'tel_town')->textInput() ?>
-    <?= $form->field($model, 'tel')->textInput() ?>
-    <?= $form->field($model, 'tel_dop')->textInput(['onBlur' => 'norm_tel($(this).val())']) ?>
+    
+    <?= $form->field($model, 'name_koord',
+             ['inputTemplate' => '<div class="input-group"><span class="input-group-btn">'.
+            '<button class="btn btn-default"><span class="glyphicon glyphicon-wrench"></span></button></span>{input}</div>'])
+                ->textInput(['onDblClick' => 'rmenu($(this).val(),"#spr_res_koord-name_koord")']) ?>
+    
+    <div class='rmenu' id='rmenu-spr_res_koord-name_koord'></div>
+    <?= $form->field($model, 'tel_mobile',
+        ['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
+            . '<span class="glyphicon glyphicon-phone"></span></span>{input}</div>'])
+                ->textInput(['onBlur' => 'norm_tel($(this).val())',]) ?>
+    <?= $form->field($model, 'tel_town',
+        ['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
+            . '<span class="glyphicon glyphicon-phone-alt"></span></span>{input}</div>'])->textInput() ?>
+    <?= $form->field($model, 'tel',['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
+            . '<span class="glyphicon glyphicon-phone-alt"></span></span>{input}</div>'])->textInput() ?>
+    <?= $form->field($model, 'tel_dop',['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
+            . '<span class="glyphicon glyphicon-earphone"></span></span>{input}</div>'])->textInput(['onBlur' => 'norm_tel($(this).val())']) ?>
      <?=$form->field($model, 'id_res')->dropDownList(ArrayHelper::map(spr_res::find()->all(), 'id', 'nazv')) ?>
        
     <div class="form-group">

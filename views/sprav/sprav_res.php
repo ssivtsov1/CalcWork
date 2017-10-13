@@ -25,6 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'nazv',
             'addr',
+            'mail',
             'Director',
             'parrent_nazv',
             'geo_koord',

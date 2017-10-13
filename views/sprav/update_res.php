@@ -1,9 +1,10 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-
+//use yii\widgets\ActiveForm;
+use yii\bootstrap\ActiveForm;
 ?>
+
 
 <div class="user-form">
 
@@ -11,15 +12,27 @@ use yii\widgets\ActiveForm;
         'options' => ['enctype' => 'multipart/form-data'],
         'enableAjaxValidation' => false,]); ?>
   
-    <?= $form->field($model, 'nazv')->textInput() ?>
-    <?= $form->field($model, 'addr')->textarea() ?>
-    <?= $form->field($model, 'tel')->textInput(['onBlur' => 'norm_tel($(this).val())']) ?>
-    <?= $form->field($model, 'geo_koord')->textInput() ?>
-    <?= $form->field($model, 'geo_fromwhere_sd')->textInput() ?>
-    <?= $form->field($model, 'geo_fromwhere_sz')->textInput() ?>
-    <?= $form->field($model, 'town_fromwhere_sd')->textInput() ?>
-    <?= $form->field($model, 'town_fromwhere_sz')->textInput() ?>
-    <?= $form->field($model, 'relat')->textInput() ?>
+    <?= $form->field($model, 'nazv')->textInput(['onDblClick' => 'rmenu($(this).val(),"#spr_res-nazv")']) ?>
+    <div class='rmenu' id='rmenu-spr_res-nazv'></div>
+    <?= $form->field($model, 'addr')->textarea(['onDblClick' => 'rmenu($(this).val(),"#spr_res-addr")']) ?>
+    <div class='rmenu' id='rmenu-spr_res-addr'></div>
+    <?= $form->field($model, 'tel',
+        ['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
+            . '<span class="glyphicon glyphicon-phone-alt"></span></span>{input}</div>'])->textInput(['onBlur' => 'norm_tel($(this).val())']) ?>
+     <?= $form->field($model, 'mail',['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
+            . '<span class="glyphicon glyphicon-envelope"></span></span>{input}</div>'])->textInput() ?>
+    <?= $form->field($model, 'geo_koord',['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
+            . '<span class="glyphicon glyphicon-globe"></span></span>{input}</div>'])->textInput() ?>
+    <?= $form->field($model, 'geo_fromwhere_sd',['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
+            . '<span class="glyphicon glyphicon-globe"></span></span>{input}</div>'])->textInput() ?>
+    <?= $form->field($model, 'geo_fromwhere_sz',['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
+            . '<span class="glyphicon glyphicon-globe"></span></span>{input}</div>'])->textInput() ?>
+    <?= $form->field($model, 'town_fromwhere_sd')->textInput(['onDblClick' => 'rmenu($(this).val(),"#spr_res-town_fromwhere_sd")']) ?>
+    <div class='rmenu' id='rmenu-spr_res-town_fromwhere_sd'></div>
+    <?= $form->field($model, 'town_fromwhere_sz')->textInput(['onDblClick' => 'rmenu($(this).val(),"#spr_res-town_fromwhere_sz")']) ?>
+     <div class='rmenu' id='rmenu-spr_res-town_fromwhere_sz'></div>
+    <?= $form->field($model, 'relat')->textInput(['onDblClick' => 'rmenu($(this).val(),"#spr_res-relat")']) ?>
+     <div class='rmenu' id='rmenu-spr_res-relat'></div>
     
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'ОК' : 'OK', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
@@ -102,3 +115,4 @@ $('#spr_res-tel').val(rez);
 }
 
 </script>
+

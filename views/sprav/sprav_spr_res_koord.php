@@ -28,6 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'tel_town',
             'tel',
             'tel_dop',
+            'email',
             
              [
                 /**

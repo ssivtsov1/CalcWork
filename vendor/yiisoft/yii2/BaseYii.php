@@ -275,7 +275,14 @@ class BaseYii
      */
     public static function autoload($className)
     {
-        if (isset(static::$classMap[$className])) {
+	 //$f=fopen('aaa_data.dat','w+'); 
+	 //fputs($f,$className);	
+	 $className=str_replace('Object','BaseObject',$className);     
+	 $className=str_replace('Configurable','BaseObject',$className);  
+	 //fputs($f,'     ');
+	 //fputs($f,$className);
+
+	 if (isset(static::$classMap[$className])) {
             $classFile = static::$classMap[$className];
             if ($classFile[0] === '@') {
                 $classFile = static::getAlias($classFile);
@@ -288,8 +295,23 @@ class BaseYii
         } else {
             return;
         }
+	//fputs($f,'    ');
+        //fputs($f,$classFile);
+	//$classFile=str_replace('Object.php','BaseObject.php',$classFile);
+	//$classFile=str_replace('Configurable','BaseObject.php',$classFile);
+	//fputs($f,'    ');
+        //fputs($f,$classFile);
+	//fputs($f,'    ');
+	//fputs($f,$className);
+	
+	if(strpos($classFile, 'BaseObject')>0) {       
+	if (class_exists('BaseObject')) 
+		include($classFile);
+	}
+	else
+	include($classFile);
 
-        include($classFile);
+	//require_once($classFile);
 
         if (YII_DEBUG && !class_exists($className, false) && !interface_exists($className, false) && !trait_exists($className, false)) {
             throw new UnknownClassException("Unable to find '$className' in file: $classFile. Namespace missing?");

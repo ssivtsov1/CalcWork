@@ -13,6 +13,7 @@ use app\models\ContactForm;
 use app\models\InputDataForm;
 use app\models\Calc;
 use app\models\spr_res;
+use app\models\spr_brig;
 use app\models\vspr_res_koord;
 use app\models\spr_res_koord;
 use app\models\spr_work;
@@ -27,6 +28,7 @@ use app\models\requerstsearch;
 class SpravController extends Controller
 {
    public $spr='0';
+   public $adm=0;  // Признак отображения логотипа (если 1 - то не отображается) - используется в шаблоне main
     
     public function behaviors()
     {
@@ -83,6 +85,7 @@ class SpravController extends Controller
     public function actionSprav_res()
     {
         $model = new spr_res();
+        $this->adm=1;  // Признак отображения логотипа (если 1 - то не отображается)
         $model = $model::find()->all();
         $dataProvider = new ActiveDataProvider([
          'query' => spr_res::find(),
@@ -115,6 +118,20 @@ class SpravController extends Controller
     public function actionSprav_work()
     {
         $model = new spr_work();
+//        echo '';
+//        echo '';
+//        echo '';
+//        echo '';
+//        echo '';
+//        echo '';
+//        echo '';
+//        echo '';
+//        echo '';
+//        echo '';
+//        echo '';
+//        echo '';
+//        debug($model);
+        $this->adm=1;  // Признак отображения логотипа (если 1 - то не отображается)
         $searchModel = new spr_work();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $model = $model::find()->all();
@@ -148,6 +165,7 @@ class SpravController extends Controller
     public function actionSprav_klient()
     {
         $searchModel = new searchklient();
+        $this->adm=1;  // Признак отображения логотипа (если 1 - то не отображается)
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->setSort([
             'attributes' => [
@@ -222,6 +240,24 @@ class SpravController extends Controller
         if ($model->load(Yii::$app->request->post()))
         {  
             
+            if($mod=='spr_work')
+            {
+                $brig=spr_brig::findbysql('select nazv from spr_brig where id='.$model->brig)->all();
+                $model->brig = $brig[0]->nazv;
+                
+                $usl=spr_uslug::findbysql('select kod,usluga from spr_uslug where id='.$model->usluga)->all();
+                $model->usluga = $usl[0]->usluga;
+                $model->kod_uslug = $usl[0]->kod;
+                if($model->cast_1==null) $model->cast_1 = 0;
+                if($model->cast_2==null) $model->cast_2 = 0;
+                if($model->cast_3==null) $model->cast_3 = 0;
+                if($model->cast_4==null) $model->cast_4 = 0;
+                if($model->cast_5==null) $model->cast_5 = 0;
+                if($model->cast_6==null) $model->cast_6 = 0;
+               // debug($model);           
+            }
+                
+                
             if(!$model->save())
             {  $model->validate();
                print_r($model->getErrors());
@@ -350,6 +386,19 @@ class SpravController extends Controller
         $model = new spr_work();
         if ($model->load(Yii::$app->request->post()))
         {  
+           
+            $brig=spr_brig::findbysql('select nazv from spr_brig where id='.$model->brig)->all();
+            $model->brig = $brig[0]->nazv;
+            $usl=spr_uslug::findbysql('select kod,usluga from spr_uslug where id='.$model->usluga)->all();
+            $model->usluga = $usl[0]->usluga;
+            $model->kod_uslug = $usl[0]->kod;
+            if($model->cast_1==null) $model->cast_1 = 0;
+            if($model->cast_2==null) $model->cast_2 = 0;
+            if($model->cast_3==null) $model->cast_3 = 0;
+            if($model->cast_4==null) $model->cast_4 = 0;
+            if($model->cast_5==null) $model->cast_5 = 0;
+            if($model->cast_6==null) $model->cast_6 = 0;
+                            
             if($model->save(false))
                return $this->redirect(['sprav/sprav_work']);
            
@@ -372,6 +421,31 @@ class SpravController extends Controller
             return $this->render('update_klient', [
                 'model' => $model]);
         }
+    }
+    
+    // Подгрузка номеров машин при вводе вида транспорта в справочнике видов работ
+    
+    public function actionGettransp($vid) {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if (Yii::$app->request->isAjax) {
+            $transp = spr_work::findbysql(
+                     'select distinct 1 as res,T_Ap as tr from costwork where type_transp=:vid and type_transp is not null union '
+                    .'select distinct 2 as res,T_Dn as tr from costwork where type_transp=:vid and type_transp is not null union '
+                    .'select distinct 3 as res,T_Vg as tr from costwork where type_transp=:vid and type_transp is not null union '
+                    .'select distinct 4 as res,T_Yv as tr from costwork where type_transp=:vid and type_transp is not null union '
+                    .'select distinct 5 as res,T_Krr as tr from costwork where type_transp=:vid and type_transp is not null union '
+                    .'select distinct 6 as res,T_Pvg as tr from costwork where type_transp=:vid and type_transp is not null union '
+                    .'select distinct 7 as res,T_Ing as tr from costwork where type_transp=:vid and type_transp is not null union '
+                    .'select distinct 8 as res,T_Gv as tr from costwork where type_transp=:vid  and type_transp is not null',
+                    [':vid' => $vid])->asarray()->all();
+            
+                //$transp = $idata[0]->T_Ap;
+            //debug($transp);
+            
+            return ['success' => true, 'transp' => $transp];
+
+        }
+        return ['oh no' => 'you are not allowed :('];
     }
 
 }

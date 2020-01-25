@@ -7,11 +7,13 @@ use app\assets\AppAsset;
 use yii\web\Request;
 use app\models\schet;
 use app\models\max_schet;
+use yii\helpers\Url;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
 
 AppAsset::register($this);
+//phpinfo();
 
 ?>
 
@@ -48,8 +50,9 @@ AppAsset::register($this);
 
 <?php $this->beginBody() ?>
     <div class="wrap">
+         
         <?php
-
+         $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => Url::to(['/fav.ico'])]);
 
 //        debug(Yii::$app->user->identity->role);
 //        debug($flag);
@@ -63,8 +66,9 @@ AppAsset::register($this);
             ]);
 
         if($flag){
-            if($role==3)
-            {echo Nav::widget([
+            switch($role){
+            case 5:  // incognito
+            echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
                 'items' => [
                     ['label' => 'Головна', 'url' => ['/site/index']],
@@ -83,24 +87,281 @@ AppAsset::register($this);
                     ['label' => 'Сервіс', 'url' => ['/site/index'],
                         'options' => ['id' => 'down_menu'],
                         'items' => [
-                            ['label' => 'Перегляд заявок', 'url' => ['/site/viewschet']],
+                            ['label' => 'Перегляд замовлень', 'url' => ['/site/viewschet']],
+                            ['label' => 'Вигрузка в САП', 'url' => ['/site/upload_to_sap']],
+                            ['label' => 'Введення калькуляцій', 'url' => ['/site/input_calc']],
                             ['label' => 'Відмови', 'url' => ['/site/viewcancel']],
+                        ]],
+                    ['label' => 'Звіти', 'url' => ['/site/index'],
+                        'options' => ['id' => 'down_menu'],
+                        'items' => [
+                            ['label' => 'Оплачені заявки', 'url' => ['/site/opl_z']],
+                        ]],
+                    ['label' => 'Настройки', 'url' => ['/site/settings']],
+                    ['label' => 'Про программу', 'url' => ['/site/about']],
+                    ['label' => 'Контакти', 'url' => ['/site/contact']],
+                    ['label' => 'Вийти', 'url' => ['/site/logout'], 'linkOptions' => ['data-method' => 'post']],
+                ],
+                ]);
+                break;
+            case 3:   // Админ. Ж.Воды
+                 echo Nav::widget([
+                'options' => ['class' => 'navbar-nav navbar-right'],
+                'items' => [
+                    ['label' => 'Головна', 'url' => ['/site/index']],
+
+                    ['label' => 'Довідники', 'url' => ['/site/index'],
+                        'options' => ['id' => 'down_menu'],			
+                     'items' => [
+                               // ['label' => 'Довідник РЕМів', 'url' => ['/sprav/sprav_res']],
+                                ['label' => 'Довідник вартості робіт', 'url' => ['/sprav/sprav_work']],
+                               // ['label' => 'Довідник транспорту', 'url' => ['/sprav/sprav_transp']],
+                                ['label' => 'Довідник контрагентів', 'url' => ['/sprav/sprav_klient']],
+                               // ['label' => 'Довідник послуг', 'url' => ['/sprav/sprav_uslug']],
+                                ['label' => 'Довідник відповідальних осіб', 'url' => ['/sprav/sprav_spr_res_koord']],
+                               // ['label' => 'Статуси заявки', 'url' => ['/sprav/status_sch']]
+                        ]],
+                    ['label' => 'Сервіс', 'url' => ['/site/index'],
+                        'options' => ['id' => 'down_menu'],
+                        'items' => [
+                            ['label' => 'Перегляд замовлень', 'url' => ['/site/viewschet']],
+                            ['label' => 'Вигрузка в САП', 'url' => ['/site/upload_to_sap']],
+                            ['label' => 'Введення калькуляцій', 'url' => ['/site/input_calc']],
+                            ['label' => 'Відмови', 'url' => ['/site/viewcancel']],
+                        ]],
+                    ['label' => 'Звіти', 'url' => ['/site/index'],
+                        'options' => ['id' => 'down_menu'],
+                        'items' => [
+                            ['label' => 'Оплачені заявки', 'url' => ['/site/opl_z']],
+                        ]],
+                    ['label' => 'Настройки', 'url' => ['/site/settings']],
+                    ['label' => 'Про программу', 'url' => ['/site/about']],
+                    ['label' => 'Контакти', 'url' => ['/site/contact']],
+                    ['label' => 'Вийти', 'url' => ['/site/logout'], 'linkOptions' => ['data-method' => 'post']],
+                ],
+                ]);
+                break;
+            case 11:   // Днепр
+                 echo Nav::widget([
+                'options' => ['class' => 'navbar-nav navbar-right'],
+                'items' => [
+                    ['label' => 'Головна', 'url' => ['/site/index']],
+
+                    ['label' => 'Довідники', 'url' => ['/site/index'],
+                        'options' => ['id' => 'down_menu'],			
+                     'items' => [
+                               // ['label' => 'Довідник РЕМів', 'url' => ['/sprav/sprav_res']],
+                               // ['label' => 'Довідник вартості робіт', 'url' => ['/sprav/sprav_work']], 
+                               // ['label' => 'Довідник транспорту', 'url' => ['/sprav/sprav_transp']],
+                                ['label' => 'Довідник контрагентів', 'url' => ['/sprav/sprav_klient']],
+                               // ['label' => 'Довідник послуг', 'url' => ['/sprav/sprav_uslug']],
+                                ['label' => 'Довідник відповідальних осіб', 'url' => ['/sprav/sprav_spr_res_koord']],
+                               // ['label' => 'Статуси заявки', 'url' => ['/sprav/status_sch']]
+                        ]],
+                    ['label' => 'Сервіс', 'url' => ['/site/index'],
+                        'options' => ['id' => 'down_menu'],
+                        'items' => [
+                            ['label' => 'Перегляд замовлень', 'url' => ['/site/viewschet']],
+                            ['label' => 'Відмови', 'url' => ['/site/viewcancel']],
+                        ]],
+                    ['label' => 'Звіти', 'url' => ['/site/index'],
+                        'options' => ['id' => 'down_menu'],
+                        'items' => [
+                            ['label' => 'Оплачені заявки', 'url' => ['/site/opl_z']],
                         ]],
                     ['label' => 'Про программу', 'url' => ['/site/about']],
                     ['label' => 'Контакти', 'url' => ['/site/contact']],
                     ['label' => 'Вийти', 'url' => ['/site/logout'], 'linkOptions' => ['data-method' => 'post']],
                 ],
-            ]);}
-        else
-            {echo Nav::widget([
+                ]);
+                break;
+
+                case 12:   // Гвардейское
+                    echo Nav::widget([
+                        'options' => ['class' => 'navbar-nav navbar-right'],
+                        'items' => [
+                            ['label' => 'Головна', 'url' => ['/site/index']],
+
+                            ['label' => 'Довідники', 'url' => ['/site/index'],
+                                'options' => ['id' => 'down_menu'],
+                                'items' => [
+                                    // ['label' => 'Довідник РЕМів', 'url' => ['/sprav/sprav_res']],
+                                    // ['label' => 'Довідник вартості робіт', 'url' => ['/sprav/sprav_work']],
+                                    // ['label' => 'Довідник транспорту', 'url' => ['/sprav/sprav_transp']],
+                                    ['label' => 'Довідник контрагентів', 'url' => ['/sprav/sprav_klient']],
+                                    // ['label' => 'Довідник послуг', 'url' => ['/sprav/sprav_uslug']],
+                                    ['label' => 'Довідник відповідальних осіб', 'url' => ['/sprav/sprav_spr_res_koord']],
+                                    // ['label' => 'Статуси заявки', 'url' => ['/sprav/status_sch']]
+                                ]],
+                            ['label' => 'Сервіс', 'url' => ['/site/index'],
+                                'options' => ['id' => 'down_menu'],
+                                'items' => [
+                                    ['label' => 'Перегляд замовлень', 'url' => ['/site/viewschet']],
+                                    ['label' => 'Відмови', 'url' => ['/site/viewcancel']],
+                                ]],
+                            ['label' => 'Звіти', 'url' => ['/site/index'],
+                                'options' => ['id' => 'down_menu'],
+                                'items' => [
+                                    ['label' => 'Оплачені заявки', 'url' => ['/site/opl_z']],
+                                ]],
+                            ['label' => 'Про программу', 'url' => ['/site/about']],
+                            ['label' => 'Контакти', 'url' => ['/site/contact']],
+                            ['label' => 'Вийти', 'url' => ['/site/logout'], 'linkOptions' => ['data-method' => 'post']],
+                        ],
+                    ]);
+                    break;
+
+                case 13:   // Кр Рог
+                    echo Nav::widget([
+                        'options' => ['class' => 'navbar-nav navbar-right'],
+                        'items' => [
+                            ['label' => 'Головна', 'url' => ['/site/index']],
+
+                            ['label' => 'Довідники', 'url' => ['/site/index'],
+                                'options' => ['id' => 'down_menu'],
+                                'items' => [
+                                    // ['label' => 'Довідник РЕМів', 'url' => ['/sprav/sprav_res']],
+                                    // ['label' => 'Довідник вартості робіт', 'url' => ['/sprav/sprav_work']],
+                                    // ['label' => 'Довідник транспорту', 'url' => ['/sprav/sprav_transp']],
+                                    ['label' => 'Довідник контрагентів', 'url' => ['/sprav/sprav_klient']],
+                                    // ['label' => 'Довідник послуг', 'url' => ['/sprav/sprav_uslug']],
+                                    ['label' => 'Довідник відповідальних осіб', 'url' => ['/sprav/sprav_spr_res_koord']],
+                                    // ['label' => 'Статуси заявки', 'url' => ['/sprav/status_sch']]
+                                ]],
+                            ['label' => 'Сервіс', 'url' => ['/site/index'],
+                                'options' => ['id' => 'down_menu'],
+                                'items' => [
+                                    ['label' => 'Перегляд замовлень', 'url' => ['/site/viewschet']],
+                                    ['label' => 'Відмови', 'url' => ['/site/viewcancel']],
+                                ]],
+                            ['label' => 'Звіти', 'url' => ['/site/index'],
+                                'options' => ['id' => 'down_menu'],
+                                'items' => [
+                                    ['label' => 'Оплачені заявки', 'url' => ['/site/opl_z']],
+                                ]],
+                            ['label' => 'Про программу', 'url' => ['/site/about']],
+                            ['label' => 'Контакти', 'url' => ['/site/contact']],
+                            ['label' => 'Вийти', 'url' => ['/site/logout'], 'linkOptions' => ['data-method' => 'post']],
+                        ],
+                    ]);
+                    break;
+                case 14:   // Павлоград
+                    echo Nav::widget([
+                        'options' => ['class' => 'navbar-nav navbar-right'],
+                        'items' => [
+                            ['label' => 'Головна', 'url' => ['/site/index']],
+
+                            ['label' => 'Довідники', 'url' => ['/site/index'],
+                                'options' => ['id' => 'down_menu'],
+                                'items' => [
+                                    // ['label' => 'Довідник РЕМів', 'url' => ['/sprav/sprav_res']],
+                                    // ['label' => 'Довідник вартості робіт', 'url' => ['/sprav/sprav_work']],
+                                    // ['label' => 'Довідник транспорту', 'url' => ['/sprav/sprav_transp']],
+                                    ['label' => 'Довідник контрагентів', 'url' => ['/sprav/sprav_klient']],
+                                    // ['label' => 'Довідник послуг', 'url' => ['/sprav/sprav_uslug']],
+                                    ['label' => 'Довідник відповідальних осіб', 'url' => ['/sprav/sprav_spr_res_koord']],
+                                    // ['label' => 'Статуси заявки', 'url' => ['/sprav/status_sch']]
+                                ]],
+                            ['label' => 'Сервіс', 'url' => ['/site/index'],
+                                'options' => ['id' => 'down_menu'],
+                                'items' => [
+                                    ['label' => 'Перегляд замовлень', 'url' => ['/site/viewschet']],
+                                    ['label' => 'Відмови', 'url' => ['/site/viewcancel']],
+                                ]],
+                            ['label' => 'Звіти', 'url' => ['/site/index'],
+                                'options' => ['id' => 'down_menu'],
+                                'items' => [
+                                    ['label' => 'Оплачені заявки', 'url' => ['/site/opl_z']],
+                                ]],
+                            ['label' => 'Про программу', 'url' => ['/site/about']],
+                            ['label' => 'Контакти', 'url' => ['/site/contact']],
+                            ['label' => 'Вийти', 'url' => ['/site/logout'], 'linkOptions' => ['data-method' => 'post']],
+                        ],
+                    ]);
+                    break;
+                case 15:   //   Вольногорск
+                    echo Nav::widget([
+                        'options' => ['class' => 'navbar-nav navbar-right'],
+                        'items' => [
+                            ['label' => 'Головна', 'url' => ['/site/index']],
+
+                            ['label' => 'Довідники', 'url' => ['/site/index'],
+                                'options' => ['id' => 'down_menu'],
+                                'items' => [
+                                    // ['label' => 'Довідник РЕМів', 'url' => ['/sprav/sprav_res']],
+                                    // ['label' => 'Довідник вартості робіт', 'url' => ['/sprav/sprav_work']],
+                                    // ['label' => 'Довідник транспорту', 'url' => ['/sprav/sprav_transp']],
+                                    ['label' => 'Довідник контрагентів', 'url' => ['/sprav/sprav_klient']],
+                                    // ['label' => 'Довідник послуг', 'url' => ['/sprav/sprav_uslug']],
+                                    ['label' => 'Довідник відповідальних осіб', 'url' => ['/sprav/sprav_spr_res_koord']],
+                                    // ['label' => 'Статуси заявки', 'url' => ['/sprav/status_sch']]
+                                ]],
+                            ['label' => 'Сервіс', 'url' => ['/site/index'],
+                                'options' => ['id' => 'down_menu'],
+                                'items' => [
+                                    ['label' => 'Перегляд замовлень', 'url' => ['/site/viewschet']],
+                                    ['label' => 'Відмови', 'url' => ['/site/viewcancel']],
+                                ]],
+                            ['label' => 'Звіти', 'url' => ['/site/index'],
+                                'options' => ['id' => 'down_menu'],
+                                'items' => [
+                                    ['label' => 'Оплачені заявки', 'url' => ['/site/opl_z']],
+                                ]],
+                            ['label' => 'Про программу', 'url' => ['/site/about']],
+                            ['label' => 'Контакти', 'url' => ['/site/contact']],
+                            ['label' => 'Вийти', 'url' => ['/site/logout'], 'linkOptions' => ['data-method' => 'post']],
+                        ],
+                    ]);
+                    break;
+                case 16:   //   Желтые Воды
+                    echo Nav::widget([
+                        'options' => ['class' => 'navbar-nav navbar-right'],
+                        'items' => [
+                            ['label' => 'Головна', 'url' => ['/site/index']],
+
+                            ['label' => 'Довідники', 'url' => ['/site/index'],
+                                'options' => ['id' => 'down_menu'],
+                                'items' => [
+                                    // ['label' => 'Довідник РЕМів', 'url' => ['/sprav/sprav_res']],
+                                    // ['label' => 'Довідник вартості робіт', 'url' => ['/sprav/sprav_work']],
+                                    // ['label' => 'Довідник транспорту', 'url' => ['/sprav/sprav_transp']],
+                                    ['label' => 'Довідник контрагентів', 'url' => ['/sprav/sprav_klient']],
+                                    // ['label' => 'Довідник послуг', 'url' => ['/sprav/sprav_uslug']],
+                                    ['label' => 'Довідник відповідальних осіб', 'url' => ['/sprav/sprav_spr_res_koord']],
+                                    // ['label' => 'Статуси заявки', 'url' => ['/sprav/status_sch']]
+                                ]],
+                            ['label' => 'Сервіс', 'url' => ['/site/index'],
+                                'options' => ['id' => 'down_menu'],
+                                'items' => [
+                                    ['label' => 'Перегляд замовлень', 'url' => ['/site/viewschet']],
+                                    ['label' => 'Відмови', 'url' => ['/site/viewcancel']],
+                                ]],
+                            ['label' => 'Звіти', 'url' => ['/site/index'],
+                                'options' => ['id' => 'down_menu'],
+                                'items' => [
+                                    ['label' => 'Оплачені заявки', 'url' => ['/site/opl_z']],
+                                ]],
+                            ['label' => 'Про программу', 'url' => ['/site/about']],
+                            ['label' => 'Контакти', 'url' => ['/site/contact']],
+                            ['label' => 'Вийти', 'url' => ['/site/logout'], 'linkOptions' => ['data-method' => 'post']],
+                        ],
+                    ]);
+                    break;
+         default:
+            echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
                 'items' => [
                     ['label' => 'Головна', 'url' => ['/site/index']],
                     ['label' => 'Сервіс', 'url' => ['/site/index'],
                         'options' => ['id' => 'down_menu'],
                         'items' => [
-                            ['label' => 'Перегляд заявок', 'url' => ['/site/viewschet']],
+                            ['label' => 'Перегляд замовлень', 'url' => ['/site/viewschet']],
                             //['label' => 'Відмови', 'url' => ['/site/viewcancel']],
+                        ]],
+                    ['label' => 'Звіти', 'url' => ['/site/index'],
+                        'options' => ['id' => 'down_menu'],
+                        'items' => [
+                            ['label' => 'Оплачені заявки', 'url' => ['/site/opl_z']],
                         ]],
                     ['label' => 'Про программу', 'url' => ['/site/about']],
                     ['label' => 'Контакти', 'url' => ['/site/contact']],
@@ -108,6 +369,7 @@ AppAsset::register($this);
 
                 ],
             ]);
+             break;
         }}
         else
         {echo Nav::widget([
@@ -120,8 +382,8 @@ AppAsset::register($this);
             ]);}
             NavBar::end();
         ?>
-
-
+       
+        <?php if($this->context->adm<>1): ?>
         <!--Вывод логотипа-->
         <? if(!strpos(Yii::$app->request->url,'/cek')): ?>
         <? if(strlen(Yii::$app->request->url)==10): ?>
@@ -142,7 +404,7 @@ AppAsset::register($this);
                 <img class="logo_site" src="../Logo.png" alt="ЦЕК" />
             <? endif; ?>
         <? endif; ?>
-
+        <?php endif; ?>
 
     
         <div class="container">
@@ -159,45 +421,57 @@ AppAsset::register($this);
             <?php endif; ?>
             
              <?php
+
              if($flag==1 && $role==3) {
 //                $filename = 'cron_schet';
 //                if (file_exists($filename)) {
 //                $f = fopen($filename,'r');
 //                $s = fgets($f);
                   $model = new schet();
-                  $sql = 'select max(cast(id as unsigned)) as id from schet';
-                  $sch = schet::findBySql($sql)->one();
-                  $max_id = $sch->id;
-                  $sch_last = max_schet::find()->one();
-                  $max_value = $sch_last->value;
-                if($max_id>$max_value){
-                $kol =  $max_id-$max_value;   
-                $music = "http://localhost/CalcWork/web/zvukovye-effekty-korotkie-fanfary.mp3";
+//                  $sql = 'select max(cast(id as unsigned)) as id from schet';
+//                  $sch = schet::findBySql($sql)->one();
+//                  $max_id = $sch->id;
+//                  $sch_last = max_schet::find()->one();
+//                  $max_value = $sch_last->value;
+                
+                  
+                $sql = 'select count(id) as kol from schet where read_z=0';
+                $sch = schet::findBySql($sql)->one();
+                $kol = $sch->kol;
+                //if($max_id>$max_value){
+                if($kol>0){
+                //$kol =  $max_id-$max_value;   
+                //$music = "http://192.168.55.1/CalcWork/web/zvukovye-effekty-korotkie-fanfary.mp3";
+                $music = "http://192.168.55.1/CalcWork/web/new_1click.mp3";
 
-                $audio = "<embed src='".$music."'>";
+                $audio = "<embed src='".$music."'></embed>";
                 ?>
-                 <? if($kol==1): ?>
+                 <?php if($kol==1): ?>
                     <div class="d15" >
-                        <h3><?= Html::encode("Увага з’явилась нова заявка №$max_id") ?></h3>
+                        <h3><?= Html::encode("Увага з’явилась нова заявка. Зайдіть в перегляд заявок та проставте статус прочитана.") ?></h3>
 
                     </div>
-                <? endif; ?>
-                 <? if($kol>1 && $kol<5): ?>
+                <?php endif; ?>
+
+                 <?php if($kol>1 && $kol<5): ?>
                     <div class="d15" >
-                        <h3><?= Html::encode("Увага з’явилась $kol нові заявки, остання №$max_id") ?></h3>
+                        <h3><?= Html::encode("Увага з’явились $kol нові заявки. Зайдіть в перегляд заявок та проставте статус прочитана.") ?></h3>
 
                     </div>
-                <? endif; ?>
-                <? if($kol>4): ?>
-                    <div class="d15" >
-                        <h3><?= Html::encode("Увага з’явилось $kol нових заявок, остання №$max_id") ?></h3>
+                <?php endif; ?>
 
-                    </div>
-                <? endif; ?>
+<!--                --><?php //if($kol>4): ?>
+<!--                    <div class="d15" >-->
+<!--                        <h3>--><?//= Html::encode("Увага з’явились $kol нових заявок. Зайдіть в перегляд заявок та проставте статус прочитана.") ?><!--</h3>-->
+<!---->
+<!--                    </div>-->
+<!--                --><?php //endif; ?>
+               
                <?php
-                   echo $audio;
-                   $sch_last->value = $max_id;
-                   $sch_last->save();
+                   //echo $audio;
+
+//                   $sch_last->value = $max_id;
+//                   $sch_last->save();
                 }
                    //unlink($filename);
                    
@@ -211,6 +485,7 @@ AppAsset::register($this);
                 'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
             ]) ?>
             <?= $content ?>
+            
         </div>
     </div>
 

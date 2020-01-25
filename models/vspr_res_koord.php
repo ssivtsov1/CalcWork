@@ -27,6 +27,7 @@ class Vspr_res_koord extends \yii\db\ActiveRecord
             'tel' => 'Телефон внутрішній',
             'tel_dop' => 'Додатковий тел.',
             'nazv' => 'Назва РЕМ',
+            'email' => 'Адреса пошти'
 
         ];
     }
@@ -36,7 +37,7 @@ class Vspr_res_koord extends \yii\db\ActiveRecord
         return [
 
             [['id','id_res','nazv','tel',
-                'tel_mobile','tel_town','tel_dop'], 'safe'],
+                'tel_mobile','tel_town','tel_dop','email','type_usl'], 'safe'],
         ];
     }
 

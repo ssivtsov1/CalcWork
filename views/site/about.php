@@ -4,6 +4,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <!--<div class="site-about">-->
 <div class=<?= $model->style_title ?> >

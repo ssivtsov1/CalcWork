@@ -12,8 +12,9 @@ $this->title = 'Довідник РЕМів';
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
+<div class="site-spr1">
 <?= Html::a('Добавити', ['createres'], ['class' => 'btn btn-success']) ?>
-<div class="site-spr">
+
     <h3><?= Html::encode($this->title) ?></h3>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -21,42 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'summary' => false,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            
-            'id',
-            'nazv',
-            'addr',
-            'mail',
-            'Director',
-            'parrent_nazv',
-            'geo_koord',
             [
-                'label' => 'Гео-коорд. звідки <br /> їде машина (лабор.)',
-                'attribute' => 'geo_fromwhere_sd',
-                'encodeLabel' => false,
-
-            ],
-            [
-                'label' => 'Гео-коорд. звідки <br /> їде машина (метрологи)',
-                'attribute' => 'geo_fromwhere_sz',
-                'encodeLabel' => false,
-
-            ],
-            [
-                'label' => 'Місто звідки <br /> їде машина (лабор.)',
-                'attribute' => 'town_fromwhere_sd',
-                'encodeLabel' => false,
-
-            ],
-            [
-                'label' => 'Місто звідки <br /> їде машина (метрологи)',
-                'attribute' => 'town_fromwhere_sz',
-                'encodeLabel' => false,
-
-            ],
-           
-            'tel',
-            'relat',
-             [
                 /**
                  * Указываем класс колонки
                  */
@@ -86,6 +52,46 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{update} {delete}',
                  'controller' => '/sprav',
             ],
+            'id',
+            'nazv',
+            'addr',
+            'mail',
+            'Director',
+            [
+                'label' => 'Назва в<br />родовому відмінку',
+                'attribute' => 'parrent_nazv',
+                'encodeLabel' => false,
+
+            ],
+            'geo_koord',
+            [
+                'label' => 'Гео-коорд. звідки <br /> їде машина (лабор.)',
+                'attribute' => 'geo_fromwhere_sd',
+                'encodeLabel' => false,
+
+            ],
+            [
+                'label' => 'Гео-коорд. звідки <br /> їде машина (метрологи)',
+                'attribute' => 'geo_fromwhere_sz',
+                'encodeLabel' => false,
+
+            ],
+            [
+                'label' => 'Місто звідки <br /> їде машина (лабор.)',
+                'attribute' => 'town_fromwhere_sd',
+                'encodeLabel' => false,
+
+            ],
+            [
+                'label' => 'Місто звідки <br /> їде машина (метрологи)',
+                'attribute' => 'town_fromwhere_sz',
+                'encodeLabel' => false,
+
+            ],
+           
+            'tel',
+            'relat',
+             
         ],
     ]); ?>
 

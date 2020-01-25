@@ -102,3 +102,12 @@
     width: 100%;
     text-align: center;;
 }
+.contract_center_text1 {
+    //margin-left: 20px;
+    font: normal 10px verdana, "Trebuchet MS", Helvetica, arial, sans-serif;
+    width: 100%;
+}
+.qr_code {
+    width: 33%;
+    height: 33%;
+}

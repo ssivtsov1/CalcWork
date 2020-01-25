@@ -32,6 +32,8 @@ use yii\bootstrap\ActiveForm;
     <?= $form->field($model, 'tel_dop',['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
             . '<span class="glyphicon glyphicon-earphone"></span></span>{input}</div>'])->textInput(['onBlur' => 'norm_tel($(this).val())']) ?>
      <?=$form->field($model, 'id_res')->dropDownList(ArrayHelper::map(spr_res::find()->all(), 'id', 'nazv')) ?>
+     <?= $form->field($model, 'email',['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
+            . '<span class="glyphicon glyphicon-envelope"></span></span>{input}</div>'])->textInput() ?>
        
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'ОК' : 'OK', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

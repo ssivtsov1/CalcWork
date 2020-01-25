@@ -22,7 +22,7 @@ class Potrebitel extends \yii\db\ActiveRecord
             'id' => 'ID',
             'inn' => 'Індивідуальний податковий №:',
             'okpo' => 'ЄДРПОУ:',
-            'regsvid' => '№ регістраційного посвідчення',
+            'regsvid' => '№ реєтраційного посвідчення',
             'nazv' => 'Прізвище, ім’я та по батькові:',
             'addr' => 'Адреса:',
             'tel' => 'Телефон:',
@@ -32,7 +32,9 @@ class Potrebitel extends \yii\db\ActiveRecord
             'reg' => 'Признак реєстрації',
             'email' => 'Адреса ел. почти:',
             'contact_person' => 'П.І.Б. контактної особи:',
-            'fio_dir' => 'Посада та П.І.Б. уповноваженої особи:',
+            'fio_dir' => 'Посада та П.І.Б. уповноваженої особи (стара версія)',
+            'pib_dir' => 'П.І.Б. уповноваженої особи:',
+            'post_dir' => 'Посада уповноваженої особи:',
 
         ];
     }
@@ -42,9 +44,9 @@ class Potrebitel extends \yii\db\ActiveRecord
         return [
 
             [['inn', 'nazv','addr'],'required','message'=>'Поле обов’язкове'],
-            [['tel','priz_nds','okpo','regsvid','reg','person','date_reg','email','fio_dir','contact_person'], 'safe'],
-            ['inn','string','length'=>[10,10],'tooShort'=>'ІНН повинно бути 10 значним',
-                'tooLong'=>'ІНН повинно бути 10 значним'],
+            [['tel','priz_nds','okpo','regsvid','reg','person','date_reg',
+              'email','fio_dir','contact_person','pib_dir','post_dir'], 'safe'],
+            ['inn','string'],
             [['date_reg'], 'default', 'value' => date('Y-m-d')],
             [['reg'], 'default', 'value' => 1],
             [['person'], 'default', 'value' => 1],

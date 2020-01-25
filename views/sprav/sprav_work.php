@@ -12,8 +12,9 @@ use yii\grid\SerialColumn;
 $this->title = 'Довідник вартості робіт';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<div class="site-spr1">
 <?= Html::a('Добавити', ['creatework'], ['class' => 'btn btn-success']) ?>
-<div class="site-spr">
+
     <h3><?= Html::encode($this->title) ?></h3>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

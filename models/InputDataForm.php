@@ -15,7 +15,9 @@ class InputDataForm extends Model
     public $addr;
     public $addr_work;         // Адрес работ (вводится для поиска на карте)
     public $nazv = '';         // Название потребителя 
+    public $nazv1 = '';         // Название потребителя 
     public $work;              // Вид работы
+    public $tmc;               // ТМЦ
     public $usluga;            // Вид услуги 
     public $kol = 1;           // Кол-во калькуляционных единиц
     public $koord = '';
@@ -27,6 +29,9 @@ class InputDataForm extends Model
     public $geo = '';          // Координаты с карты
     public $region;            // Область
     public $refresh = 0;       // Признак перерасчета заявки
+    public $transp_cek = 1;    // Признак использования транспорта ЦЕК
+    public $mvp;               // Место возникновения прибыли
+    public $mvp1;              // Место возникновения прибыли
     private $_user;
 
     public function attributeLabels()
@@ -36,6 +41,7 @@ class InputDataForm extends Model
             'potrebitel' => 'Споживач ІНН:',
             'usluga' => 'Напрямок роботи (послуги):',
             'work' => 'Найменування роботи (послуги):',
+            'tmc' => 'Матеріали та устаткування для роботи:',
             'kol' => 'Кількість калькуляційних одиниць:',
             'distance' => 'Відстань від бази до місця проведення робіт (в обидві сторони),км:',
             'koord' => '',
@@ -43,9 +49,12 @@ class InputDataForm extends Model
             'time_work' => 'Кількість годин роботи (тільки для транспортних послуг):',
             'time_prostoy' => 'Кількість годин простою (тільки для транспортних послуг):',
             'nazv' => 'Споживач назва: ',
+            'nazv1' => 'Споживач назва: ',
             'addr' => 'Адреса споживача: ',
             'addr_work' => 'Адреса виконання робіт (для пошуку на карті) - Пишіть українською мовою (вихід з поля - Tab) ',
-            'region' => 'Область:'
+            'region' => 'Область:',
+            'mvp' => 'Підрозділ:',
+
         ];
     }
 
@@ -61,8 +70,13 @@ class InputDataForm extends Model
             ['time_work', 'safe'],
             ['adr_potr', 'safe'],
             ['geo', 'safe'],
+            ['nazv1', 'safe'],
+            ['tmc', 'safe'],
+            ['nazv', 'safe'],
             ['refresh', 'safe'],
             ['region', 'safe'],
+            ['mvp', 'safe'],
+            ['mvp1', 'safe'],
             ['time_prostoy', 'safe'],
         ];
     }

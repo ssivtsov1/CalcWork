@@ -12,11 +12,18 @@ use yii\helpers\Url;
 use yii\web\Response;
 use app\models\forExcel;
 
+
 $time_t = round($distance / 45,2);
+
 $time_work = str_replace(',','.',$time_work);
 $time_prostoy = str_replace(',','.',$time_prostoy);
 $flag =1;
 $role=0;
+if(!is_null($tmc_price) && $tmc_price>0)
+    $tmc_price_=$tmc_price;
+else
+    $tmc_price_=0;
+
 if(!isset(Yii::$app->user->identity->role))
 {      $flag=0;}
 else{
@@ -41,6 +48,9 @@ else{
     <h4><?= Html::encode("Вартість роботи на 1 калькуляційну одиницю: ".$model1[0]->cost.' грн.') ?></h4>
     <h4><?= Html::encode("Кількість калькуляційних одиниць: ".$kol) ?></h4>
     <h4><?= Html::encode("Сумарна вартість роботи грн. без ПДВ: ".$kol*$model1[0]->cost) ?></h4>
+    <?php if(!is_null($tmc_price) && $tmc_price>0): ?>
+        <h4><?= Html::encode("Вартість матеріалів та устаткування без ПДВ: ".$tmc_price.' грн.') ?></h4>
+    <?php endif; ?>
     <br>
     <div class="main_pokaz">
         <h4><?= Html::encode("Розрахунок доставки бригади:  ".round($time_t*$model2[0]->stavka_grn,2).' грн.') ?></h4>
@@ -193,10 +203,10 @@ else{
     if($model1[0]->usluga!="Транспортні послуги")
          $all_grn = round((round($model1[0]->proezd*$time_t,2)+
                 round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
-                (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost)*0.2,2)+
+                (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_)*0.2,2)+
                  (round($model1[0]->proezd*$time_t,2)+
                   round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
-                  (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost);
+                  (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_);
     else
         $all_grn = round(round((round($model1[0]->proezd*$time_t,2)+
                     round($model1[0]->prostoy*$time_prostoy*$kol,2) +
@@ -225,16 +235,16 @@ else{
             round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2);
         $model->all = round($model1[0]->proezd*$time_t,2)+
             round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
-            round($time_t*$model2[0]->stavka_grn,2)+$kol*$model1[0]->cost;
+            round($time_t*$model2[0]->stavka_grn,2)+$kol*$model1[0]->cost+$tmc_price_;
         $model->nds = round((round($model1[0]->proezd*$time_t,2)+
                 round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
-                (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost)*0.2,2);
+                (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_)*0.2,2);
         $model->all_nds = (round((round($model1[0]->proezd*$time_t,2)+
                     round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
-                    (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost)*0.2,2)+
+                    (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_)*0.2,2)+
             (round($model1[0]->proezd*$time_t,2)+
                 round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
-                (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost));
+                (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_));
 
     }
     if($model1[0]->usluga=="Транспортні послуги") {
@@ -266,6 +276,14 @@ else{
             <td><?= $model->nazv ?></td>
             <td><?= $model->rabota ?></td>
         </tr>
+
+        <?php if(!is_null($tmc_price) && $tmc_price>0): ?>
+        <tr>
+                <td><?= "Вартість матеріалів та устаткування: " ?></td>
+                <td><?= $tmc_price ?></td>
+        </tr>
+        <?php endif; ?>
+
         <tr>
             <td><?= "Транспортні послуги: " ?></td>
             <td><?= (round($model1[0]->proezd*$time_t,2)+
@@ -276,24 +294,24 @@ else{
             <td>Всього: </td>
             <td><?= (round($model1[0]->proezd*$time_t,2)+
                 round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
-                (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost) ?></td>
+                (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_) ?></td>
 
         </tr>
         <tr>
             <td>ПДВ: </td>
             <td><?= round((round($model1[0]->proezd*$time_t,2)+
                         round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
-                        (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost)*0.2,2) ?></td>
+                        (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_)*0.2,2) ?></td>
 
         </tr>
         <tr>
             <td>Разом з ПДВ: </td>
             <td class="itogo_s_nds"><?= (round((round($model1[0]->proezd*$time_t,2)+
                             round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
-                            (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost)*0.2,2)+
+                            (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_)*0.2,2)+
                     (round($model1[0]->proezd*$time_t,2)+
                         round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
-                        (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost))  ?></td>
+                        (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_))  ?></td>
 
         </tr>
         </tbody>
@@ -368,7 +386,7 @@ else{
             <?php if($flag): ?>
               <?= Html::a('Сброс в Excel', ["site/excel?&kind=1&nazv=$model->nazv&rabota=$model->rabota&
              delivery=$model->delivery&transp=$model->transp&
-                 all=$model->all&nds=$model->nds&all_nds=$model->all_nds"],
+                 all=$model->all&nds=$model->nds&all_nds=$model->all_nds&nazv1=$nazv1"],
                 ['class' => 'btn btn-info'])  ?>
             <?php endif; ?>
         <?php endif; ?>
@@ -377,7 +395,9 @@ else{
         <?= Html::a(($refresh==0) ? 'Замовити послугу' : 'Зберегти',['proposal?rabota='.$model->rabota.'&delivery='.$model->delivery.
             '&transp='.$model->transp.'&all='.$model->all.'&g=' .$all_grn.
             '&u='.$model1[0]->work.'&res='.$name_res[0]->nazv.
-            '&adr='.$model->adr_work.'&geo='.$geo.'&kol='.$kol.'&refresh='.$refresh.'&schet='.$schet],
+            '&adr='.$model->adr_work.'&geo='.$geo.'&kol='.$kol.'&refresh='.$refresh.
+            '&schet='.$schet.'&tmc='.$tmc_price_.'&tmc_name='.$tmc_name.
+            '&time_t='.$time_t.'&mvp='.$mvp.'&time_prostoy='.$time_prostoy.'&time_work='.$time_work],
             ['class' => 'btn btn-primary']); ?>
 
         <?php endif; ?>

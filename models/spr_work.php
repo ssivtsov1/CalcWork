@@ -10,7 +10,9 @@ use yii\data\ActiveDataProvider;
 
 class Spr_work extends \yii\db\ActiveRecord
 {
-
+    public $res;
+    public $tr;
+    
     public static function tableName()
     {
         return 'costwork';
@@ -33,6 +35,15 @@ class Spr_work extends \yii\db\ActiveRecord
             'cast_5' => 'грудень',
             'cast_6' => 'січ-лют',
             'kod_uslug' => 'Код посл.',
+            'transp_cek' => 'Транспорт ЦЕК',
+            'T_Ap' => 'Транспорт Апостолово',
+            'T_Dn' => 'Транспорт Дніпро РЕМ',
+            'T_Vg' => 'Транспорт Вільногірськ',
+            'T_Pvg' => 'Транспорт Павлоград',
+            'T_Gv' => 'Транспорт Гвардійське',
+            'T_Krr' => 'Транспорт Кривий Ріг',
+            'T_Ing' => 'Транспорт Інгулець',
+            'T_Yv' => 'Транспорт Жовті Води',
            
         ];
     }
@@ -42,8 +53,9 @@ class Spr_work extends \yii\db\ActiveRecord
         return [
 
             [['work', 'usluga','cast_1','cast_2','cast_3',
-                'cast_4','cast_5','cast_6','stavka_grn',
-                'time_transp','type_transp','brig'], 'safe'],
+                'cast_4','cast_5','cast_6','stavka_grn','kod_uslug',
+                'time_transp','type_transp','brig','transp_cek','res','tr',
+                'T_Ap','T_Dn','T_Vg','T_Pvg','T_Gv','T_Krr','T_Ing','T_Yv'], 'safe'],
 
         ];
     }

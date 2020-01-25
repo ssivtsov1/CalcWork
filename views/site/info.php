@@ -1,6 +1,9 @@
 <?php
 use yii\helpers\Html;
+// New comment
+// Еще комментарий
 $this->title = $model->title;
+
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <!--<div class="site-about">-->

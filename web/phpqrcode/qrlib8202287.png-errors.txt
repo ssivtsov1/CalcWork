@@ -1,0 +1,1 @@
+2019-06-20 15:20:18: imagepng(qrlib8202287.png): failed to open stream: Permission denied

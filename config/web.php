@@ -4,7 +4,7 @@ $params = require(__DIR__ . '/params.php');
 
 $config = [
     'id' => 'basic',
-    'language' => 'ru',
+    'language' => 'uk',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'components' => [
@@ -12,7 +12,7 @@ $config = [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             //'baseUrl' => '',
-            'cookieValidationKey' => '5gNTJRBqUBpu2yux6zL4kR_BdKF5fhlX',
+            'cookieValidationKey' => '5gNTJRBqUBpu2yux6zL4kR_BdKF5fhlP',
         ],
         'urlManager' => [
             'enablePrettyUrl' => true,
@@ -43,9 +43,9 @@ $config = [
 
             'transport' => [
                 'class' => 'Swift_SmtpTransport',
-                'host' => '192.168.55.1',
+                'host' => 'mx.cek.dp.ua',
                 'username' => 'usluga@cek.dp.ua',
-                'password' => 'kKvdRaCT4Q',
+                'password' => '1Qaz2Wsxcalc',
                 'port' => '587',
                 'encryption' => 'tls',
 

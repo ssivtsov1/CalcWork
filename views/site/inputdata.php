@@ -463,7 +463,14 @@ $this->title = 'Розрахунок вартості робіт';
                 ]
             ) ?>
 
-
+            <?= $form->field($model, 'calc_ind')
+                ->dropDownList([
+                    '1' => 'Типова',
+                    '2' => 'Індивідуальна',
+                ],
+                    [
+                        'prompt' => ''
+                    ]);?>
 
 
             <span class="nazv_kl"></span>
@@ -491,7 +498,7 @@ $this->title = 'Розрахунок вартості робіт';
                     [
             'prompt' => 'Виберіть послугу',
             'onchange' => '$.get("' . Url::to('/CalcWork/web/site/getworks?id=') . 
-             '"+$(this).val()+"&res="+localStorage.getItem("id_res"),
+             '"+$(this).val()+"&res="+localStorage.getItem("id_res")+"&calc_ind="+$("#inputdataform-calc_ind").val(),
                     function(data) {
                          var flag=0,fl=0;
                          var id_usl=$("#inputdataform-usluga").val();
@@ -592,23 +599,23 @@ $this->title = 'Розрахунок вартості робіт';
             dropDownList(ArrayHelper::map(
             app\models\spr_costwork::findbysql('Select min(id) as id,work from costwork where '
             . 'hide=:hide and work is not null group by work order by work',[':hide' => 0])
-            ->all(), 'id', 'work'),
-            ['onchange' => '$.get("' . Url::to('/CalcWork/web/site/gettransp_cek?id=') .
-                    '"+$(this).val(),
-                    function(data) {
-                     //alert(data.transp_cek); 
-                    var r = $("#inputdataform-work :selected").text();
-                    hidepole_rabota(r);
-                    if(data.transp_cek==0){
-                         $(".field-inputdataform-transp_cek").show();
-                        }
-                    else
-                    {
-                        $(".field-inputdataform-transp_cek").hide();
-                    }
-                        
-                       
-                });',]
+            ->all(), 'id', 'work')
+//            ['onchange' => '$.get("' . Url::to('/CalcWork/web/site/gettransp_cek?id=') .
+//                    '"+$(this).val(),
+//                    function(data) {
+//                     //alert(data.transp_cek);
+//                    var r = $("#inputdataform-work :selected").text();
+//                    hidepole_rabota(r);
+//                    if(data.transp_cek==0){
+//                         $(".field-inputdataform-transp_cek").show();
+//                        }
+//                    else
+//                    {
+//                        $(".field-inputdataform-transp_cek").hide();
+//                    }
+//
+//
+//                });',]
             ) ?>
 
 
@@ -809,8 +816,10 @@ $this->title = 'Розрахунок вартості робіт';
             }
 
 
-            var url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins="+lat1+','+lng1+'&destinations=';
+            var url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins="+
+                lat1+','+lng1+'&destinations='+'1';
             url = url + geo_k;
+            // alert(url);
 
             $.getJSON('/CalcWork/web/site/getdist?url='+url, function(data) {
 

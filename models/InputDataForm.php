@@ -32,6 +32,7 @@ class InputDataForm extends Model
     public $transp_cek = 1;    // Признак использования транспорта ЦЕК
     public $mvp;               // Место возникновения прибыли
     public $mvp1;              // Место возникновения прибыли
+    public $calc_ind=1;         // Вид калькуляции
     private $_user;
 
     public function attributeLabels()
@@ -54,6 +55,7 @@ class InputDataForm extends Model
             'addr_work' => 'Адреса виконання робіт (для пошуку на карті) - Пишіть українською мовою (вихід з поля - Tab) ',
             'region' => 'Область:',
             'mvp' => 'Підрозділ:',
+            'calc_ind' => 'Вид калькуляції:',
 
         ];
     }
@@ -78,6 +80,7 @@ class InputDataForm extends Model
             ['mvp', 'safe'],
             ['mvp1', 'safe'],
             ['time_prostoy', 'safe'],
+            ['calc_ind', 'safe'],
         ];
     }
 

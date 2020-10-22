@@ -15,4 +15,6 @@ select distinct a.*,b.Director,b.parrent_nazv,b.mail,
                 left join costwork d on a.usluga=d.work 
                 left join spr_uslug c on c.usluga=d.usluga 
                 left join spr_uslug e on 1=1 and e.id=17  where schet='00006220' limit 1
+
+SELECT usluga,summa,nazv FROM vschet WHERE date_akt>='2019-12-01' and date_akt<='2019-12-31' and status=7 
                 

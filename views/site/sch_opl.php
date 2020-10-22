@@ -66,7 +66,13 @@ $okpo = '31793056';
         <th width="350px" class="th_r">
             <div class="opl_left">
                 <span class="span_single"><?= Html::encode("Рахунок за послугу №") ?>
-                    <?= Html::encode($model[0]['schet'] . ' від ' . date("d.m.Y", strtotime($model[0]['date']))) ?>
+
+                    <? if((int) $model[0]['schet']==9031 || (int) $model[0]['schet']==9030 || (int) $model[0]['schet']==9029): ?>
+                        <?= Html::encode($model[0]['schet'] ) ?>
+                    <? else: ?>
+                        <?= Html::encode($model[0]['schet'] . ' від ' . date("d.m.Y", strtotime($model[0]['date']))) ?>
+                    <? endif; ?>
+
                     <?= Html::encode(' по договору ' . $model[0]['contract']) ?>
                 </span>
                 <br>
@@ -145,7 +151,9 @@ $okpo = '31793056';
                 <br>
                 <?= Html::encode("Телефон для довідок:    0 800 300 015 (безкоштовно цілодобово)") ?>
                 <div class="single_red">
-                    <?= Html::encode("Рахунок дійсний протягом однієї доби !") ?>
+                    <? if(!((int) $model[0]['schet']==9031 || (int) $model[0]['schet']==9030 || (int) $model[0]['schet']==9029)): ?>
+                        <?= Html::encode("Рахунок дійсний протягом однієї доби !") ?>
+                    <?php endif; ?>
                     <?= Html::encode("В призначенні платежу обов'язково указуйте № рахунку або договору!") ?>
                 </div>
                 <br>

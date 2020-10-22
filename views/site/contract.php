@@ -12,7 +12,8 @@ $year = date('Y');
     </div>
     <div class="contract_center">
     <span class="span_single">
-        <?= Html::encode(" ДОГОВІР №".$model[0]['contract']) ?>
+<!--        --><?//= Html::encode(" ДОГОВІР №".$model[0]['contract']) ?>
+        <?= Html::encode(" ДОГОВІР №".$n_cnt) ?>
 
     </span>
     </div>
@@ -101,6 +102,7 @@ $year = date('Y');
 
 <span class="contract_center_text" >
      <?php
+
         if(empty($model[0]['object']))
             $obj = $model[0]['nazv'];
         else
@@ -128,10 +130,20 @@ $year = date('Y');
 //             " грн., матеріали (".$model[0]['tmc_name'].") ".$model[0]['summa_tmc']." грн., проїзд ".$model[0]['summa_transport']." грн., доставка бригади ".$model[0]['summa_delivery']." грн.");?>
 
     <?php if($model[0]['usl']<>'Транспортні послуги'): ?>
-         <?= Html::encode("2.1. Вартість послуг, що виконуються, складає ".$total_beznds.
-             " грн. без ПДВ, ПДВ 20% ".($total-$total_beznds)." грн., всього з ПДВ ".
-             $total." грн.(".num2text_ua($total).")., в тому числі робота ".$model[0]['summa_work'].
-             " грн., проїзд ".$model[0]['summa_transport']." грн., доставка бригади ".$model[0]['summa_delivery']." грн.");?>
+
+        <?php if($model[0]['cost_auto_work']==0): ?>
+             <?= Html::encode("2.1. Вартість послуг, що виконуються, складає ".$total_beznds.
+                 " грн. без ПДВ, ПДВ 20% ".($total-$total_beznds)." грн., всього з ПДВ ".
+                 $total." грн.(".num2text_ua($total).")., в тому числі робота ".$model[0]['summa_work'].
+                 " грн., проїзд ".$model[0]['summa_transport']." грн., доставка бригади ".$model[0]['summa_delivery']." грн.");?>
+          <?php endif; ?>
+             <?php if($model[0]['cost_auto_work']>0): ?>
+                 <?= Html::encode("2.1. Вартість послуг, що виконуються, складає ".$total_beznds.
+                     " грн. без ПДВ, ПДВ 20% ".($total-$total_beznds)." грн., всього з ПДВ ".
+                     $total." грн.(".num2text_ua($total).")., в тому числі робота ".$model[0]['summa_work']." грн.,".
+                     "  транспортні послуги ".($model[0]['summa_transport'] + $model[0]['cost_auto_work']) .
+                     " грн., проїзд ".$model[0]['summa_transport']." грн., доставка бригади ".$model[0]['summa_delivery']." грн.");?>
+             <?php endif; ?>
      <?php endif; ?>
 
          <?php if($model[0]['usl']=='Транспортні послуги'): ?>
@@ -149,11 +161,21 @@ $year = date('Y');
 //            $model[0]['summa']." грн.(".num2text_ua($model[0]['summa']).").");?>
 
         <?php if($model[0]['usl']<>'Транспортні послуги'): ?>
-        <?= Html::encode("2.1. Вартість послуг, що виконуються, складає ".$model[0]['summa_beznds'].
-            " грн. без ПДВ,"." в тому числі робота ".$model[0]['summa_work'].
-            " грн., проїзд ".$model[0]['summa_transport']." грн., доставка бригади ".$model[0]['summa_delivery']." грн.".
-            " ПДВ 20% ".(($model[0]['summa'])-($model[0]['summa_beznds']))." грн., всього з ПДВ ".
-            $model[0]['summa']." грн.(".num2text_ua($model[0]['summa']).").");?>
+            <?php if($model[0]['cost_auto_work']==0): ?>
+                <?= Html::encode("2.1. Вартість послуг, що виконуються, складає ".$model[0]['summa_beznds'].
+                    " грн. без ПДВ,"." в тому числі робота ".$model[0]['summa_work'].
+                    " грн., проїзд ".$model[0]['summa_transport']." грн., доставка бригади ".$model[0]['summa_delivery']." грн.".
+                    " ПДВ 20% ".(($model[0]['summa'])-($model[0]['summa_beznds']))." грн., всього з ПДВ ".
+                    $model[0]['summa']." грн.(".num2text_ua($model[0]['summa']).").");?>
+          <?php endif; ?>
+            <?php if($model[0]['cost_auto_work']>0): ?>
+<!--                --><?php //echo($model[0]['summa_transport']+$model[0]['cost_auto_work']); ?>
+                <?= Html::encode("2.1. Вартість послуг, що виконуються, складає ".$model[0]['summa_beznds'].
+                    " грн. без ПДВ,"." в тому числі робота ".$model[0]['summa_work'].
+                    " грн., транспортні послуги ".($model[0]['summa_transport'] + $model[0]['cost_auto_work']) ." грн., доставка бригади ".$model[0]['summa_delivery']." грн.".
+                    " ПДВ 20% ".(($model[0]['summa'])-($model[0]['summa_beznds']))." грн., всього з ПДВ ".
+                    $model[0]['summa']." грн.(".num2text_ua($model[0]['summa']).").");?>
+            <?php endif; ?>
         <?php endif; ?>
 
         <?php if($model[0]['usl']=='Транспортні послуги'): ?>
@@ -443,8 +465,9 @@ $year = date('Y');
                 'method' => 'post',
                 'params' => [
                 'sch' => $sch,
-                'sch1' => $sch1,    
-         ],],
+                'sch1' => $sch1,
+                'n_cnt' => $n_cnt,
+                ],],
             'class' => 'btn btn-primary','target'=>'_blank', ]); ?>
 
     <?= Html::a('Відправити по Email',['site/contract_email'],
@@ -456,6 +479,7 @@ $year = date('Y');
                 'sch' => $sch,
                 'email' => $mail,
                 'sch1' => $sch1,
+                'n_cnt' => $n_cnt,
             ],],
         'class' => 'btn btn-primary']); ?>
 

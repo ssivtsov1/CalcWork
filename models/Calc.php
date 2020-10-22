@@ -79,11 +79,11 @@ class Calc extends ActiveRecord
                 $r = $r . 'Sp';
                 break;
             case 12:
-                $r = $r . 'Dn';
-               // $r = 'a.Szoe';
+//                $r = $r . 'Dn';
+                $r = 'a.Szoe';
                 break;
             case 13:
-                $r = $r . 'Dn';
+                $r =  'a.Sdizp';
                 //$r = 'a.Sdizp';
                 break;
             case 11:
@@ -99,8 +99,11 @@ class Calc extends ActiveRecord
                   case when a.lic=1 then 0 else a.time_transp end as time_transp,'.$r.' as nom_tr,b.transport,
                   case when a.lic=1 then 0 else b.proezd end as proezd,
                   case when a.lic=1 then 0 else b.prostoy end as prostoy,
-                  case when a.lic=1 then 0 else b.rabota end as rabota'.
+                  case when a.lic=1 then 0 else 
+                  case when a.time_work is null or a.time_work=0 then b.rabota else b.rabota*a.time_work end end as rabota'.
                 ' from costwork a left join transport b on '.$r.'=ltrim(rtrim(b.nomer)) where a.id='.$vid_work;
+
+
 //        $sql = 'SELECT '.$v.' as cost,a.work,a.usluga,a.stavka_grn,a.time_transp,'.$r.' as nom_tr,b.transport,b.proezd,b.prostoy,b.rabota'.
 //        ' from costwork a,transport b where a.id='.$vid_work.
 //        ' and '.$r.'=ltrim(rtrim(b.nomer))';
@@ -113,12 +116,11 @@ class Calc extends ActiveRecord
                 0 as time_transp,'.$r.' as nom_tr,b.transport,
                 case when a.lic=1 then 0 else b.proezd end as proezd,
                 case when a.lic=1 then 0 else b.prostoy end as prostoy,
-                case when a.lic=1 then 0 else b.rabota end as rabota'.
+                case when a.lic=1 then 0 else 
+                case when a.time_work is null then b.rabota else b.rabota*a.time_work end end as rabota '.
             ' from costwork a left join transport b on '.$r.'=ltrim(rtrim(b.nomer)) where a.id='.$vid_work;
 
-
-
-        return $sql;
+               return $sql;
     }
 
     //  Формирование строки SQL запроса для связи с несколькими таблицами
@@ -127,7 +129,8 @@ class Calc extends ActiveRecord
     {
             $sql = 'SELECT a.*,b.number as nom_tr,cast(replace(b.all_move,",",".") as decimal(8,2)) as all_move,
              cast(replace(b.all_p,",",".") as decimal(8,2)) as all_p'.
-                ' from costwork a left join a_transport b on trim(a.work)=ltrim(rtrim(b.number))
+                ' from costwork a left join a_transport b on trim(a.work)=ltrim(rtrim(b.number)) or 
+               ltrim(rtrim(b.number))=a.T_Dn
                  where a.id='.$vid_work;
 
         return $sql;

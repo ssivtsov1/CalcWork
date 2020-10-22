@@ -1,0 +1,1001 @@
+изменено:      vendor/phpoffice/phpexcel/Examples/09pagebreaks.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/10autofilter-selection-1.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/10autofilter-selection-2.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/10autofilter-selection-display.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/10autofilter.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/11documentsecurity-xls.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/11documentsecurity.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/12cellProtection.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/13calculation.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/14excel5.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/15datavalidation-xls.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/15datavalidation.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/16csv.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/17html.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/18extendedcalculation.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/19namedrange.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/20readexcel5.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/21pdf.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/22heavilyformatted.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/23sharedstyles.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/24readfilter.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/25inmemoryimage.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/26utf8.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/27imagesexcel5.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/28iterator.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/29advancedvaluebinder.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/30template.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/31docproperties_write-xls.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/31docproperties_write.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/32chartreadwrite.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/33chartcreate-area.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/33chartcreate-bar-stacked.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/33chartcreate-bar.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/33chartcreate-column-2.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/33chartcreate-column.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/33chartcreate-composite.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/33chartcreate-line.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/33chartcreate-multiple-charts.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/33chartcreate-pie.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/33chartcreate-radar.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/33chartcreate-scatter.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/33chartcreate-stock.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/34chartupdate.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/35chartrender.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/36chartreadwriteHTML.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/36chartreadwritePDF.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/37page_layout_view.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/38cloneWorksheet.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/39dropdown.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/40duplicateStyle.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/41password.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/42richText.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/Excel2003XMLReader.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/Excel2003XMLTest.xml
+	изменено:      vendor/phpoffice/phpexcel/Examples/GnumericReader.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/GnumericTest.gnumeric
+	изменено:      vendor/phpoffice/phpexcel/Examples/OOCalcReader.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/OOCalcReaderPCLZip.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/OOCalcTest.ods
+	изменено:      vendor/phpoffice/phpexcel/Examples/Quadratic.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/Quadratic2.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/SylkReader.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/SylkTest.slk
+	изменено:      vendor/phpoffice/phpexcel/Examples/XMLReader.php
+	изменено:      vendor/phpoffice/phpexcel/Examples/XMLTest.xml
+	изменено:      vendor/phpoffice/phpexcel/Examples/data/continents/Africa.txt
+	изменено:      vendor/phpoffice/phpexcel/Examples/data/continents/Asia.txt
+	изменено:      vendor/phpoffice/phpexcel/Examples/data/continents/Europe.txt
+	изменено:      vendor/phpoffice/phpexcel/Examples/data/continents/North America.txt
+	изменено:      vendor/phpoffice/phpexcel/Examples/data/continents/Oceania.txt
+	изменено:      vendor/phpoffice/phpexcel/Examples/data/continents/South America.txt
+	изменено:      vendor/phpoffice/phpexcel/Examples/images/officelogo.jpg
+	изменено:      vendor/phpoffice/phpexcel/Examples/images/paid.png
+	изменено:      vendor/phpoffice/phpexcel/Examples/images/phpexcel_logo.gif
+	изменено:      vendor/phpoffice/phpexcel/Examples/images/termsconditions.jpg
+	изменено:      vendor/phpoffice/phpexcel/Examples/runall.php
+	изменено:      vendor/phpoffice/phpexcel/changelog.txt
+	изменено:      vendor/phpoffice/phpexcel/composer.json
+	изменено:      vendor/phpoffice/phpexcel/install.txt
+	изменено:      vendor/phpoffice/phpexcel/license.md
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/AutoloaderTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Calculation/DateTimeTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Calculation/EngineeringTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Calculation/FinancialTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Calculation/FunctionsTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Calculation/LogicalTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Calculation/LookupRefTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Calculation/MathTrigTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Calculation/TextDataTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/CalculationTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Cell/AdvancedValueBinderTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Cell/DataTypeTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Cell/DefaultValueBinderTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Cell/HyperlinkTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/CellTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Chart/DataSeriesValuesTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Chart/LayoutTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Chart/LegendTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Reader/XEEValidatorTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/ReferenceHelperTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Shared/CodePageTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Shared/DateTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Shared/FileTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Shared/FontTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Shared/PasswordHasherTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Shared/StringTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Shared/TimeZoneTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Style/ColorTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Style/NumberFormatTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Worksheet/AutoFilter/Column/RuleTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Worksheet/AutoFilter/ColumnTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Worksheet/AutoFilterTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Worksheet/CellCollectionTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Worksheet/ColumnCellIteratorTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Worksheet/ColumnIteratorTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Worksheet/RowCellIteratorTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Worksheet/RowIteratorTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Worksheet/WorksheetColumnTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/Classes/PHPExcel/Worksheet/WorksheetRowTest.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/bootstrap.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/custom/Complex.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/custom/complexAssert.php
+	изменено:      vendor/phpoffice/phpexcel/unitTests/phpunit-cc.xml
+	изменено:      vendor/phpoffice/phpexcel/unitTests/phpunit.xml
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/DateTime/DATE.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/DateTime/DATEDIF.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/DateTime/DATEVALUE.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/DateTime/DAY.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/DateTime/DAYS360.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/DateTime/EDATE.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/DateTime/EOMONTH.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/DateTime/HOUR.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/DateTime/MINUTE.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/DateTime/MONTH.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/DateTime/NETWORKDAYS.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/DateTime/SECOND.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/DateTime/TIME.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/DateTime/TIMEVALUE.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/DateTime/WEEKDAY.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/DateTime/WEEKNUM.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/DateTime/WORKDAY.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/DateTime/YEAR.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/DateTime/YEARFRAC.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/BESSELI.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/BESSELJ.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/BESSELK.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/BESSELY.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/BIN2DEC.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/BIN2HEX.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/BIN2OCT.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/COMPLEX.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/CONVERTUOM.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/DEC2BIN.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/DEC2HEX.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/DEC2OCT.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/DELTA.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/ERF.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/ERFC.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/GESTEP.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/HEX2BIN.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/HEX2DEC.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/HEX2OCT.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/IMABS.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/IMAGINARY.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/IMARGUMENT.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/IMCONJUGATE.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/IMCOS.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/IMDIV.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/IMEXP.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/IMLN.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/IMLOG10.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/IMLOG2.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/IMPOWER.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/IMPRODUCT.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/IMREAL.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/IMSIN.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/IMSQRT.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/IMSUB.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/IMSUM.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/OCT2BIN.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/OCT2DEC.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Engineering/OCT2HEX.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/ACCRINT.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/ACCRINTM.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/AMORDEGRC.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/AMORLINC.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/COUPDAYBS.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/COUPDAYS.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/COUPDAYSNC.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/COUPNCD.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/COUPNUM.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/COUPPCD.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/CUMIPMT.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/CUMPRINC.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/DB.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/DDB.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/DISC.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/DOLLARDE.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/DOLLARFR.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/EFFECT.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/FV.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/FVSCHEDULE.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/INTRATE.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/IPMT.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/IRR.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/ISPMT.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/MIRR.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/NOMINAL.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/NPER.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/NPV.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/PRICE.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/RATE.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Financial/XIRR.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Functions/ERROR_TYPE.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Functions/IS_BLANK.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Functions/IS_ERR.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Functions/IS_ERROR.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Functions/IS_EVEN.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Functions/IS_LOGICAL.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Functions/IS_NA.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Functions/IS_NONTEXT.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Functions/IS_NUMBER.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Functions/IS_ODD.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Functions/IS_TEXT.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Functions/N.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Functions/TYPE.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Logical/AND.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Logical/IF.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Logical/IFERROR.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Logical/NOT.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/Logical/OR.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/LookupRef/HLOOKUP.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/LookupRef/VLOOKUP.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/ATAN2.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/CEILING.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/COMBIN.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/EVEN.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/FACT.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/FACTDOUBLE.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/FLOOR.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/GCD.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/INT.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/LCM.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/LOG.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/MDETERM.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/MINVERSE.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/MMULT.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/MOD.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/MROUND.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/MULTINOMIAL.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/ODD.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/POWER.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/PRODUCT.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/QUOTIENT.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/ROMAN.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/ROUNDDOWN.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/ROUNDUP.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/SERIESSUM.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/SIGN.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/SQRTPI.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/SUMSQ.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/MathTrig/TRUNC.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/TextData/CHAR.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/TextData/CLEAN.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/TextData/CODE.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/TextData/CONCATENATE.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/TextData/DOLLAR.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/TextData/FIND.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/TextData/FIXED.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/TextData/LEFT.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/TextData/LEN.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/TextData/LOWER.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/TextData/MID.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/TextData/PROPER.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/TextData/REPLACE.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/TextData/RIGHT.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/TextData/SEARCH.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/TextData/SUBSTITUTE.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/TextData/T.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/TextData/TEXT.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/TextData/TRIM.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/TextData/UPPER.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Calculation/TextData/VALUE.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/CalculationBinaryComparisonOperation.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Cell/DefaultValueBinder.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/CellAbsoluteCoordinate.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/CellAbsoluteReference.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/CellBuildRange.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/CellCoordinates.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/CellExtractAllCellReferencesInRange.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/CellGetRangeBoundaries.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/CellRangeBoundaries.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/CellRangeDimension.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/CellSplitRange.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/ColumnIndex.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/ColumnString.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Reader/XEETestInvalidUTF-16.xml
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Reader/XEETestInvalidUTF-16BE.xml
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Reader/XEETestInvalidUTF-16LE.xml
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Reader/XEETestInvalidUTF-8.xml
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Reader/XEETestValidUTF-16.xml
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Reader/XEETestValidUTF-16BE.xml
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Reader/XEETestValidUTF-16LE.xml
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Reader/XEETestValidUTF-8.xml
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Shared/CentimeterSizeToPixels.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Shared/CodePage.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Shared/DateTimeExcelToPHP1900.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Shared/DateTimeExcelToPHP1900Timezone.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Shared/DateTimeExcelToPHP1904.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Shared/DateTimeFormatCodes.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Shared/DateTimeFormattedPHPToExcel1900.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Shared/DateTimePHPToExcel1900.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Shared/DateTimePHPToExcel1904.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Shared/FontSizeToPixels.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Shared/InchSizeToPixels.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Shared/PasswordHashes.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Style/ColorChangeBrightness.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Style/ColorGetBlue.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Style/ColorGetGreen.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Style/ColorGetRed.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/rawTestData/Style/NumberFormat.data
+	изменено:      vendor/phpoffice/phpexcel/unitTests/testDataFileIterator.php
+	изменено:      vendor/setasign/fpdi/LICENSE
+	изменено:      vendor/setasign/fpdi/README.md
+	изменено:      vendor/setasign/fpdi/composer.json
+	изменено:      vendor/setasign/fpdi/filters/FilterASCII85.php
+	изменено:      vendor/setasign/fpdi/filters/FilterASCIIHexDecode.php
+	изменено:      vendor/setasign/fpdi/filters/FilterLZW.php
+	изменено:      vendor/setasign/fpdi/fpdf_tpl.php
+	изменено:      vendor/setasign/fpdi/fpdi.php
+	изменено:      vendor/setasign/fpdi/fpdi_bridge.php
+	изменено:      vendor/setasign/fpdi/fpdi_pdf_parser.php
+	изменено:      vendor/setasign/fpdi/pdf_context.php
+	изменено:      vendor/setasign/fpdi/pdf_parser.php
+	изменено:      vendor/yiisoft/yii2-jui/Accordion.php
+	изменено:      vendor/yiisoft/yii2-jui/AccordionAsset.php
+	изменено:      vendor/yiisoft/yii2-jui/AutoComplete.php
+	изменено:      vendor/yiisoft/yii2-jui/AutoCompleteAsset.php
+	изменено:      vendor/yiisoft/yii2-jui/ButtonAsset.php
+	изменено:      vendor/yiisoft/yii2-jui/CHANGELOG.md
+	изменено:      vendor/yiisoft/yii2-jui/CoreAsset.php
+	изменено:      vendor/yiisoft/yii2-jui/DatePicker.php
+	изменено:      vendor/yiisoft/yii2-jui/DatePickerAsset.php
+	изменено:      vendor/yiisoft/yii2-jui/DatePickerRegionalAsset.php
+	изменено:      vendor/yiisoft/yii2-jui/Dialog.php
+	изменено:      vendor/yiisoft/yii2-jui/DialogAsset.php
+	изменено:      vendor/yiisoft/yii2-jui/Draggable.php
+	изменено:      vendor/yiisoft/yii2-jui/DraggableAsset.php
+	изменено:      vendor/yiisoft/yii2-jui/Droppable.php
+	изменено:      vendor/yiisoft/yii2-jui/DroppableAsset.php
+	изменено:      vendor/yiisoft/yii2-jui/EffectAsset.php
+	изменено:      vendor/yiisoft/yii2-jui/InputWidget.php
+	изменено:      vendor/yiisoft/yii2-jui/LICENSE.md
+	изменено:      vendor/yiisoft/yii2-jui/Menu.php
+	изменено:      vendor/yiisoft/yii2-jui/MenuAsset.php
+	изменено:      vendor/yiisoft/yii2-jui/ProgressBar.php
+	изменено:      vendor/yiisoft/yii2-jui/ProgressBarAsset.php
+	изменено:      vendor/yiisoft/yii2-jui/README.md
+	изменено:      vendor/yiisoft/yii2-jui/Resizable.php
+	изменено:      vendor/yiisoft/yii2-jui/ResizableAsset.php
+	изменено:      vendor/yiisoft/yii2-jui/Selectable.php
+	изменено:      vendor/yiisoft/yii2-jui/SelectableAsset.php
+	изменено:      vendor/yiisoft/yii2-jui/Slider.php
+	изменено:      vendor/yiisoft/yii2-jui/SliderAsset.php
+	изменено:      vendor/yiisoft/yii2-jui/SliderInput.php
+	изменено:      vendor/yiisoft/yii2-jui/Sortable.php
+	изменено:      vendor/yiisoft/yii2-jui/SortableAsset.php
+	изменено:      vendor/yiisoft/yii2-jui/Spinner.php
+	изменено:      vendor/yiisoft/yii2-jui/SpinnerAsset.php
+	изменено:      vendor/yiisoft/yii2-jui/Tabs.php
+	изменено:      vendor/yiisoft/yii2-jui/TabsAsset.php
+	изменено:      vendor/yiisoft/yii2-jui/ThemeAsset.php
+	изменено:      vendor/yiisoft/yii2-jui/TooltipAsset.php
+	изменено:      vendor/yiisoft/yii2-jui/Widget.php
+	изменено:      vendor/yiisoft/yii2-jui/assets/UPGRADE.md
+	изменено:      vendor/yiisoft/yii2-jui/assets/jquery.ui.accordion.js
+	изменено:      vendor/yiisoft/yii2-jui/assets/jquery.ui.autocomplete.js
+	изменено:      vendor/yiisoft/yii2-jui/assets/jquery.ui.button.js
+	изменено:      vendor/yiisoft/yii2-jui/assets/jquery.ui.core.js
+	изменено:      vendor/yiisoft/yii2-jui/assets/jquery.ui.datepicker-i18n.js
+	изменено:      vendor/yiisoft/yii2-jui/assets/jquery.ui.datepicker.js
+	изменено:      vendor/yiisoft/yii2-jui/assets/jquery.ui.dialog.js
+	изменено:      vendor/yiisoft/yii2-jui/assets/jquery.ui.draggable.js
+	изменено:      vendor/yiisoft/yii2-jui/assets/jquery.ui.droppable.js
+	изменено:      vendor/yiisoft/yii2-jui/assets/jquery.ui.effect-all.js
+	изменено:      vendor/yiisoft/yii2-jui/assets/jquery.ui.menu.js
+	изменено:      vendor/yiisoft/yii2-jui/assets/jquery.ui.mouse.js
+	изменено:      vendor/yiisoft/yii2-jui/assets/jquery.ui.position.js
+	изменено:      vendor/yiisoft/yii2-jui/assets/jquery.ui.progressbar.js
+	изменено:      vendor/yiisoft/yii2-jui/assets/jquery.ui.resizable.js
+	изменено:      vendor/yiisoft/yii2-jui/assets/jquery.ui.selectable.js
+	изменено:      vendor/yiisoft/yii2-jui/assets/jquery.ui.slider.js
+	изменено:      vendor/yiisoft/yii2-jui/assets/jquery.ui.sortable.js
+	изменено:      vendor/yiisoft/yii2-jui/assets/jquery.ui.spinner.js
+	изменено:      vendor/yiisoft/yii2-jui/assets/jquery.ui.tabs.js
+	изменено:      vendor/yiisoft/yii2-jui/assets/jquery.ui.tooltip.js
+	изменено:      vendor/yiisoft/yii2-jui/assets/jquery.ui.widget.js
+	изменено:      vendor/yiisoft/yii2-jui/assets/theme/images/animated-overlay.gif
+	изменено:      vendor/yiisoft/yii2-jui/assets/theme/images/ui-bg_flat_0_aaaaaa_40x100.png
+	изменено:      vendor/yiisoft/yii2-jui/assets/theme/images/ui-bg_flat_75_ffffff_40x100.png
+	изменено:      vendor/yiisoft/yii2-jui/assets/theme/images/ui-bg_glass_55_fbf9ee_1x400.png
+	изменено:      vendor/yiisoft/yii2-jui/assets/theme/images/ui-bg_glass_65_ffffff_1x400.png
+	изменено:      vendor/yiisoft/yii2-jui/assets/theme/images/ui-bg_glass_75_dadada_1x400.png
+	изменено:      vendor/yiisoft/yii2-jui/assets/theme/images/ui-bg_glass_75_e6e6e6_1x400.png
+	изменено:      vendor/yiisoft/yii2-jui/assets/theme/images/ui-bg_glass_95_fef1ec_1x400.png
+	изменено:      vendor/yiisoft/yii2-jui/assets/theme/images/ui-bg_highlight-soft_75_cccccc_1x100.png
+	изменено:      vendor/yiisoft/yii2-jui/assets/theme/images/ui-icons_222222_256x240.png
+	изменено:      vendor/yiisoft/yii2-jui/assets/theme/images/ui-icons_2e83ff_256x240.png
+	изменено:      vendor/yiisoft/yii2-jui/assets/theme/images/ui-icons_454545_256x240.png
+	изменено:      vendor/yiisoft/yii2-jui/assets/theme/images/ui-icons_888888_256x240.png
+	изменено:      vendor/yiisoft/yii2-jui/assets/theme/images/ui-icons_cd0a0a_256x240.png
+	изменено:      vendor/yiisoft/yii2-jui/assets/theme/jquery.ui.css
+	изменено:      vendor/yiisoft/yii2-jui/composer.json
+	изменено:      vendor/yiisoft/yii2/BaseYii.php
+	новый файл:    vendor/yiisoft/yii2/base/BaseObject.php
+	изменено:      vendor/yiisoft/yii2/base/Behavior.php
+	изменено:      vendor/yiisoft/yii2/base/Component.php
+	изменено:      vendor/yiisoft/yii2/base/Event.php
+	изменено:      vendor/yiisoft/yii2/data/Pagination.php
+	изменено:      vendor/yiisoft/yii2/data/Sort.php
+	изменено:      vendor/yiisoft/yii2/db/BatchQueryResult.php
+	изменено:      vendor/yiisoft/yii2/db/ColumnSchema.php
+	изменено:      vendor/yiisoft/yii2/db/ColumnSchemaBuilder.php
+	изменено:      vendor/yiisoft/yii2/db/QueryBuilder.php
+	изменено:      vendor/yiisoft/yii2/db/Schema.php
+	изменено:      vendor/yiisoft/yii2/db/TableSchema.php
+	изменено:      vendor/yiisoft/yii2/grid/Column.php
+	изменено:      vendor/yiisoft/yii2/helpers/BaseArrayHelper.php
+	изменено:      vendor/yiisoft/yii2/mail/BaseMessage.php
+	изменено:      vendor/yiisoft/yii2/rbac/Assignment.php
+	изменено:      vendor/yiisoft/yii2/rbac/Item.php
+	изменено:      vendor/yiisoft/yii2/rbac/Rule.php
+	изменено:      vendor/yiisoft/yii2/web/AssetBundle.php
+	изменено:      vendor/yiisoft/yii2/web/CompositeUrlRule.php
+	изменено:      vendor/yiisoft/yii2/web/Cookie.php
+	изменено:      vendor/yiisoft/yii2/web/CookieCollection.php
+	изменено:      vendor/yiisoft/yii2/web/HeaderCollection.php
+	изменено:      vendor/yiisoft/yii2/web/JsExpression.php
+	изменено:      vendor/yiisoft/yii2/web/Link.php
+	изменено:      vendor/yiisoft/yii2/web/MultipartFormDataParser.php
+	изменено:      vendor/yiisoft/yii2/web/UploadedFile.php
+	изменено:      vendor/yiisoft/yii2/web/UrlNormalizer.php
+	изменено:      vendor/yiisoft/yii2/web/UrlRule.php
+	изменено:      views/cron/sound.php
+	изменено:      views/layouts/main.php
+	изменено:      views/site/about.php
+	изменено:      views/site/act_work.php
+	изменено:      views/site/act_work_print.php
+	новый файл:    views/site/analytics.php
+	новый файл:    views/site/analytics_res.php
+	изменено:      views/site/contract.php
+	изменено:      views/site/contract_print.php
+	изменено:      views/site/error.php
+	новый файл:    views/site/import_otp.php
+	изменено:      views/site/info.php
+	новый файл:    views/site/info_exec.php
+	новый файл:    views/site/info_exec_print.php
+	изменено:      views/site/input_refusal.php
+	новый файл:    views/site/inputcalc.php
+	изменено:      views/site/inputdata.php
+	новый файл:    views/site/inputperiod.php
+	изменено:      views/site/inputregistr.php
+	новый файл:    views/site/inputupload.php
+	изменено:      views/site/message.php
+	изменено:      views/site/message_print.php
+	изменено:      views/site/registr.php
+	изменено:      views/site/resultCalc.php
+	новый файл:    views/site/resultCalc_oto.php
+	новый файл:    views/site/resultOplz.php
+	новый файл:    views/site/result_detoplz.php
+	изменено:      views/site/sch.php
+	изменено:      views/site/sch_opl.php
+	изменено:      views/site/sch_opl_print.php
+	новый файл:    views/site/settings.php
+	изменено:      views/site/sound.php
+	изменено:      views/site/typical_contract.php
+	изменено:      views/site/typical_contract_print.php
+	изменено:      views/site/update_schet.php
+	новый файл:    views/site/update_schet_opl.php
+	новый файл:    views/site/upload_file_opl.php
+	изменено:      views/site/viewcancel.php
+	изменено:      views/site/viewschet.php
+	изменено:      views/sprav/sprav_klient.php
+	изменено:      views/sprav/sprav_res.php
+	изменено:      views/sprav/sprav_spr_res_koord.php
+	изменено:      views/sprav/sprav_transp.php
+	изменено:      views/sprav/sprav_uslug.php
+	изменено:      views/sprav/sprav_work.php
+	изменено:      views/sprav/status_sch.php
+	изменено:      views/sprav/update_klient.php
+	изменено:      views/sprav/update_res.php
+	изменено:      views/sprav/update_spr_res_koord.php
+	изменено:      views/sprav/update_status_sch.php
+	изменено:      views/sprav/update_transp.php
+	изменено:      views/sprav/update_work.php
+	новый файл:    web/.html
+	новый файл:    web/05.12.2019.csv
+	новый файл:    web/06.12.2019.csv
+	новый файл:    web/09.12.2019.csv
+	новый файл:    web/1.html
+	новый файл:    web/10.01.2020.csv
+	новый файл:    web/10.12.2019.csv
+	новый файл:    web/11.12.2019.csv
+	новый файл:    web/13.01.2020.csv
+	новый файл:    web/13.12.2019.csv
+	новый файл:    web/14.12.2019.csv
+	новый файл:    web/15.12.2019.csv
+	новый файл:    web/16.12.2019.csv
+	новый файл:    web/17.12.2019.csv
+	новый файл:    web/18.12.2019.csv
+	новый файл:    web/20.12.2019.csv
+	новый файл:    web/21.html
+	новый файл:    web/23.01.2020.csv
+	удалено:       web/Calc_041017_110326.csv
+	удалено:       web/Calc_091017_121424.csv
+	новый файл:    web/Calc_100120_093532.csv
+	удалено:       web/Calc_101017_133244.csv
+	удалено:       web/Calc_101017_134859.csv
+	удалено:       web/Calc_121017_054527.csv
+	удалено:       web/Calc_121017_134041.csv
+	удалено:       web/Calc_190917_111354.csv
+	удалено:       web/Calc_300817_120758.csv
+	новый файл:    web/aaaa
+	новый файл:    web/aac_
+	изменено:      web/act.pdf
+	новый файл:    web/analit_src.php
+	новый файл:    web/calc1.png
+	изменено:      web/contract.pdf
+	новый файл:    web/css/materialize.css
+	новый файл:    web/css/materialize.min.css
+	изменено:      web/css/site.css
+	новый файл:    web/fav.ico
+	новый файл:    web/hjdh.html
+	изменено:      web/holiday.dat
+	изменено:      web/js/func_js.js
+	новый файл:    web/lic.csv
+	изменено:      web/message.pdf
+	новый файл:    web/new_1click.mp3
+	новый файл:    web/phpqrcode/CHANGELOG
+	новый файл:    web/phpqrcode/INSTALL
+	новый файл:    web/phpqrcode/LICENSE
+	новый файл:    web/phpqrcode/README
+	новый файл:    web/phpqrcode/VERSION
+	новый файл:    web/phpqrcode/bindings/tcpdf/qrcode.php
+	новый файл:    web/phpqrcode/cache/frame_1.dat
+	новый файл:    web/phpqrcode/cache/frame_1.png
+	новый файл:    web/phpqrcode/cache/frame_10.dat
+	новый файл:    web/phpqrcode/cache/frame_10.png
+	новый файл:    web/phpqrcode/cache/frame_11.dat
+	новый файл:    web/phpqrcode/cache/frame_11.png
+	новый файл:    web/phpqrcode/cache/frame_12.dat
+	новый файл:    web/phpqrcode/cache/frame_12.png
+	новый файл:    web/phpqrcode/cache/frame_13.dat
+	новый файл:    web/phpqrcode/cache/frame_13.png
+	новый файл:    web/phpqrcode/cache/frame_14.dat
+	новый файл:    web/phpqrcode/cache/frame_14.png
+	новый файл:    web/phpqrcode/cache/frame_15.dat
+	новый файл:    web/phpqrcode/cache/frame_15.png
+	новый файл:    web/phpqrcode/cache/frame_16.dat
+	новый файл:    web/phpqrcode/cache/frame_16.png
+	новый файл:    web/phpqrcode/cache/frame_17.dat
+	новый файл:    web/phpqrcode/cache/frame_17.png
+	новый файл:    web/phpqrcode/cache/frame_18.dat
+	новый файл:    web/phpqrcode/cache/frame_18.png
+	новый файл:    web/phpqrcode/cache/frame_19.dat
+	новый файл:    web/phpqrcode/cache/frame_19.png
+	новый файл:    web/phpqrcode/cache/frame_2.dat
+	новый файл:    web/phpqrcode/cache/frame_2.png
+	новый файл:    web/phpqrcode/cache/frame_20.dat
+	новый файл:    web/phpqrcode/cache/frame_20.png
+	новый файл:    web/phpqrcode/cache/frame_21.dat
+	новый файл:    web/phpqrcode/cache/frame_21.png
+	новый файл:    web/phpqrcode/cache/frame_22.dat
+	новый файл:    web/phpqrcode/cache/frame_22.png
+	новый файл:    web/phpqrcode/cache/frame_23.dat
+	новый файл:    web/phpqrcode/cache/frame_23.png
+	новый файл:    web/phpqrcode/cache/frame_24.dat
+	новый файл:    web/phpqrcode/cache/frame_24.png
+	новый файл:    web/phpqrcode/cache/frame_25.dat
+	новый файл:    web/phpqrcode/cache/frame_25.png
+	новый файл:    web/phpqrcode/cache/frame_26.dat
+	новый файл:    web/phpqrcode/cache/frame_26.png
+	новый файл:    web/phpqrcode/cache/frame_27.dat
+	новый файл:    web/phpqrcode/cache/frame_27.png
+	новый файл:    web/phpqrcode/cache/frame_28.dat
+	новый файл:    web/phpqrcode/cache/frame_28.png
+	новый файл:    web/phpqrcode/cache/frame_29.dat
+	новый файл:    web/phpqrcode/cache/frame_29.png
+	новый файл:    web/phpqrcode/cache/frame_3.dat
+	новый файл:    web/phpqrcode/cache/frame_3.png
+	новый файл:    web/phpqrcode/cache/frame_30.dat
+	новый файл:    web/phpqrcode/cache/frame_30.png
+	новый файл:    web/phpqrcode/cache/frame_31.dat
+	новый файл:    web/phpqrcode/cache/frame_31.png
+	новый файл:    web/phpqrcode/cache/frame_32.dat
+	новый файл:    web/phpqrcode/cache/frame_32.png
+	новый файл:    web/phpqrcode/cache/frame_33.dat
+	новый файл:    web/phpqrcode/cache/frame_33.png
+	новый файл:    web/phpqrcode/cache/frame_34.dat
+	новый файл:    web/phpqrcode/cache/frame_34.png
+	новый файл:    web/phpqrcode/cache/frame_35.dat
+	новый файл:    web/phpqrcode/cache/frame_35.png
+	новый файл:    web/phpqrcode/cache/frame_36.dat
+	новый файл:    web/phpqrcode/cache/frame_36.png
+	новый файл:    web/phpqrcode/cache/frame_37.dat
+	новый файл:    web/phpqrcode/cache/frame_37.png
+	новый файл:    web/phpqrcode/cache/frame_38.dat
+	новый файл:    web/phpqrcode/cache/frame_38.png
+	новый файл:    web/phpqrcode/cache/frame_39.dat
+	новый файл:    web/phpqrcode/cache/frame_39.png
+	новый файл:    web/phpqrcode/cache/frame_4.dat
+	новый файл:    web/phpqrcode/cache/frame_4.png
+	новый файл:    web/phpqrcode/cache/frame_40.dat
+	новый файл:    web/phpqrcode/cache/frame_40.png
+	новый файл:    web/phpqrcode/cache/frame_5.dat
+	новый файл:    web/phpqrcode/cache/frame_5.png
+	новый файл:    web/phpqrcode/cache/frame_6.dat
+	новый файл:    web/phpqrcode/cache/frame_6.png
+	новый файл:    web/phpqrcode/cache/frame_7.dat
+	новый файл:    web/phpqrcode/cache/frame_7.png
+	новый файл:    web/phpqrcode/cache/frame_8.dat
+	новый файл:    web/phpqrcode/cache/frame_8.png
+	новый файл:    web/phpqrcode/cache/frame_9.dat
+	новый файл:    web/phpqrcode/cache/frame_9.png
+	новый файл:    web/phpqrcode/cache/mask_0/mask_101_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_105_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_109_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_113_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_117_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_121_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_125_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_129_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_133_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_137_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_141_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_145_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_149_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_153_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_157_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_161_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_165_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_169_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_173_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_177_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_21_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_25_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_29_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_33_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_37_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_41_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_45_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_49_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_53_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_57_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_61_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_65_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_69_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_73_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_77_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_81_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_85_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_89_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_93_0.dat
+	новый файл:    web/phpqrcode/cache/mask_0/mask_97_0.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_101_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_105_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_109_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_113_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_117_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_121_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_125_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_129_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_133_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_137_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_141_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_145_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_149_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_153_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_157_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_161_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_165_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_169_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_173_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_177_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_21_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_25_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_29_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_33_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_37_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_41_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_45_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_49_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_53_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_57_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_61_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_65_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_69_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_73_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_77_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_81_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_85_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_89_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_93_1.dat
+	новый файл:    web/phpqrcode/cache/mask_1/mask_97_1.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_101_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_105_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_109_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_113_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_117_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_121_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_125_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_129_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_133_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_137_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_141_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_145_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_149_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_153_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_157_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_161_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_165_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_169_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_173_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_177_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_21_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_25_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_29_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_33_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_37_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_41_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_45_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_49_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_53_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_57_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_61_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_65_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_69_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_73_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_77_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_81_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_85_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_89_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_93_2.dat
+	новый файл:    web/phpqrcode/cache/mask_2/mask_97_2.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_101_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_105_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_109_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_113_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_117_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_121_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_125_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_129_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_133_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_137_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_141_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_145_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_149_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_153_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_157_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_161_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_165_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_169_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_173_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_177_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_21_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_25_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_29_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_33_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_37_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_41_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_45_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_49_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_53_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_57_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_61_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_65_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_69_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_73_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_77_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_81_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_85_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_89_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_93_3.dat
+	новый файл:    web/phpqrcode/cache/mask_3/mask_97_3.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_101_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_105_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_109_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_113_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_117_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_121_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_125_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_129_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_133_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_137_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_141_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_145_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_149_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_153_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_157_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_161_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_165_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_169_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_173_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_177_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_21_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_25_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_29_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_33_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_37_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_41_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_45_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_49_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_53_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_57_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_61_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_65_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_69_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_73_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_77_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_81_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_85_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_89_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_93_4.dat
+	новый файл:    web/phpqrcode/cache/mask_4/mask_97_4.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_101_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_105_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_109_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_113_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_117_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_121_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_125_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_129_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_133_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_137_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_141_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_145_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_149_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_153_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_157_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_161_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_165_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_169_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_173_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_177_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_21_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_25_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_29_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_33_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_37_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_41_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_45_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_49_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_53_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_57_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_61_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_65_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_69_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_73_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_77_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_81_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_85_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_89_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_93_5.dat
+	новый файл:    web/phpqrcode/cache/mask_5/mask_97_5.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_101_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_105_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_109_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_113_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_117_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_121_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_125_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_129_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_133_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_137_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_141_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_145_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_149_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_153_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_157_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_161_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_165_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_169_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_173_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_177_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_21_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_25_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_29_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_33_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_37_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_41_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_45_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_49_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_53_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_57_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_61_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_65_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_69_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_73_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_77_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_81_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_85_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_89_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_93_6.dat
+	новый файл:    web/phpqrcode/cache/mask_6/mask_97_6.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_101_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_105_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_109_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_113_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_117_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_121_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_125_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_129_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_133_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_137_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_141_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_145_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_149_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_153_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_157_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_161_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_165_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_169_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_173_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_177_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_21_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_25_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_29_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_33_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_37_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_41_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_45_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_49_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_53_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_57_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_61_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_65_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_69_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_73_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_77_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_81_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_85_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_89_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_93_7.dat
+	новый файл:    web/phpqrcode/cache/mask_7/mask_97_7.dat
+	новый файл:    web/phpqrcode/errors.txt
+	новый файл:    web/phpqrcode/index.php
+	новый файл:    web/phpqrcode/phpqrcode.php
+	новый файл:    web/phpqrcode/qrbitstream.php
+	новый файл:    web/phpqrcode/qrconfig.php
+	новый файл:    web/phpqrcode/qrconst.php
+	новый файл:    web/phpqrcode/qrencode.php
+	новый файл:    web/phpqrcode/qrimage.php
+	новый файл:    web/phpqrcode/qrinput.php
+	новый файл:    web/phpqrcode/qrlib.php
+	новый файл:    web/phpqrcode/qrlib.png-errors.txt
+	новый файл:    web/phpqrcode/qrlib4062586.png-errors.txt
+	новый файл:    web/phpqrcode/qrlib8202287.png-errors.txt
+	новый файл:    web/phpqrcode/qrmask.php
+	новый файл:    web/phpqrcode/qrrscode.php
+	новый файл:    web/phpqrcode/qrspec.php
+	новый файл:    web/phpqrcode/qrsplit.php
+	новый файл:    web/phpqrcode/qrtools.php
+	новый файл:    web/phpqrcode/tools/merge.bat
+	новый файл:    web/phpqrcode/tools/merge.php
+	новый файл:    web/phpqrcode/tools/merge.sh
+	новый файл:    web/phpqrcode/tools/merged_config.php
+	новый файл:    web/phpqrcode/tools/merged_header.php
+	новый файл:    web/qrlib1226728.png
+	новый файл:    web/qrlib2167957.png
+	новый файл:    web/qrlib2883247.png
+	новый файл:    web/qrlib3373421.png
+	новый файл:    web/qrlib4144595.png
+	новый файл:    web/qrlib4209338.png
+	новый файл:    web/qrlib4690613.png
+	новый файл:    web/qrlib5538487.png
+	новый файл:    web/qrlib6512896.png
+	новый файл:    web/qrlib7220826.png
+	новый файл:    web/qrlib7483423.png
+	новый файл:    web/qrlib8454251.png
+	новый файл:    web/qrlib9189672.png
+	новый файл:    web/qrlib9531318.png
+	изменено:      web/sarrow31.png
+	изменено:      web/schet.pdf
+	новый файл:    web/u1.php
+	новый файл:    web/u2.php
+	изменено:      web/var/www/html/CalcWork/web/cron_schet.1
+	изменено:      web/var/www/html/CalcWork/web/cron_schet.2
+	изменено:      web/var/www/html/CalcWork/web/cron_schet/cron_schet
+	изменено:      web/zvukovye-effekty-korotkie-fanfary.mp3
+	новый файл:    "web/\320\276\321\202\320\277_2018.11.07.html"
+
+Изменения, которые не в индексе для коммита:
+  (используйте «git add <файл>…», чтобы добавить файл в индекс)
+  (используйте «git checkout -- <файл>…», чтобы отменить изменения
+   в рабочем каталоге)
+  (сделайте коммит или отмените изменения в неотслеживаемом или измененном содержимом в подмодулях)
+
+	изменено:      vendor/mpdf/mpdf (изменено содержимое)
+
+root@ssivtcov /v/w/h/CalcWork# 
+

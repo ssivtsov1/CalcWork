@@ -21,7 +21,7 @@ class Import_otp extends Model
     {
 
         return [
-            [['file'],'file','skipOnEmpty' => true,'extensions'=>'html']
+            [['file'],'file','skipOnEmpty' => true,'extensions'=>'xml']
             ];
     }
 

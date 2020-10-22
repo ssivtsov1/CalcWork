@@ -42,8 +42,15 @@ $this->title = 'Введення калькуляцій';
                    ->all(), 'id', 'usluga'),
                     []) ?>
 
-            <?= $form->field($model, 'usluga1')->textInput(['maxlength' => true]) ?>
-            <?= $form->field($model, 'work')->textInput(['maxlength' => true]) ?>
+<!--            --><?//= $form->field($model, 'usluga1')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'work')->textInput(['maxlength' => true,'onBlur' =>
+                '$.get("'  . Url::to('/CalcWork/web/site/get_check_work?name=') .
+                    '"+$(this).val(),
+                   function(data) {
+                         if(data.work.length>0)
+                                         alert("Така робота вже присутня в списку послуг. Введіть унікальну роботу");
+                             });']) ?>
+
             <?= $form->field($model, 'n_work')->textInput(['maxlength' => true]) ?>
             <?= $form->field($model, 'expense_brig')->textInput(['maxlength' => true]) ?>
             <?= $form->field($model, 'cost_work')->textInput(['maxlength' => true])  ?>
@@ -106,9 +113,17 @@ $this->title = 'Введення калькуляцій';
             []); ?>
             <?=$form->field($model, 'id_auto2')->dropDownList(
                     ArrayHelper::map( app\models\spr_costwork::findbysql(
-                            'SELECT min(id) as id,T_Vg FROM costwork
-                                    where id<>48
-                                    group by 2 order by 2')->all(),  'id', 'T_Vg'),
+                            "select min(id) as id,T_Vg from (
+                            SELECT min(id) as id,T_Vg FROM costwork
+                                                                where id<>48
+                                                                group by 2 
+                            UNION
+                            SELECT 300+min(id) as id,number as T_Vg FROM a_transport
+                                                                where trim(place)='ВгРЕМ'
+                                                                group by 2
+                            ) e
+                            where T_Vg is not null
+                            group by 2")->all(),  'id', 'T_Vg'),
             []);
             ?>
             <div class="clearfix"></div>
@@ -119,12 +134,28 @@ $this->title = 'Введення калькуляцій';
                                     where id<>48
                                     group by 2 order by 2')->all(),  'id', 'T_Gv'),
                 []); ?>
-            <?=$form->field($model, 'id_auto4')->dropDownList(
+<!--            --><?//=$form->field($model, 'id_auto4')->dropDownList(
+//                ArrayHelper::map( app\models\spr_costwork::findbysql(
+//                    'SELECT min(id) as id,T_Dn FROM costwork
+//                                    where id<>48
+//                                    group by 2 order by 2')->all(),  'id', 'T_Dn'),
+//                []);
+
+                 echo $form->field($model, 'id_auto4')->dropDownList(
                 ArrayHelper::map( app\models\spr_costwork::findbysql(
-                    'SELECT min(id) as id,T_Dn FROM costwork
-                                    where id<>48
-                                    group by 2 order by 2')->all(),  'id', 'T_Dn'),
+                    "select min(id) as id,T_Dn from (
+                            SELECT min(id) as id,T_Dn FROM costwork
+                                                                where id<>48
+                                                                group by 2 
+                            UNION
+                            SELECT 300+min(id) as id,number as T_Dn FROM a_transport
+                                                                where trim(place)='ДнРЕМ'
+                                                                group by 2
+                            ) e
+                            where T_Dn is not null
+                            group by 2")->all(),  'id', 'T_Dn'),
                 []);
+
             ?>
             <div class="clearfix"></div>
 
@@ -143,19 +174,47 @@ $this->title = 'Введення калькуляцій';
             ?>
             <div class="clearfix"></div>
 
-            <?=$form->field($model, 'id_auto7')->dropDownList(
-                ArrayHelper::map( app\models\spr_costwork::findbysql(
-                    'SELECT min(id) as id,T_Krr FROM costwork
-                                    where id<>48
-                                    group by 2 order by 2')->all(),  'id', 'T_Krr'),
-                []); ?>
-            <?=$form->field($model, 'id_auto8')->dropDownList(
-                ArrayHelper::map( app\models\spr_costwork::findbysql(
-                    'SELECT min(id) as id,T_Pvg FROM costwork
-                                    where id<>48
-                                    group by 2 order by 2')->all(),  'id', 'T_Pvg'),
-                []);
+<!--            --><?//=$form->field($model, 'id_auto7')->dropDownList(
+//                ArrayHelper::map( app\models\spr_costwork::findbysql(
+//                    'SELECT min(id) as id,T_Krr FROM costwork
+//                                    where id<>48
+//                                    group by 2 order by 2')->all(),  'id', 'T_Krr'),
+//                []);
+
+
+            echo $form->field($model, 'id_auto7')->dropDownList(
+            ArrayHelper::map( app\models\spr_costwork::findbysql(
+            "select min(id) as id,T_Krr from (
+            SELECT min(id) as id,T_Krr FROM costwork
+            where id<>48
+            group by 2
+            UNION
+            SELECT 300+min(id) as id,number as T_Krr FROM a_transport
+            where trim(place)='КрРЕМ'
+            group by 2
+            ) e
+            where T_Krr is not null
+            group by 2")->all(),  'id', 'T_Krr'),
+            []);
             ?>
+            <div class="clearfix"></div>
+
+           <?=$form->field($model, 'id_auto8')->dropDownList(
+            ArrayHelper::map( app\models\spr_costwork::findbysql(
+            "select min(id) as id,T_Pvg from (
+            SELECT min(id) as id,T_Pvg FROM costwork
+            where id<>48
+            group by 2
+            UNION
+            SELECT 300+min(id) as id,number as T_Pvg FROM a_transport
+            where trim(place)='ПвРЕМ'
+            group by 2
+            ) e
+            where T_Pvg is not null
+            group by 2")->all(),  'id', 'T_Pvg'),
+            []);
+            ?>
+
             <div class="clearfix"></div>
 
             <?=$form->field($model, 'id_auto9')->dropDownList(
@@ -182,6 +241,8 @@ $this->title = 'Введення калькуляцій';
             <div class="clearfix"></div>
 
             <?= $form->field($model, 'time_prostoy')->textInput(['maxlength' => true])  ?>
+            <?= $form->field($model, 'time_work')->textInput(['maxlength' => true])  ?>
+
             <span class="span_other"><? echo "Інші параметри"; ?> </span>
 
             <?= $form->field($model, 'norm_time')->textInput(['maxlength' => true])  ?>
@@ -194,11 +255,11 @@ $this->title = 'Введення калькуляцій';
             <?= $form->field($model, 'poverka')->textInput(['maxlength' => true])  ?>
             <div class="clearfix"></div>
 
-            <?=$form->field($model, 'otv_contract')->dropDownList(
-                ArrayHelper::map( app\models\spr_uslug::findbysql(
-                    'SELECT  min(id) as id, exec_person  FROM spr_uslug 
-                            group by exec_person')->all(),  'id', 'exec_person'),
-                []); ?>
+<!--            --><?//=$form->field($model, 'otv_contract')->dropDownList(
+//                ArrayHelper::map( app\models\spr_uslug::findbysql(
+//                    'SELECT  min(id) as id, exec_person  FROM spr_uslug
+//                            group by exec_person')->all(),  'id', 'exec_person'),
+//                []); ?>
 
             <div class="form-group">
                 <?= Html::submitButton('OK', ['class' => 'btn btn-primary','id' => 'btn_find','onclick'=>'dsave()']); ?>
@@ -248,6 +309,12 @@ union select 0 as id,'' as nazv,$role as role,0 as department) y order by 1
 ";
 return $r;
 }
+?>
+<script>
+    function check_work(p){
+       alert(p);
+    }
+</script>
 
 
 

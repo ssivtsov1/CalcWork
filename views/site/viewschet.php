@@ -27,7 +27,7 @@ else
 <!--    --><?php //endif; ?>
 <!--    --><?php
         if($role==2 || $role==3 || $role==5){
-            echo Html::a('Імпорт з виписки', ['import_otp'], ['class' => 'btn btn-success']);
+            echo Html::a('Імпорт з виписки', ['import_otp_new'], ['class' => 'btn btn-success']);
             echo '<br>';
             echo '<br>';
         }
@@ -187,6 +187,27 @@ else
             ],
             
             //'nazv',
+            ['attribute' =>'n_work',
+                'value' => function ($model){
+                    $q = $model->status;
+                    switch($q){
+                        case 1:
+                            return "<span class='text-info'> $model->n_work </span>";
+                        case 2:
+                            return "<span class='text-proc'> $model->n_work </span>";
+                        case 3:
+                            return "<span class='text-opl'> $model->n_work </span>";
+                        case -1:
+                            return "<span class='text-info fontbld'> $model->n_work </span>";
+                        case 5:
+                            return "<span class='text-success fontbld'> $model->n_work </span>";
+                        case 8:
+                            return "<span class='text-bad fontbld'> $model->n_work </span>";
+                        default:
+                            return $model->n_work;}
+                },
+                'format' => 'raw'
+            ],
                 ['attribute' =>'nazv',
                 'value' => function ($model){
                     $q = $model->status;
@@ -350,12 +371,16 @@ else
                         
                 'filter'=>array('Жовтоводські РЕМ' => 'Жовтоводські РЕМ',
                         'Дніпропетровські РЕМ' => 'Дніпропетровські РЕМ',
-                        'Гвардійські РЕМ' => 'Гвардійські РЕМ',
+                        'Гвардійська дільниця' => 'Гвардійська дільниця',
                         'Криворізькі РЕМ' => 'Криворізькі РЕМ',
                         'Павлоградські РЕМ' => 'Павлоградські РЕМ',
                         'Вільногірські РЕМ' => 'Вільногірські РЕМ',
+                        'Інгулецька дільниця' => 'Інгулецька дільниця',
+                        'Апостолівська дільниця' => 'Апостолівська дільниця',
+                        'СПС' => 'СПС',
                         'СЗОЕ' => 'СЗОЕ',
                         'СДІЗП' => 'СДІЗП',
+                        'СЦ' => 'СЦ',
                         
                        ),        
                  'format' => 'raw'
@@ -449,7 +474,6 @@ else
                     'language' => 'uk',
                     //'dateFormat' => 'yy-mm-dd',
                 ]),
-
                 'format' => 'raw'
             ],
             //'time',
@@ -474,9 +498,6 @@ else
                 },
                 'format' => 'raw'
             ],
-
-           
-            
         ],
     ]); ?>
 

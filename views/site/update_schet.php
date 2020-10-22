@@ -47,7 +47,7 @@ $role = Yii::$app->user->identity->role;
 
 <br>
 <div class="row">
-    <div class="col-lg-6">
+    <div class="col-lg-7">
 
     <?php $form = ActiveForm::begin([
         'options' => ['enctype' => 'multipart/form-data'],
@@ -222,6 +222,8 @@ $role = Yii::$app->user->identity->role;
     <?= $form->field($model, 'summa_delivery')->textInput() ?>
     <?= $form->field($model, 'summa_transport')->textInput() ?>
     <?= $form->field($model, 'adres')->textarea(['onDblClick' => 'rmenu($(this).val(),"#viewschet-adres")']) ?>
+        <?= $form->field($model, 'time_t')->textInput() ?>
+        <p>  <? echo($nomer);  ?> </p>
            <div class='rmenu' id='rmenu-viewschet-adres'></div>
  <!--    -->   <?//= $form->field($model, 'res')->textInput() ?>
 <!--    --><?//= $form->field($model, 'date_z')->textInput() ?>
@@ -249,13 +251,13 @@ $role = Yii::$app->user->identity->role;
                     )->textInput() ?>
 
     <?= $form->field($model, 'time')->textInput() ?>
-    <?= $form->field($model, 'union_sch')->textarea(['rows' => 3, 'cols' => 10]) ?>
+    <?= $form->field($model, 'kol')->textInput() ?>
 
     
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'ОК' : 'OK', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
          <?php
-        if($model->status>1 && $model->status<>7){
+        if($model->status>1 ) {
             ?>
 
 
@@ -278,6 +280,18 @@ $role = Yii::$app->user->identity->role;
                         ],
                     ],'class' => 'btn btn-info']); ?>
 
+            <?php
+            if($model->status==3 || $model->status==7 || $model->status==5) {
+            ?>
+            <?= Html::a('Акт виконаних робіт',['site/act_work'], [
+                'data' => [
+                    'method' => 'post',
+                    'params' => [
+                        'sch' => $nazv,
+                        'sch1' => $model->union_sch,
+                        'mail'=> $mail
+                    ],
+                ],'class' => 'btn btn-info']); ?>
        <?php } ?>
 
         <?php
@@ -309,39 +323,39 @@ $role = Yii::$app->user->identity->role;
         }
     
         if($model->status==7) {
-            if(!empty($model->act_work)) { ?>    
-    <?= Html::a('Акт виконаних робіт',['site/act_work'], [
-            'data' => [
-                'method' => 'post',
-                'params' => [
-                    'sch' => $nazv,
-                    'sch1' => $model->union_sch,
-                    'mail'=> $mail
-                ],
-            ],'class' => 'btn btn-info']); ?>
+            if(!empty($model->act_work)) { ?>
+<!--    --><?//= Html::a('Акт виконаних робіт',['site/act_work'], [
+//            'data' => [
+//                'method' => 'post',
+//                'params' => [
+//                    'sch' => $nazv,
+//                    'sch1' => $model->union_sch,
+//                    'mail'=> $mail
+//                ],
+//            ],'class' => 'btn btn-info']); ?>
+<!---->
+<!--                --><?//= Html::a('Договір',['site/contract'], [
+//                    'data' => [
+//                        'method' => 'post',
+//                        'params' => [
+//                            'sch' => $nazv,
+//                            'sch1' => $model->union_sch,
+//                            'mail'=> $mail
+//                        ],
+//                    ],'class' => 'btn btn-info']); ?>
+<!--         -->
+<!--                --><?//= Html::a('Повідом.',['site/message'], [
+//                    'data' => [
+//                        'method' => 'post',
+//                        'params' => [
+//                            'sch' => $nazv,
+//                            'sch1' => $model->union_sch,
+//                            'mail'=> $mail
+//                        ],
+//                    ],'class' => 'btn btn-info']); ?>
 
-                <?= Html::a('Договір',['site/contract'], [
-                    'data' => [
-                        'method' => 'post',
-                        'params' => [
-                            'sch' => $nazv,
-                            'sch1' => $model->union_sch,
-                            'mail'=> $mail
-                        ],
-                    ],'class' => 'btn btn-info']); ?>
-         
-                <?= Html::a('Повідом.',['site/message'], [
-                    'data' => [
-                        'method' => 'post',
-                        'params' => [
-                            'sch' => $nazv,
-                            'sch1' => $model->union_sch,
-                            'mail'=> $mail
-                        ],
-                    ],'class' => 'btn btn-info']); ?>
 
-
-        <?php }} ?>
+        <?php }}} ?>
         
     </div>
 

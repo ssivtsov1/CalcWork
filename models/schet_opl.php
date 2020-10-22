@@ -41,7 +41,8 @@ class Schet_opl extends \yii\db\ActiveRecord
             'summa_beznds' => 'Сума без ПДВ:',
             'union_sch' => "Об'єднання заявок:",
             'read_z' => 'Прочитана',
-            'kol' => 'Кількість'
+            'kol' => 'Кількість',
+            'direct' => 'Напрямок роботи'
         ];
     }
 
@@ -53,7 +54,7 @@ class Schet_opl extends \yii\db\ActiveRecord
             [['inn','schet','usluga','summa','date','summa_work','act_work','date_akt',
                 'summa_delivery','summa_transport','summa_beznds','summa_tmc',
               'time','res','adres','comment','date_z','status',
-                'contract','geo','kol','date_opl','union_sch','read_z','date_edit'], 'safe'],
+                'contract','geo','kol','date_opl','union_sch','read_z','date_edit','direct'], 'safe'],
             [['date'], 'default', 'value' => date('Y-m-d')],
             [['date_akt'], 'default', 'value' => date('Y-m-d')],
             ['date_z', 'compare',

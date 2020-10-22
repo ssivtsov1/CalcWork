@@ -12,6 +12,7 @@ class Schet extends \yii\db\ActiveRecord
 {
    
     public $nazv;
+    public $direct;
 
     public static function tableName()
     {
@@ -44,7 +45,8 @@ class Schet extends \yii\db\ActiveRecord
             'summa_beznds' => 'Сума без ПДВ:',
             'union_sch' => "Об'єднання заявок:",
             'read_z' => 'Прочитана',
-            'time_t' => 'Годин в дорозі'
+            'time_t' => 'Годин в дорозі',
+            'direct' => 'Напрямок роботи'
         ];
     }
 
@@ -57,7 +59,7 @@ class Schet extends \yii\db\ActiveRecord
 
                 'summa_delivery','summa_transport','summa_beznds','summa_tmc',
               'time','res','adres','comment','date_z','status','time_t',
-                'contract','geo','kol','date_opl','union_sch','read_z','date_edit','nazv'], 'safe'],
+                'contract','geo','kol','date_opl','union_sch','read_z','date_edit','nazv','cost_auto_work','direct'], 'safe'],
 
             [['date'], 'default', 'value' => date('Y-m-d')],
             [['date_akt'], 'default', 'value' => date('Y-m-d')],

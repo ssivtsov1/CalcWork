@@ -18,7 +18,8 @@ class Spr_costwork1 extends \yii\db\ActiveRecord
     {
         return [
             [['work'], 'required'],
-            [['T_Ap','T_Vg','T_Krr','T_Yv','T_Dn','T_Pvg','T_Gv','T_Sp','T_ing','Szoe','Sdizp'],'safe']
+            [['T_Ap','T_Vg','T_Krr','T_Yv','T_Dn','T_Pvg','T_Gv','T_Sp','T_ing','Szoe',
+                'Sdizp','calc_ind','verification'],'safe']
         ];
     }
 

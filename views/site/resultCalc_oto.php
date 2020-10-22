@@ -9,7 +9,8 @@ use yii\web\Response;
 use app\models\forExcel;
 
 $time_t = round($distance / 45,2);
-//debug($time_t);
+$cost_auto_work=0;
+//debug($model1[0]['cast_3'] );
 //return;
 
 $time_work = str_replace(',','.',$time_work);
@@ -37,14 +38,14 @@ else{
 
     ?>
     <div class="main_pokaz">
-        <h4><?= Html::encode('Розрахунок вартості робіт:  '.$kol*$model1[0]['cast_1'] ) ?></h4>
+        <h4><?= Html::encode('Розрахунок вартості робіт:  '.$kol*$model1[0]['cast_3'] ) ?></h4>
     </div>
     <br>
     <h4><?= Html::encode($model1[0]['work']) ?></h4>
     <br>
-    <h4><?= Html::encode("Вартість роботи на 1 калькуляційну одиницю: ".$model1[0]['cast_1'].' грн.') ?></h4>
+    <h4><?= Html::encode("Вартість роботи на 1 калькуляційну одиницю: ".$model1[0]['cast_3'].' грн.') ?></h4>
     <h4><?= Html::encode("Кількість калькуляційних одиниць: ".$kol) ?></h4>
-    <h4><?= Html::encode("Сумарна вартість роботи грн. без ПДВ: ".$kol*$model1[0]['cast_1']) ?></h4>
+    <h4><?= Html::encode("Сумарна вартість роботи грн. без ПДВ: ".$kol*$model1[0]['cast_3']) ?></h4>
     <?php if(!is_null($tmc_price) && $tmc_price>0): ?>
         <h4><?= Html::encode("Вартість матеріалів та устаткування без ПДВ: ".$tmc_price.' грн.') ?></h4>
     <?php endif; ?>
@@ -103,25 +104,25 @@ else{
         <tr>
                       
             <td><?= $model1[0]['work'] ?></td>
-            <td><?= $kol*$model1[0]['cast_1'] ?></td>
+            <td><?= $kol*$model1[0]['cast_3'] ?></td>
         </tr>
 
 
 
         <tr>
             <td>Всього: </td>
-            <td><?= $kol*$model1[0]['cast_1'] ?></td>
+            <td><?= $kol*$model1[0]['cast_3'] ?></td>
 
         </tr>
         <tr>
             <td>ПДВ: </td>
-            <td><?= round($kol*$model1[0]['cast_1']*0.2,2) ?></td>
+            <td><?= round($kol*$model1[0]['cast_3']*0.2,2) ?></td>
 
         </tr>
         <tr>
             <td>Разом з ПДВ: </td>
-            <td class="itogo_s_nds"><?= $kol*$model1[0]['cast_1']+
-                round($kol*$model1[0]['cast_1']*0.2,2) ?>
+            <td class="itogo_s_nds"><?= $kol*$model1[0]['cast_3']+
+                round($kol*$model1[0]['cast_3']*0.2,2) ?>
             </td>
 
         </tr>
@@ -160,10 +161,10 @@ else{
 //                round($model1[0]['all_p']*$model1[0]['time_transp']*$kol,2)+
 //                (round($time_t*$model2[0]['stavka_grn'],2))+$kol*$model1[0]['cast_1']+$tmc_price_);
 
-        $all_grn = $kol*$model1[0]['cast_1']+round($kol*$model1[0]['cast_1']*0.2,2);
+        $all_grn = $kol*$model1[0]['cast_3']+round($kol*$model1[0]['cast_3']*0.2,2);
 
-        $model->all = $kol*$model1[0]['cast_1'];
-        $model->nds = round($kol*$model1[0]['cast_1']*0.2,2);
+        $model->all = $kol*$model1[0]['cast_3'];
+        $model->nds = round($kol*$model1[0]['cast_3']*0.2,2);
 
 
         if(!($role==1||$role==2)): ?>
@@ -179,7 +180,8 @@ else{
             '&u='.$model->nazv.'&res='.$name_res[0]->nazv.
             '&adr='.$model->adr_work.'&geo='.$geo.'&kol='.$kol.'&refresh='.$refresh.
             '&schet='.$schet.'&tmc='.$tmc_price_.'&tmc_name='.$tmc_name.
-            '&time_t='.$time_t.'&mvp='.$mvp.'&time_prostoy='.$time_prostoy.'&time_work='.$time_work],
+            '&time_t='.$time_t.'&mvp='.$mvp.'&time_prostoy='.$time_prostoy.'&time_work='.$time_work.
+            '&cost_auto_work='.$cost_auto_work],
             ['class' => 'btn btn-primary']); ?>
 
         <?php endif; ?>

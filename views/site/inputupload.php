@@ -11,7 +11,11 @@ $this->title = 'Звіт по оплаті';
 
 
 <div class="site-login">
-    <h3><?= Html::encode('Вигрузка в САП') ?></h3>
+    <?php if($parameter==1): ?>
+        <h3><?= Html::encode('Вигрузка в САП') ?></h3>
+    <?php else: ?>
+        <h3><?= Html::encode('Звіт для  САП') ?></h3>
+    <?php endif; ?>
     <div class="row">
 
         <?php //debug(Yii::$app->user->identity); ?>
@@ -53,6 +57,15 @@ $this->title = 'Звіт по оплаті';
                app\models\spr_costwork::findbysql('Select min(id) as id,usluga from costwork where LENGTH(ltrim(rtrim(usluga)))<>0 group by usluga order by usluga')
                    ->all(), 'id', 'usluga'),
                     []) ?>
+
+            <?= $form->field($model, 'id_sw')
+                ->dropDownList([
+                    '1' => 'Підключення',
+                    '2' => 'Відключення',
+                ],
+                    [
+                        'prompt' => 'Виберіть вид послуги (тільки для підключення або відключення)'
+                    ]);?>
 
             <div class="form-group">
                 <?= Html::submitButton('OK', ['class' => 'btn btn-primary','id' => 'btn_find','onclick'=>'dsave()']); ?>

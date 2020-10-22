@@ -38,6 +38,7 @@ $this->title = "Звіт по оплаті з $date1 по $date2";
 
                 'res',
                 'usluga',
+                'direct',
 
                 ['attribute' =>'kol',
                     'label' => 'Кількість',

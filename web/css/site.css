@@ -758,6 +758,7 @@ a.desc:after {
     padding-right: 27%;
 }
 .field-inputcalc-time_prostoy,
+.field-inputcalc-time_work,
 .field-inputcalc-otv_contract
 {
     width:75%;
@@ -774,6 +775,7 @@ a.desc:after {
     margin-top: 2%;
     width:35%;
     float: left;
+    display: none;
 }
 .field-inputcalc-salary_brig
 {

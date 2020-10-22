@@ -96,6 +96,7 @@ AppAsset::register($this);
                         'options' => ['id' => 'down_menu'],
                         'items' => [
                             ['label' => 'Оплачені заявки', 'url' => ['/site/opl_z']],
+                            ['label' => 'Звіт для САП', 'url' => ['/site/rep_for_sap']],
                         ]],
                     ['label' => 'Настройки', 'url' => ['/site/settings']],
                     ['label' => 'Про программу', 'url' => ['/site/about']],
@@ -133,6 +134,7 @@ AppAsset::register($this);
                         'options' => ['id' => 'down_menu'],
                         'items' => [
                             ['label' => 'Оплачені заявки', 'url' => ['/site/opl_z']],
+                            ['label' => 'Звіт для САП', 'url' => ['/site/rep_for_sap']],
                         ]],
                     ['label' => 'Настройки', 'url' => ['/site/settings']],
                     ['label' => 'Про программу', 'url' => ['/site/about']],

@@ -11,6 +11,7 @@ class InputPeriod extends Model
     public $date1;               // Дата нач
     public $date2;              // Дата конец
     public $usl;               // Услуга
+    public $id_sw;          // Подлючение или отключение
     private $_user;
 
     public function attributeLabels()
@@ -19,6 +20,7 @@ class InputPeriod extends Model
             'date1' => 'Період з ',
             'date2' => 'Період по',
             'usl' => 'Напрямок роботи (послуги):',
+            'id_sw' => 'Вид послуги',
 
         ];
     }
@@ -30,6 +32,7 @@ class InputPeriod extends Model
             ['date1', 'safe'],
             ['date2', 'safe'],
             ['usl', 'safe'],
+            ['id_sw', 'safe'],
         ];
     }
 

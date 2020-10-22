@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Spr_towns;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -11,13 +12,14 @@ use yii\data\ActiveDataProvider;
 use app\models\ContactForm;
 use app\models\InputDataForm;
 use app\models\InputPeriod;
+use app\models\InputData;
 use app\models\Calc;
 use app\models\spr_res;
 use app\models\spr_tmc;
+use app\models\spr_uslug;
 use app\models\analytics;
 use app\models\spr_res_koord;
 use app\models\vspr_res_koord;
-use app\models\spr_uslug;
 use app\models\spr_work;
 use app\models\spr_costwork;
 use app\models\spr_costwork1;
@@ -130,7 +132,8 @@ class SiteController extends Controller
                 'time_prostoy' => $model->time_prostoy,
                 'nazv' => $model->nazv,'adr_work' => $model->adr_potr,
                 'geo' => $model->geo,'refresh' => 0,'schet' => '',
-                'nazv1' => $model->nazv1,'tmc' => $model->tmc,'mvp' => $model->mvp]);
+                'nazv1' => $model->nazv1,'tmc' => $model->tmc,'mvp' => $model->mvp,
+                'calc_ind' => $model->calc_ind]);
             }
          else {
             $flag=1;
@@ -170,6 +173,47 @@ class SiteController extends Controller
         }
     }
 
+    // Подгрузка населенных пунктов - происходит при наборе первых букв
+    public function actionGet_check_work($name)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $name1 = mb_strtolower($name,"UTF-8");
+
+        if (Yii::$app->request->isAjax) {
+            $sql = 'select max(id) as id,work from costwork where lower(work) like '.'"'.$name1.'%"'.
+               ' group by 2 limit 1';
+            $cur = spr_work::findBySql($sql)->all();
+            if(!isset($cur[0]->work)) {
+                $work='';
+            }
+            else {
+                $work= $cur[0]->work;
+            }
+
+            return ['success' => true, 'work' => $work];
+
+        }
+    }
+
+    // Подгрузка населенных пунктов - происходит при наборе первых букв
+    public function actionGet_search_town($name)
+    {
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $name1 = mb_strtolower($name,"UTF-8");
+        $name2 = mb_strtoupper($name,"UTF-8");
+        if (Yii::$app->request->isAjax) {
+            $sql = 'select min(id) as id,district,town from spr_towns where town like '.'"'.$name1.'%"'.
+                ' and length('.'"'.$name1.'")>3'.' group by district,town order by town,district';
+            $cur = spr_towns::findBySql($sql)->all();
+
+            return ['success' => true, 'cur' => $cur];
+
+        }
+    }
+
+
     //  Происходит при вводе индивидуальных какькуляций
     public function actionInput_calc()
     {
@@ -184,103 +228,332 @@ class SiteController extends Controller
                 $sql = 'select * from costwork where id=:search';
                 if($i==1) {
                     $model5 = spr_costwork::findBySql($sql, [':search' => $model->id_brig1])->all();
-                    $stavka=$model->stavka_brig1;
+                    $stavka=str_replace(",", ".", $model->stavka_brig1);
                 }
                 if($i==2) {
                     if ($model->id_brig2==166)  continue;
                     $model5 = spr_costwork::findBySql($sql, [':search' => $model->id_brig2])->all();
-                    $stavka=$model->stavka_brig2;
+                    $stavka=str_replace(",", ".", $model->stavka_brig2);
                 }
                 if($i==3) {
                     if ($model->id_brig3==166) continue;
                     $model5 = spr_costwork::findBySql($sql, [':search' => $model->id_brig3])->all();
-                    $stavka=$model->stavka_brig3;
+                    $stavka=str_replace(",", ".", $model->stavka_brig3);
                 }
                 if($i==4) {
                     if($model->id_brig4==166) continue;
                     $model5 = spr_costwork::findBySql($sql, [':search' => $model->id_brig4])->all();
-                    $stavka=$model->stavka_brig4;
+                    $stavka=str_replace(",", ".", $model->stavka_brig4);
                 }
                 if($i==5) {
                     if($model->id_brig5==166) continue;
                     $model5 = spr_costwork::findBySql($sql, [':search' => $model->id_brig5])->all();
-                    $stavka=$model->stavka_brig5;
+                    $stavka=str_replace(",", ".", $model->stavka_brig5);
                 }
 
                 $model2 = spr_costwork::findBySql($sql, [':search' => $model->usluga])->all();
-                $sql1 = 'select *  from spr_uslug where usluga=:search';
-                $model4 = spr_uslug::findBySql($sql1, [':search' => $model2[0]->usluga])->all();
-//                debug($model5);
+                $sql1 = 'select *  from spr_uslug where trim(usluga)=:search';
+                $sql1 = 'select *  from spr_uslug where trim(usluga) like '.'"%'.trim($model2[0]->usluga).'%"';
+//                $model4 = spr_uslug::findBySql($sql1, [':search' => trim($model2[0]->usluga)])->all();
+                $model4 = spr_uslug::findBySql($sql1)->all();
+
+//                debug($sql1);
+//                return;
 
                 $costwork->brig = $model5[0]->brig;
-                $costwork->stavka_grn = $stavka;
+                $costwork->stavka_grn = str_replace(",", ".", $stavka);
                 $costwork->usluga = $model2[0]->usluga;
-                $costwork->kod_uslug = $model4[0]->kod;
+
+
+//                if(count($model4)<>0)
+                    $costwork->kod_uslug = $model4[0]->kod;
+//                else
+//                    $costwork->kod_uslug = $model->n_work;
+
                 $costwork->work = $model->work;
-                $costwork->cast_1 = $model->cost_work;
-                $costwork->cast_2 = $model->cost_work;
-                $costwork->cast_3 = $model->cost_work;
-                $costwork->cast_4 = $model->cost_work;
-                $costwork->cast_5 = $model->cost_work;
-                $costwork->cast_6 = $model->cost_work;
-                $costwork->zp = $model->expense_brig;
-                $costwork->time_transp = $model->time_prostoy;
-                $costwork->norm_time = $model->norm_time;
-                $costwork->common_minus = $model->common_expense;
-                $costwork->tmc = $model->tmc;
-                $costwork->other = $model->other;
+//                $costwork->cast_1 = str_replace(",", ".", $model->cost_work);
+//                $costwork->cast_2 = str_replace(",", ".", $model->cost_work);
+                $costwork->cast_1 = 0;
+                $costwork->cast_2 = 0;
+                $costwork->cast_3 = str_replace(",", ".", $model->cost_work);
+                $costwork->cast_4 = str_replace(",", ".", $model->cost_work);
+                $costwork->cast_5 = str_replace(",", ".", $model->cost_work);
+                $costwork->cast_6 = str_replace(",", ".", $model->cost_work);
+                $costwork->zp = str_replace(",", ".", $model->salary_brig);
+                $costwork->time_transp = str_replace(",", ".", $model->time_prostoy);
+                $costwork->time_work = str_replace(",", ".", $model->time_work);
+                $costwork->norm_time = str_replace(",", ".", $model->expense_brig);
+                $costwork->common_minus = str_replace(",", ".", $model->common_expense);
+                $costwork->tmc = str_replace(",", ".", $model->tmc);
+                $costwork->other = str_replace(",", ".", $model->other);
+                $costwork->verification = str_replace(",", ".", $model->poverka);
                 $costwork->n_work = $model->n_work;
                 $costwork->exec = 'РЕМ';
-                if (!empty($model->id_auto1)) {
+                $costwork->calc_ind = 1;
+                $fl_a=0;
+                if (!empty($model->id_auto1) && $model->id_auto1<>166) {
 
                     $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto1])->all();
                     $costwork->T_Ap = $model3[0]->T_Ap;
+                    if($model->usluga==220){
+                        $costwork->T_Vg = $model3[0]->T_Ap;
+                        $costwork->T_Gv = $model3[0]->T_Ap;
+                        $costwork->T_Dn = $model3[0]->T_Ap;
+                        $costwork->T_Ing = $model3[0]->T_Ap;
+                        $costwork->T_Yv = $model3[0]->T_Ap;
+                        $costwork->T_Krr = $model3[0]->T_Ap;
+                        $costwork->T_Pvg = $model3[0]->T_Ap;
+                        $fl_a=1;
+//                        $costwork->T_Szoe = $model3[0]->T_Ap;
+//                        $costwork->T_Sdizp = $model3[0]->T_Ap;
+//                        $costwork->T_Sp = $model3[0]->T_Ap;
+                    }
+
                 }
-                if (!empty($model->id_auto2)) {
-                    $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto2])->all();
+                if (!empty($model->id_auto2) && $model->id_auto2<>166 && $fl_a==0) {
+
+                    if($model->id_auto2<300)
+                        $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto2])->all();
+                   else
+                    {
+                        $sql_t = 'select id,number as T_Vg from a_transport where id=:search';
+                        $model3 = spr_costwork::findBySql($sql_t, [':search' => $model->id_auto2-300])->all();
+                    }
                     $costwork->T_Vg = $model3[0]->T_Vg;
+                    if($model->usluga==220){
+                        $costwork->T_Ap = $model3[0]->T_Vg;
+                        $costwork->T_Gv = $model3[0]->T_Vg;
+                        $costwork->T_Dn = $model3[0]->T_Vg;
+                        $costwork->T_Ing = $model3[0]->T_Vg;
+                        $costwork->T_Yv = $model3[0]->T_Vg;
+                        $costwork->T_Krr = $model3[0]->T_Vg;
+                        $costwork->T_Pvg = $model3[0]->T_Vg;
+                        $fl_a=1;
+//                        $costwork->T_Szoe = $model3[0]->T_Vg;
+//                        $costwork->T_Sdizp = $model3[0]->T_Vg;
+//                        $costwork->T_Sp = $model3[0]->T_Vg;
+                    }
+
                 }
-                if (!empty($model->id_auto3)) {
+                if (!empty($model->id_auto3)  && $model->id_auto3<>166 && $fl_a==0) {
                     $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto3])->all();
                     $costwork->T_Gv = $model3[0]->T_Gv;
+
+                    if($model->usluga==220){
+                        $costwork->T_Vg = $model3[0]->T_Gv;
+                        $costwork->T_Ap = $model3[0]->T_Gv;
+                        $costwork->T_Dn = $model3[0]->T_Gv;
+                        $costwork->T_Ing = $model3[0]->T_Gv;
+                        $costwork->T_Yv = $model3[0]->T_Gv;
+                        $costwork->T_Krr = $model3[0]->T_Gv;
+                        $costwork->T_Pvg = $model3[0]->T_Gv;
+                        $fl_a=1;
+//                        $costwork->T_Szoe = $model3[0]->T_Gv;
+//                        $costwork->T_Sdizp = $model3[0]->T_Gv;
+//                        $costwork->T_Sp = $model3[0]->T_Gv;
+                    }
+
                 }
-                if (!empty($model->id_auto4)) {
-                    $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto4])->all();
+                if (!empty($model->id_auto4) && $model->id_auto4<>166 && $fl_a==0) {
+                    if($model->id_auto4<300)
+                        $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto4])->all();
+                    else
+                    {
+                        $sql_t = 'select id,number as T_Dn from a_transport where id=:search';
+                        $model3 = spr_costwork::findBySql($sql_t, [':search' => $model->id_auto4-300])->all();
+                    }
                     $costwork->T_Dn = $model3[0]->T_Dn;
+                    if($model->usluga==220){
+
+                        $costwork->T_Vg = $model3[0]->T_Dn;
+                        $costwork->T_Gv = $model3[0]->T_Dn;
+                        $costwork->T_Ap = $model3[0]->T_Dn;
+                        $costwork->T_Ing = $model3[0]->T_Dn;
+                        $costwork->T_Yv = $model3[0]->T_Dn;
+                        $costwork->T_Krr = $model3[0]->T_Dn;
+                        $costwork->T_Pvg = $model3[0]->T_Dn;
+                        $fl_a=1;
+//                        $costwork->T_Szoe = $model3[0]->T_Dn;
+//                        $costwork->T_Sdizp = $model3[0]->T_Dn;
+//                        $costwork->T_Sp = $model3[0]->T_Dn;
+
+//                        debug($costwork);
+//                        return;
+
+                    }
                 }
-                if (!empty($model->id_auto5)) {
+                if (!empty($model->id_auto5) && $model->id_auto5<>166 && $fl_a==0) {
                     $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto5])->all();
                     $costwork->T_Ing = $model3[0]->T_Ing;
+                    if($model->usluga==220){
+                        $costwork->T_Vg = $model3[0]->T_Ing;
+                        $costwork->T_Gv = $model3[0]->T_Ing;
+                        $costwork->T_Dn = $model3[0]->T_Ing;
+                        $costwork->T_Ap = $model3[0]->T_Ing;
+                        $costwork->T_Yv = $model3[0]->T_Ing;
+                        $costwork->T_Krr = $model3[0]->T_Ing;
+                        $costwork->T_Pvg = $model3[0]->T_Ing;
+                        $fl_a=1;
+//                        $costwork->T_Szoe = $model3[0]->T_Ing;
+//                        $costwork->T_Sdizp = $model3[0]->T_Ing;
+//                        $costwork->T_Sp = $model3[0]->T_Ing;
+                    }
                 }
-                if (!empty($model->id_auto6)) {
+                if (!empty($model->id_auto6) && $model->id_auto6<>166 && $fl_a==0) {
                     $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto6])->all();
                     $costwork->T_Yv = $model3[0]->T_Yv;
+                    if($model->usluga==220){
+                        $costwork->T_Vg = $model3[0]->T_Yv;
+                        $costwork->T_Gv = $model3[0]->T_Yv;
+                        $costwork->T_Dn = $model3[0]->T_Yv;
+                        $costwork->T_Ing = $model3[0]->T_Yv;
+                        $costwork->T_Ap = $model3[0]->T_Yv;
+                        $costwork->T_Krr = $model3[0]->T_Yv;
+                        $costwork->T_Pvg = $model3[0]->T_Yv;
+                        $fl_a=1;
+//                        $costwork->T_Szoe = $model3[0]->T_Yv;
+//                        $costwork->T_Sdizp = $model3[0]->T_Yv;
+//                        $costwork->T_Sp = $model3[0]->T_Yv;
+                    }
                 }
-                if (!empty($model->id_auto7)) {
-                    $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto7])->all();
+                if (!empty($model->id_auto7) && $model->id_auto7<>166 && $fl_a==0) {
+                    if($model->id_auto7<300)
+                        $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto7])->all();
+                    else
+                    {
+                        $sql_t = 'select id,number as T_Krr from a_transport where id=:search';
+                        $model3 = spr_costwork::findBySql($sql_t, [':search' => $model->id_auto7-300])->all();
+                    }
+//                    $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto7])->all();
                     $costwork->T_Krr = $model3[0]->T_Krr;
+                    if($model->usluga==220){
+                        $costwork->T_Vg = $model3[0]->T_Krr;
+                        $costwork->T_Gv = $model3[0]->T_Krr;
+                        $costwork->T_Dn = $model3[0]->T_Krr;
+                        $costwork->T_Ing = $model3[0]->T_Krr;
+                        $costwork->T_Yv = $model3[0]->T_Krr;
+                        $costwork->T_Ap = $model3[0]->T_Krr;
+                        $costwork->T_Pvg = $model3[0]->T_Krr;
+                        $fl_a=1;
+//                        $costwork->T_Szoe = $model3[0]->T_Krr;
+//                        $costwork->T_Sdizp = $model3[0]->T_Krr;
+//                        $costwork->T_Sp = $model3[0]->T_Krr;
+                    }
                 }
-                if (!empty($model->id_auto8)) {
-                    $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto8])->all();
+
+//                if (!empty($model->id_auto8) && $model->id_auto8<>166 && $fl_a==0) {
+//                    $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto8])->all();
+//                    $costwork->T_Pvg = $model3[0]->T_Pvg;
+//                    if($model->usluga==220){
+//                        $costwork->T_Vg = $model3[0]->T_Pvg;
+//                        $costwork->T_Gv = $model3[0]->T_Pvg;
+//                        $costwork->T_Dn = $model3[0]->T_Pvg;
+//                        $costwork->T_Ing = $model3[0]->T_Pvg;
+//                        $costwork->T_Yv = $model3[0]->T_Pvg;
+//                        $costwork->T_Krr = $model3[0]->T_Pvg;
+//                        $costwork->T_Ap = $model3[0]->T_Pvg;
+//                        $fl_a=1;
+////                        $costwork->T_Szoe = $model3[0]->T_Pvg;
+////                        $costwork->T_Sdizp = $model3[0]->T_Pvg;
+////                        $costwork->T_Sp = $model3[0]->T_Pvg;
+//                    }
+//                }
+
+                ////////////////////////////////////////////////////////////////////////
+                if (!empty($model->id_auto8) && $model->id_auto8<>166 && $fl_a==0) {
+                    if($model->id_auto8<300)
+                        $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto8])->all();
+                    else
+                    {
+                        $sql_t = 'select id,number as T_Pvg from a_transport where id=:search';
+                        $model3 = spr_costwork::findBySql($sql_t, [':search' => $model->id_auto8-300])->all();
+                    }
+//                    $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto7])->all();
                     $costwork->T_Pvg = $model3[0]->T_Pvg;
+                    if($model->usluga==220){
+                        $costwork->T_Vg = $model3[0]->T_Pvg;
+                        $costwork->T_Gv = $model3[0]->T_Pvg;
+                        $costwork->T_Dn = $model3[0]->T_Pvg;
+                        $costwork->T_Ing = $model3[0]->T_Pvg;
+                        $costwork->T_Yv = $model3[0]->T_Pvg;
+                        $costwork->T_Ap = $model3[0]->T_Pvg;
+                        $costwork->T_Pvg = $model3[0]->T_Pvg;
+                        $fl_a=1;
+//                        $costwork->T_Szoe = $model3[0]->T_Krr;
+//                        $costwork->T_Sdizp = $model3[0]->T_Krr;
+//                        $costwork->T_Sp = $model3[0]->T_Krr;
+                    }
                 }
-                if (!empty($model->id_auto9)) {
+
+                if (!empty($model->id_auto9) && $model->id_auto9<>166 && $fl_a==0) {
                     $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto9])->all();
                     $costwork->Szoe = $model3[0]->Szoe;
+                    if($model->usluga==220){
+                        $costwork->T_Vg = $model3[0]->Szoe;
+                        $costwork->T_Gv = $model3[0]->Szoe;
+                        $costwork->T_Dn = $model3[0]->Szoe;
+                        $costwork->T_Ing = $model3[0]->Szoe;
+                        $costwork->T_Yv = $model3[0]->Szoe;
+                        $costwork->T_Krr = $model3[0]->Szoe;
+                        $costwork->T_Pvg = $model3[0]->Szoe;
+                        $costwork->T_Ap = $model3[0]->Szoe;
+                        $fl_a=1;
+//                        $costwork->T_Sdizp = $model3[0]->Szoe;
+//                        $costwork->T_Sp = $model3[0]->Szoe;
+                    }
                 }
-                if (!empty($model->id_auto10)) {
+                if (!empty($model->id_auto10) && $model->id_auto10<>166 && $fl_a==0) {
                     $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto10])->all();
                     $costwork->Sdizp = $model3[0]->Sdizp;
+                    if($model->usluga==220){
+                        $costwork->T_Vg = $model3[0]->Sdizp;
+                        $costwork->T_Gv = $model3[0]->Sdizp;
+                        $costwork->T_Dn = $model3[0]->Sdizp;
+                        $costwork->T_Ing = $model3[0]->Sdizp;
+                        $costwork->T_Yv = $model3[0]->Sdizp;
+                        $costwork->T_Krr = $model3[0]->Sdizp;
+                        $costwork->T_Pvg = $model3[0]->Sdizp;
+//                        $costwork->T_Szoe = $model3[0]->Sdizp;
+                        $costwork->T_Ap = $model3[0]->Sdizp;
+//                        $costwork->T_Sp = $model3[0]->Sdizp;
+                        $fl_a=1;
+                    }
                 }
-                if (!empty($model->id_auto11)) {
+                if (!empty($model->id_auto11) && $model->id_auto11<>166 && $fl_a==0) {
                     $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto11])->all();
                     $costwork->T_Sp = $model3[0]->T_Sp;
+                    if($model->usluga==220){
+                        $costwork->T_Vg = $model3[0]->T_Sp;
+                        $costwork->T_Gv = $model3[0]->T_Sp;
+                        $costwork->T_Dn = $model3[0]->T_Sp;
+                        $costwork->T_Ing = $model3[0]->T_Sp;
+                        $costwork->T_Yv = $model3[0]->T_Sp;
+                        $costwork->T_Krr = $model3[0]->T_Sp;
+                        $costwork->T_Pvg = $model3[0]->T_Sp;
+//                        $costwork->T_Szoe = $model3[0]->T_Sp;
+//                        $costwork->T_Sdizp = $model3[0]->T_Sp;
+                        $costwork->T_Ap = $model3[0]->T_Sp;
+                        $fl_a=1;
+                    }
                 }
+                $work = $model->work;
+                if(empty($model->poverka)) $costwork->verification=0;
                 $costwork->save();
-//            $costwork->validate();
-//            print_r($costwork->getErrors());
-            }
+            $costwork->validate();
+            print_r($costwork->getErrors());
+//            return;
 
+
+            }
+            $model1= new info();
+            $model1->title = 'УВАГА!';
+            $model1->info1 = "Індивідуальну калькуляцію `$work`, збережено.";
+            $model1->style1 = "d15";
+            $model1->style2 = "info-text";
+            $model1->style_title = "d9";
+
+            return $this->render('info', [
+                'model' => $model1]);
         }
         else {
             $flag=1;
@@ -302,10 +575,12 @@ class SiteController extends Controller
         $model = new InputPeriod();
         if ($model->load(Yii::$app->request->post()))
         {
+
             return $this->redirect([ 'upload_sap',
                 'date1' => $model->date1,
                 'date2' => $model->date2,
-                'usl'   => $model->usl,]);
+                'usl'   => $model->usl,
+                'id_sw'   => $model->id_sw]);
         }
         else {
             $flag=1;
@@ -316,7 +591,34 @@ class SiteController extends Controller
                 $role=Yii::$app->user->identity->role;
             }
             return $this->render('inputupload', [
-                'model' => $model,'role' => $role
+                'model' => $model,'role' => $role,'parameter' => 1
+            ]);
+        }
+    }
+
+    // Отчет для контроля выгрузки в САП
+    public function actionRep_for_sap()
+    {
+        $model = new InputPeriod();
+        if ($model->load(Yii::$app->request->post()))
+        {
+
+            return $this->redirect([ 'rep_sap',
+                'date1' => $model->date1,
+                'date2' => $model->date2,
+                'usl'   => $model->usl,
+                'id_sw'   => $model->id_sw]);
+        }
+        else {
+            $flag=1;
+            $role=0;
+            if(!isset(Yii::$app->user->identity->role))
+            {       $flag=0;}
+            else{
+                $role=Yii::$app->user->identity->role;
+            }
+            return $this->render('inputupload', [
+                'model' => $model,'role' => $role,'parameter' => 2
             ]);
         }
     }
@@ -369,7 +671,7 @@ class SiteController extends Controller
 
 // Оформление заявки пользователя
     public function actionProposal($rabota,$delivery,$transp,$all,$g,$u,$res,$adr,$geo,$kol,
-                                   $refresh,$schet,$tmc,$tmc_name,$time_t,$mvp,$time_prostoy,$time_work){
+                                   $refresh,$schet,$tmc,$tmc_name,$time_t,$mvp,$time_prostoy,$time_work,$cost_auto_work){
 
 //        debug($g);
 //        return;
@@ -414,7 +716,8 @@ class SiteController extends Controller
                     'comment' => $model->comment, 'date_z' => $model->date_z,
                     'geo' => $geo, 'kol' => $kol,'tmc' => $tmc,
                     'tmc_name' => $tmc_name,'time_t' => $time_t,'mvp' => $mvp,
-                    'time_prostoy' => $time_prostoy,'time_work' => $time_work]);
+                    'time_prostoy' => $time_prostoy,'time_work' => $time_work,
+                    'cost_auto_work' =>$cost_auto_work]);
 
             } else {
                 $flag=1;
@@ -490,21 +793,37 @@ class SiteController extends Controller
 
     // Расчет показателей (происходит при нажатии на кн. OK)
     public function actionCalc($id,$kol,$poezdka,$distance,$res,$potrebitel,$time_work,
-                               $time_prostoy,$nazv,$adr_work,$geo,$refresh,$schet,$nazv1,$tmc,$mvp)
+                               $time_prostoy,$nazv,$adr_work,$geo,$refresh,$schet,$nazv1,$tmc,$mvp,$calc_ind)
     {
         $sql="select usluga from costwork where id=".$id;
+
         $z1 = viewschet::findBySql($sql)->asArray()->all();
 
-        if($z1[0]['usluga']!="Оперативно-технічне обслуговування")
+        if (is_null($poezdka)) $poezdka=0;
+        if (is_null($distance)) $distance=0;
+// && $calc_ind<>1
+        if($z1[0]['usluga']!="Оперативно-технічне обслуговування" ||
+            ($z1[0]['usluga']=="Оперативно-технічне обслуговування" && $calc_ind==2))
             $sql = Calc::Calc($id,$res,$distance);
         else
             $sql1 = Calc::Calc_oto($id,$res,$distance);
 
-        if($z1[0]['usluga']!="Оперативно-технічне обслуговування") {
+        if($z1[0]['usluga']!="Оперативно-технічне обслуговування" ||
+            ($z1[0]['usluga']=="Оперативно-технічне обслуговування" && $calc_ind==2)) {
             $pos = strripos($sql, 'a.id=');
             $work_value = substr($sql, $pos + 5);
             $sql = substr($sql, 0, $pos - 1) . ' a.id=:id';
+
+//            debug( $sql);
+//            debug( $id);
+//            return;
+
             $model1 = Calc::findBySql($sql, [':id' => $work_value])->all();
+//            $model1 = Calc::findBySql($sql)->all();
+//            debug($work_value);
+//            return;
+
+
             $vid_w = $model1[0]->work;
             $usluga=$model1[0]->usluga;
         }
@@ -517,13 +836,15 @@ class SiteController extends Controller
             $usluga=$model1[0]['usluga'];
         }
 
-
-
-        $sql = 'select case when lic=1 then 0 else sum(stavka_grn) end as stavka_grn
+        $sql = 'select case when lic=1 then 0 else sum(stavka_grn) end as stavka_grn,lic
                 from costwork where work=:search group by lic';
         $model2 = Calc::findBySql($sql,[':search'=>"$vid_w"])->all();
 
-//        debug($sql);
+//            debug($model2);
+//            return;
+
+        if($model2[0]['lic']==1)  $distance=0;    // Если лицензированная деятельность - тогда расстояние не учитывать
+//        debug($vid_w);
 //        return;
 
         $name_res = spr_res::find()->where('id=:id',[':id'=>$res])->all();
@@ -531,13 +852,15 @@ class SiteController extends Controller
         $sql = 'select price,name_tmc from tmc where id=:search';
 
         $tmc_price = Spr_tmc::findBySql($sql,[':search'=>$tmc])->one();
+
         $tmc_name=$tmc_price['name_tmc'];
         $tmc_price=$tmc_price['price'];
         $tmc_price=0;
 
-        if($usluga!="Оперативно-технічне обслуговування")
+        if($usluga!="Оперативно-технічне обслуговування" ||
+            ($z1[0]['usluga']=="Оперативно-технічне обслуговування" && $calc_ind==2))
             return $this->render('resultCalc', ['model1' => $model1,'model2' => $model2,
-                'name_res' => $name_res,'kol' => $kol,'distance' => $distance*$poezdka,
+                'name_res' => $name_res,'kol' => $kol,'distance' =>  round((float) $distance * (float) $poezdka,2),
                 'potrebitel' => $potrebitel,'nazv' => $nazv, 'time_work' => $time_work,
                 'time_prostoy' => $time_prostoy,'adr_work' => $adr_work,
                 'geo' => $geo,'refresh' => $refresh,
@@ -545,7 +868,7 @@ class SiteController extends Controller
                 'tmc_name'=> $tmc_name,'mvp'=> $mvp]);
         else
             return $this->render('resultCalc_oto', ['model1' => $model1,'model2' => $model2,
-                'name_res' => $name_res,'kol' => $kol,'distance' => $distance*$poezdka,
+                'name_res' => $name_res,'kol' => $kol,'distance' => round((float) $distance * (float) $poezdka,2),
                 'potrebitel' => $potrebitel,'nazv' => $nazv, 'time_work' => $time_work,
                 'time_prostoy' => $time_prostoy,'adr_work' => $adr_work,
                 'geo' => $geo,'refresh' => $refresh,
@@ -565,31 +888,46 @@ class SiteController extends Controller
 
         switch($role) {
             case 5: // Полный доступ (тайный советник)
-                $sql = "SELECT res,usluga,count(usluga) as kol,sum(summa) as summa FROM vschet 
-                WHERE date_opl>='$date1' and date_opl<='$date2'
-                group by res,usluga
-                union all select 'Всього:','',count(*) as kol,sum(summa) as summa FROM vschet 
+                $sql = "SELECT a.res,a.usluga,b.usluga as direct,count(a.usluga) as kol,sum(a.summa) as summa FROM vschet a 
+               join costwork b on trim(a.usluga)=trim(b.work)
+                WHERE  a.date_opl>='$date1' and a.date_opl<='$date2'
+                and b.usluga is not null and trim(b.usluga)<>''
+                group by a.res,a.usluga,b.usluga
+                 union all select 'Всього:','','',count(*) as kol,sum(summa) as summa FROM vschet 
                 WHERE  date_opl>='$date1' and date_opl<='$date2'";
                 break;
             case 3: // Полный доступ админ
-                $sql = "SELECT res,usluga,count(usluga) as kol,sum(summa) as summa FROM vschet 
-                WHERE date_opl>='$date1' and date_opl<='$date2'
-                group by res,usluga
-                union all select 'Всього:','',count(*) as kol,sum(summa) as summa FROM vschet 
+//                $sql = "SELECT res,usluga,count(usluga) as kol,sum(summa) as summa FROM vschet
+//                WHERE date_opl>='$date1' and date_opl<='$date2'
+//                group by res,usluga
+//                union all select 'Всього:','',count(*) as kol,sum(summa) as summa FROM vschet
+//                WHERE  date_opl>='$date1' and date_opl<='$date2'";
+
+                $sql = "SELECT a.res,a.usluga,b.usluga as direct,count(a.usluga) as kol,sum(a.summa) as summa FROM vschet a 
+               join costwork b on trim(a.usluga)=trim(b.work)
+                WHERE  a.date_opl>='$date1' and a.date_opl<='$date2'
+                and b.usluga is not null and trim(b.usluga)<>''
+                group by a.res,a.usluga,b.usluga
+                 union all select 'Всього:','','',count(*) as kol,sum(summa) as summa FROM vschet 
                 WHERE  date_opl>='$date1' and date_opl<='$date2'";
+
                 break;
             case 2:  // финансовый отдел
-                $sql = "SELECT res,usluga,count(usluga) as kol,sum(summa) as summa FROM vschet 
-                WHERE date_opl>='$date1' and date_opl<='$date2'
-                group by res,usluga
-                union all select 'Всього:','',count(*) as kol,sum(summa) as summa FROM vschet 
+                $sql = "SELECT a.res,a.usluga,b.usluga as direct,count(a.usluga) as kol,sum(a.summa) as summa FROM vschet a 
+               join costwork b on trim(a.usluga)=trim(b.work)
+                WHERE  a.date_opl>='$date1' and a.date_opl<='$date2'
+                and b.usluga is not null and trim(b.usluga)<>''
+                group by a.res,a.usluga,b.usluga
+                 union all select 'Всього:','','',count(*) as kol,sum(summa) as summa FROM vschet 
                 WHERE  date_opl>='$date1' and date_opl<='$date2'";
                 break;
             case 1:  // бухгалтерия
-                $sql = "SELECT res,usluga,count(usluga) as kol,sum(summa) as summa FROM vschet 
-                WHERE date_opl>='$date1' and date_opl<='$date2'
-                group by res,usluga
-                union all select 'Всього:','',count(*) as kol,sum(summa) as summa FROM vschet 
+                $sql = "SELECT a.res,a.usluga,b.usluga as direct,count(a.usluga) as kol,sum(a.summa) as summa FROM vschet a 
+               join costwork b on trim(a.usluga)=trim(b.work)
+                WHERE  a.date_opl>='$date1' and a.date_opl<='$date2'
+                and b.usluga is not null and trim(b.usluga)<>''
+                group by a.res,a.usluga,b.usluga
+                 union all select 'Всього:','','',count(*) as kol,sum(summa) as summa FROM vschet 
                 WHERE  date_opl>='$date1' and date_opl<='$date2'";
                 break;
             case 11: // Днепр РЭС
@@ -634,13 +972,23 @@ class SiteController extends Controller
                 break;
 
             case 16: // Жовтоводські РЕМ
-                $sql = "SELECT res,usluga,count(usluga) as kol,sum(summa) as summa FROM vschet 
-                WHERE res='Жовтоводські РЕМ' and date_opl>='$date1' and date_opl<='$date2'
-                group by res,usluga
-                 union all select 'Всього:','',count(*) as kol,sum(summa) as summa FROM vschet 
+                $sql = "SELECT a.res,a.usluga,b.usluga as direct,count(a.usluga) as kol,sum(a.summa) as summa FROM vschet a 
+               join costwork b on trim(a.usluga)=trim(b.work)
+                WHERE a.res='Жовтоводські РЕМ' and a.date_opl>='$date1' and a.date_opl<='$date2'
+                and b.usluga is not null and trim(b.usluga)<>''
+                group by a.res,a.usluga,b.usluga
+                 union all select 'Всього:','','',count(*) as kol,sum(summa) as summa FROM vschet 
                 WHERE res='Жовтоводські РЕМ' and date_opl>='$date1' and date_opl<='$date2'";
                 break;
         }
+
+//        SELECT a.res,a.usluga,b.usluga,count(a.usluga) as kol,sum(a.summa) as summa FROM vschet a
+//				  join costwork b on trim(a.usluga)=trim(b.work)
+//                WHERE a.res='Жовтоводські РЕМ' and a.date_opl>='2020-04-01' and a.date_opl<='2020-05-01'
+//                and b.usluga is not null and trim(b.usluga)<>''
+//                group by a.res,a.usluga,b.usluga
+
+
 
 //debug($department);
 //return;
@@ -719,7 +1067,7 @@ class SiteController extends Controller
 
     // Формирование счета
     public function actionCnt($rabota,$delivery,$transp,$all,$g,$u,$inn,$res,$adr_work,$comment,
-                              $date_z,$geo,$kol,$tmc,$tmc_name,$time_t,$mvp,$time_prostoy,$time_work)
+                              $date_z,$geo,$kol,$tmc,$tmc_name,$time_t,$mvp,$time_prostoy,$time_work,$cost_auto_work)
 
     {
         $model = new schet();
@@ -747,6 +1095,7 @@ class SiteController extends Controller
             $cut_nazv = $data_res[0]->relat;  // Сокращ название РЭСа
             $data_usluga = spr_work::find()->select(['kod_uslug','n_work','norm_time'])
                 ->where('trim(work)=:work',['work' => trim($u)])->all();
+
             $kod_usluga = $data_usluga[0]->kod_uslug;  // Код услуги
             $n_work = $data_usluga[0]->n_work;         // № услуги
             $norm_time = $data_usluga[0]->norm_time;   // Норма времени
@@ -762,6 +1111,7 @@ class SiteController extends Controller
             $model->summa_transport = $transp;
             $model->summa_tmc = $tmc;
             $model->tmc_name = $tmc_name;
+            $model->cost_auto_work = $cost_auto_work;
             $model->summa_beznds = $all;
             $model->surely = 0;
             $model->status = 1;
@@ -776,7 +1126,6 @@ class SiteController extends Controller
             $model->mvp = $code_mvp;
             $model->time_prostoy = $time_prostoy;
             $model->time_work = $time_work;
-
 
             if(!empty($date_z))
                 $model->date_z = date("Y-m-d", strtotime($date_z));
@@ -833,21 +1182,54 @@ class SiteController extends Controller
         $code_mvp=$z[0]['mvp'];
         $u=$z[0]['usluga'];
         $kol_e=$z[0]['kol'];
+        $res_t=$z[0]['res'];
+        if(trim($res_t)=='Дніпропетровські РЕМ') $rem_t='ДнРЕМ';
+        if(trim($res_t)=='Вільногірські РЕМ') $rem_t='ВгРЕМ';
+        if(trim($res_t)=='Жовтоводські РЕМ') $rem_t='ЖвРЕМ';
+        if(trim($res_t)=='Гвардійські РЕМ') $rem_t='ГвРЕМ';
+        if(trim($res_t)=='Криворізькі РЕМ') $rem_t='КрРЕМ';
+        if(trim($res_t)=='Павлоградські РЕМ') $rem_t='ПвРЕМ';
+        if(trim($res_t)=='Апостолівська дільниця') $rem_t='АпРЕМ';
+        if(trim($res_t)=='Інгулецька дільниця') $rem_t='ІнРЕМ';
+
+//        debug($z);
+//        return;
 
         $sql = "select * from costwork where work=:search";
         $z2 = viewschet::findBySql($sql,[':search'=>"$u"])->asArray()->all();
         $u1=$z2[0]['usluga'];
+        $u2=$z2[0]['calc_ind'];
         $other = '0';
         $summa_delivery=0;
 
-        if($u1!='Оперативно-технічне обслуговування') {
+        if($u1!='Оперативно-технічне обслуговування' || ($u1=='Оперативно-технічне обслуговування' && $u2==1)) {
             $res = mb_substr($z[0]['contract'], 0, 2, "UTF-8");
-            $sql1 = 'select case when lic=1 then 0 else sum(stavka_grn) end as stavka_grn
+            $sql1 = 'select case when lic=1 then 0 else sum(stavka_grn) end as stavka_grn,lic
                 from costwork where work=:search group by lic';
             $model2 = Calc::findBySql($sql1,[':search'=>"$u"])->all();
 
             $pole = viewschet::tr_res($res);  // Определение поля с данными по автомобилю
-            $time_t = $z[0]['time_t'];        // Время проезда
+
+//            debug($z[0]);
+//            return;
+
+            if($model2[0]->lic==0)
+                if($u1<>'Транспортні послуги') {
+                    $time_t = $z[0]['time_t'];        // Время проезда (только для нелицензированной деятельности)
+                    $time_tc=$time_t;
+                }
+                else {
+                    $time_t = $z[0]['time_t'] ; // Время проезда (только для нелицензированной деятельности)
+                    $time_tc=$z[0]['time_t'] + $z[0]['time_work']; // Время трудозатрат водителей (только для трансп. услуг)
+                }
+            else
+                $time_t = 0;
+
+            $clear_time_t=$time_t;   // Время проезда (только для нелицензированной деятельности) - первоначальное значение
+
+//        debug($time_t);
+//        return;
+
             $summa_delivery=round($time_t*$model2[0]->stavka_grn,2);  // Доставка бригады
 
             $time_prostoy = $z[0]['time_prostoy'];        // Время простоя
@@ -857,15 +1239,34 @@ class SiteController extends Controller
             $norm_time = round((float)str_replace(',', '.', $norm_time)*$kol_e,2);
             $norm_time = str_replace('.', ',', $norm_time);
 
-            $sql = "select zp,common_minus,time_transp,tmc,repair,usluga from costwork where work=:search";
+            if($u1<>'Транспортні послуги')
+                $sql = "select zp,common_minus,time_transp,tmc,repair,usluga,lic,verification from costwork where work=:search";
+            else
+                $sql = "select a.zp,b.common_minus,a.time_transp,a.tmc,a.repair,a.usluga,lic,verification from costwork a
+                            left join a_transport b on a.work=b.model and trim(b.place)='$rem_t'
+                            where a.work=:search limit 1";
+
             $z1 = viewschet::findBySql($sql, [':search' => "$u"])->asArray()->all();
+
+            debug($z1);
+            debug($sql);
+            debug($u);
+            return;
+
             $zp = round((float)str_replace(',', '.', $z1[0]['zp'])*$kol_e,2);
             $zp_e = round(0.22 * $zp, 2);
-            $cm = $z1[0]['common_minus'];
+            $verification = $z1[0]['verification'];     // Поверка
+            if($u1<>'Транспортні послуги')
+                $cm = $z1[0]['common_minus'];
+            else
+                $cm = round($z1[0]['common_minus']*$time_tc,2);
+
             $cm = round((float)str_replace(',', '.', $cm)*$kol_e,2);
+            $cm_tr = $cm;
             $cm = str_replace('.', ',', $cm);
 
             $tmc = $z1[0]['tmc']; // ТМЦ
+            $lic = $z1[0]['lic'];
             $tmc = round((float)str_replace(',', '.', $tmc)*$kol_e,2);
             $tmc = str_replace('.', ',', $tmc);
             $repair = $z1[0]['repair']; // Ремонты
@@ -875,7 +1276,6 @@ class SiteController extends Controller
 
             if ($tr_usl == 0)
                 $time_prostoy = $z1[0]['time_transp']; // Время простоя
-
 
             $sql = "select $pole as nomer from costwork a where a.work=:search and $pole is not null";
 
@@ -889,7 +1289,11 @@ class SiteController extends Controller
             $sql = "select * from vw_transport a where a.number=:search";
 
             $z1 = viewschet::findBySql($sql, [':search' => "$nomer"])->asArray()->all();
-            if (count($z1) > 0) {
+
+
+            if (count($z1) > 0 && $lic==0) {
+//                debug($z1);
+//                return;
                 $oil = $z1[0]['oil_p'];
                 $amort = $z1[0]['amort'];
                 $wage = $z1[0]['wage'];
@@ -902,6 +1306,7 @@ class SiteController extends Controller
                 $c95w = $z1[0]['cost_95_work'];
                 $cdfw = $z1[0]['cost_df_work'];
                 $cgw = $z1[0]['cost_g_work'];
+                $cm_tr = $z1[0]['common_minus'];;
             } else {
                 $oil = '0';
                 $amort = '0';
@@ -910,12 +1315,11 @@ class SiteController extends Controller
                 $c95 = '0';
                 $cdf = '0';
                 $cg = '0';
-
                 $c92w = '0';
                 $c95w = '0';
                 $cdfw = '0';
                 $cgw = '0';
-
+                $cm_tr = '0';
             }
             $esv = 22;
 
@@ -925,6 +1329,11 @@ class SiteController extends Controller
             $fuel_df = (float)str_replace(',', '.', $cdf);
             $fuel_g = (float)str_replace(',', '.', $cg);
             $time_t = (float)str_replace(',', '.', $time_t);
+            $time_tc = (float)str_replace(',', '.', $time_tc);
+            $cm_tr = (float)str_replace(',', '.', $cm_tr);
+
+            //debug($fuel_92);
+
             if ($tr_usl == 0)
                 $time_prostoy = round((float)str_replace(',', '.', $time_prostoy)*$kol_e,2);
 
@@ -971,7 +1380,6 @@ class SiteController extends Controller
             $fuel_df_work = round($fuel_df_work * $time_work, 2);
             $fuel_g_work = round($fuel_g_work * $time_work, 2);
 
-
             // --Подсчет итога--
             // Топливо:
             $fuel_92 = $fuel_92 + $fuel_92_work;        // 92-й бензин
@@ -995,11 +1403,27 @@ class SiteController extends Controller
 
             if(($fuel_92+$fuel_95+$fuel_df+$fuel_g)>0) $priz_proezd=1;
             else $priz_proezd=0;
+            $time_drive=$time_t;
+            if($time_t>0)
+                $time_t = $time_t + $time_prostoy;
+
+            $cm_tr = round($cm_tr*$time_t,2);
 
 
-            // Преобразуем точку в запятую в показателях
+//            debug($cm_tr);
+//            return;
+
+//            $fuel_92_dd=round($fuel_92*$time_drive,2);
+//            $fuel_95_dd=round($fuel_95*$time_drive,2);
+//            $fuel_df_dd=round($fuel_df*$time_drive,2);
+//            $fuel_g_dd=round($fuel_g*$time_drive,2);
+//            $oil_dd=round( $oil*$time_t,2);
+
+             // Преобразуем точку в запятую в показателях
             $time_t = str_replace('.', ',', $time_t);
-            $oil = str_replace('.', ',', $oil);
+            $time_tc = str_replace('.', ',', $time_tc);
+            $clear_time_t = str_replace('.', ',', $clear_time_t);
+            $verification = str_replace('.', ',', $verification);
             $fuel_92 = str_replace('.', ',', $fuel_92);
             $fuel_95 = str_replace('.', ',', $fuel_95);
             $fuel_df = str_replace('.', ',', $fuel_df);
@@ -1009,21 +1433,25 @@ class SiteController extends Controller
             $zp_esv = str_replace('.', ',', round($esv * $zp_drive / 100, 2));
             $zp_d = str_replace('.', ',', $zp_drive);
             $cm = trim(str_replace('.', ',', $cm));
+            $cm_tr = trim(str_replace('.', ',', $cm_tr));
             $amort = str_replace('.', ',', $amort);
+            $oil = str_replace('.', ',', $oil);
         }
 
-        if($u1=='Оперативно-технічне обслуговування') {
+        if($u1=='Оперативно-технічне обслуговування'  &&  $u2==0) {
             $res = mb_substr($z[0]['contract'], 0, 2, "UTF-8");
 
             $time_t = $z[0]['time_t'];        // Время проезда
             $time_prostoy = $z[0]['time_prostoy'];        // Время простоя
             $time_work = $z[0]['time_work'];             // Время работы
             $n_work = trim($z[0]['n_work']);
+            $verification = 0;
             $norm_time = trim($z[0]['norm_time']);
 
             $sql = "select a.zp,a.common_minus,a.time_transp,a.tmc,a.repair,a.usluga,a.other,
                     b.* from costwork a left join a_transport b on trim(a.work)=trim(b.number) 
                     where a.work=:search";
+
             $z1 = viewschet::findBySql($sql, [':search' => "$u"])->asArray()->all();
             $zp = (float)str_replace(',', '.', $z1[0]['zp']);
             $zp_e = round(0.22 * $zp, 2);
@@ -1068,7 +1496,6 @@ class SiteController extends Controller
             }
             $esv = 22;
 
-
             // Транспорт проезд
             $fuel_92 = (float)str_replace(',', '.', $c92);
             $fuel_95 = (float)str_replace(',', '.', $c95);
@@ -1096,8 +1523,6 @@ class SiteController extends Controller
             $amort = $amort_move + $amort_prostoy;           // Аммортизация
             $zp_drive = $wage_move + $zp_drive_prostoy;  // Зарплата водителей
 
-
-
             if ($time_t == 0) {
                 $fuel_92 = 0;
                 $fuel_95 = 0;
@@ -1108,12 +1533,22 @@ class SiteController extends Controller
                 $amort = 0;
             }
 
-
             if(($fuel_92+$fuel_95+$fuel_df+$fuel_g)>0) $priz_proezd=1;
             else $priz_proezd=0;
+            $time_drive=$time_t;
+            $time_t = $time_t + $time_prostoy;
+            $cm_tr = $cm*$time_t;
+
+            $fuel_92_dd=round($fuel_92*$time_drive,2);
+            $fuel_95_dd=round($fuel_95*$time_drive,2);
+            $fuel_df_dd=round($fuel_df*$time_drive,2);
+            $fuel_g_dd=round($fuel_g*$time_drive,2);
+            $oil_dd=round( $oil*$time_drive,2);
 
             // Преобразуем точку в запятую в показателях
             $time_t = str_replace('.', ',', $time_t);
+            $verification = str_replace('.', ',', $verification);
+            $clear_time_t = str_replace('.', ',', $clear_time_t);
             $oil = str_replace('.', ',', $oil);
             $fuel_92 = str_replace('.', ',', $fuel_92);
             $fuel_95 = str_replace('.', ',', $fuel_95);
@@ -1124,13 +1559,12 @@ class SiteController extends Controller
             $zp_esv = str_replace('.', ',', round($esv * $zp_drive / 100, 2));
             $zp_d = str_replace('.', ',', $zp_drive);
             $cm = trim(str_replace('.', ',', $cm));
+            $cm_tr = trim(str_replace('.', ',', $cm_tr));
             $amort = str_replace('.', ',', $amort);
         }
 
-
         $hap="БО;Номер послуги;МВП (підрозділ);ТМЦ;Зарплата бригади;ЄСВ_Зарплата бригади;Відрядження Добові_Бригади;Відрядження Проїзд_Бригади;Відрядження Проживання_Бригади;А-92_А/транспорт;А-95 А/транспорт;ДП А/транспорт;Газ_А/транспорт;Автомастила_А/транспорт;Зарплата водіїв;ЄСВ_зарплата водіїв;Амортизація_А/транспорт;Відрядження Добові_Водії;Відрядження Проживання_Водії;Повірка приладів обліку;Інші;Ремонт підр.спос.;Загальновиробничі витрати;АКТ/Особовий рахунок;№ договора (тільки для приєднання);Нормативні кошторисні трудовитрати бригади, люд-год. ;Нормативні кошторисні трудовитрати водіїв, люд-год. ";
 //
-
 
         $fn=date('d.m.Y').'.csv';
         $f=fopen($fn,"w+");
@@ -1143,12 +1577,24 @@ class SiteController extends Controller
        // Добавляем к зарплате сумму доставки бригады
         $zp = (float)str_replace(',', '.', $zp);
         $zp_e = (float)str_replace(',', '.', $zp_e);
-        $zp = $zp+round($summa_delivery/1.22,2);
-        $zp_e = $zp_e+round(round($summa_delivery/1.22,2)*0.22,2);
+//        $zp = $zp+round($summa_delivery/1.22,2);
+        $zp_dd = round($summa_delivery/1.22,2);
+
+//        debug($summa_delivery);
+//        debug($zp_dd);
+//        return;
+//        $zp_e = $zp_e+round(round($summa_delivery/1.22,2)*0.22,2);
+        $zp_edd = round(round($summa_delivery/1.22,2)*0.22,2);
         $zp = str_replace('.', ',', $zp);
+        $zp_dd = str_replace('.', ',', $zp_dd);
         $zp_e = str_replace('.', ',', $zp_e);
+        $zp_edd = str_replace('.', ',', $zp_edd);
+
+//        debug($tmc);
+//        return;
 
         if ($priz_proezd==0 || $tr_usl==1) {
+
             $e[0] = 'CK01';         // const
             $e[1] = $n_work;       // № услуги
             $e[2] = $code_mvp;    //  МВП пока const
@@ -1168,21 +1614,20 @@ class SiteController extends Controller
             $e[16] = $amort;        // Аммортизация транспорт
             $e[17] = 0;        // Коммандировки
             $e[18] = 0;        // Коммандировки
-            $e[19] = 0;        // Поверка средств учета
-            $e[20] = $other;        // other
-            $e[21] = $repair;        // Ремонт
+            $e[19] = $verification;        // Поверка средств учета
+            $e[20] = $other;          // other
+            $e[21] = $repair;       // Ремонт
             $e[22] = $cm;        // Общепроизводственные затраты
             $e[23] = $sch;     // Счет
             $e[24] = '';       // № договора
-            $e[25] = $norm_time;      // Нормативные трудозатраты бригады
-            $e[26] = $time_t;        // Нормативные трудозатраты водителей
+            $e[25] = $norm_time;    // Нормативные трудозатраты бригады
+            $e[26] = $time_tc;        // Нормативные трудозатраты водителей
             fputs($f, "\n");
             $content = implode(";", $e);
             $content = mb_convert_encoding($content, 'CP1251', mb_detect_encoding($content));
             fputs($f, $content);
         }
         else{
-
                 $e[0] = 'CK01';         // const
                 $e[1] = $n_work;       // № услуги
                 $e[2] = $code_mvp;    //  МВП пока const
@@ -1202,7 +1647,7 @@ class SiteController extends Controller
                 $e[16] = 0;        // Аммортизация транспорт
                 $e[17] = 0;        // Коммандировки
                 $e[18] = 0;        // Коммандировки
-                $e[19] = 0;        // Поверка средств учета
+                $e[19] = $verification;        // Поверка средств учета
                 $e[20] = $other;        // other
                 $e[21] = $repair;        // Ремонт
                 $e[22] = $cm;        // Общепроизводственные затраты
@@ -1215,17 +1660,18 @@ class SiteController extends Controller
                 $content = mb_convert_encoding($content, 'CP1251', mb_detect_encoding($content));
                 fputs($f, $content);
 
-
                 $e[0] = 'CK01';         // const
-                if ($tr_usl == 0)
-                    $e[1] = '2300000380';       // № услуги
-                else
-                    $e[1] = '2300000385';       // № услуги
 
+//                if ($tr_usl == 0)
+//                    $e[1] = '2300000380';       // № услуги
+//                else
+//                    $e[1] = '2300000385';       // № услуги
+
+                $e[1] = $n_work;
                 $e[2] = $code_mvp;    //  МВП пока const
                 $e[3] = 0;        // ТМЦ
-                $e[4] = 0;        // Зарплата бригады
-                $e[5] = 0;     // Соц. взнос от зарплаты бригады
+                $e[4] = $zp_dd;        // Зарплата бригады
+                $e[5] = $zp_edd;     // Соц. взнос от зарплаты бригады
                 $e[6] = 0;        // Коммандировки
                 $e[7] = 0;       // Коммандировки
                 $e[8] = 0;      // Коммандировки
@@ -1242,10 +1688,10 @@ class SiteController extends Controller
                 $e[19] = 0;        // Поверка средств учета
                 $e[20] = 0;        // other
                 $e[21] = 0;        // Ремонт
-                $e[22] = 0;        // Общепроизводственные затраты
+                $e[22] = $cm_tr;        // Общепроизводственные затраты - было 0
                 $e[23] = $sch;     // Счет
                 $e[24] = '';       // № договора
-                $e[25] = 0;      // Нормативные трудозатраты бригады
+                $e[25] = $clear_time_t;      // Нормативные трудозатраты бригады
                 $e[26] = $time_t;        // Нормативные трудозатраты водителей
                 fputs($f, "\n");
                 $content = implode(";", $e);
@@ -1271,21 +1717,42 @@ class SiteController extends Controller
                 'model' => $model]);
         }
     }
-    // Выгрузка за период в САП
-    public function actionUpload_sap($date1,$date2,$usl)
-    {
 
+    public function actionRep_sap($date1,$date2,$usl,$id_sw)
+    {
         $sql = "select usluga from costwork WHERE id=$usl";
         $z = viewschet::findBySql($sql)->asArray()->all();
         $u=trim($z[0]['usluga']);
 
-        $sql = "select distinct a.*,b.work,b.usluga,
-                b.repair,b.tmc,b.norm_time,b.other,b.common_minus from vschet a 
-                inner join costwork b on b.work=a.usluga WHERE a.date_akt>='$date1' and a.date_akt<='$date2'
-                 and trim(b.usluga)='$u' and a.status=7";
-
-//        debug($sql);
+//        debug($u);
 //        return;
+
+        if($u!='Підключення та/або відключення електроустановок')
+        {          $sql = "select distinct a.*,b.work,b.usluga,
+            b.repair,b.tmc,b.norm_time,b.other,b.common_minus,a.nazv,a.summa from vschet a 
+            inner join costwork b on b.work=a.usluga WHERE a.date_akt>='$date1' and a.date_akt<='$date2'
+             and trim(b.usluga)=".'"'.$u.'"'." and a.status=7";
+
+//            debug($sql);
+//            return;
+        }
+        else {
+            if($id_sw==0)
+            {
+                $sql = "select distinct a.*,b.work,b.usluga,
+                    b.repair,b.tmc,b.norm_time,b.other,b.common_minus,a.nazv,a.summa from vschet a 
+                    inner join costwork b on b.work=a.usluga WHERE a.date_akt>='$date1' and a.date_akt<='$date2'
+                     and trim(b.usluga)='$u' and a.status=7";
+            }
+            else{
+                $sql = "select distinct a.*,b.work,b.usluga,
+                    b.repair,b.tmc,b.norm_time,b.other,b.common_minus,a.nazv,a.summa from vschet a 
+                    inner join costwork b on b.work=a.usluga 
+                     inner join spr_con_usl c on b.work=c.work 
+                     WHERE a.date_akt>='$date1' and a.date_akt<='$date2'
+                     and trim(b.usluga)='$u' and a.status=7 and c.type=2-$id_sw";
+            }
+        }
 
         $z2 = viewschet::findBySql($sql)->asArray()->all();
 
@@ -1304,8 +1771,8 @@ class SiteController extends Controller
 
         $u1=$u;
         $other = '0';
-        $hap = "БО;Номер послуги;МВП (підрозділ);ТМЦ;Зарплата бригади;ЄСВ_Зарплата бригади;Відрядження Добові_Бригади;Відрядження Проїзд_Бригади;Відрядження Проживання_Бригади;А-92_А/транспорт;А-95 А/транспорт;ДП А/транспорт;Газ_А/транспорт;Автомастила_А/транспорт;Зарплата водіїв;ЄСВ_зарплата водіїв;Амортизація_А/транспорт;Відрядження Добові_Водії;Відрядження Проживання_Водії;Повірка приладів обліку;Інші;Ремонт підр.спос.;Загальновиробничі витрати;АКТ/Особовий рахунок;№ договора (тільки для приєднання);Нормативні кошторисні трудовитрати бригади, люд-год. ;Нормативні кошторисні трудовитрати водіїв, люд-год. ";
-        $fn = date('d.m.Y') . '.csv';
+        $hap = "Споживач;Сума з ПДВ;БО;Номер послуги;МВП (підрозділ);ТМЦ;Зарплата бригади;ЄСВ_Зарплата бригади;Відрядження Добові_Бригади;Відрядження Проїзд_Бригади;Відрядження Проживання_Бригади;А-92_А/транспорт;А-95 А/транспорт;ДП А/транспорт;Газ_А/транспорт;Автомастила_А/транспорт;Зарплата водіїв;ЄСВ_зарплата водіїв;Амортизація_А/транспорт;Відрядження Добові_Водії;Відрядження Проживання_Водії;Повірка приладів обліку;Інші;Ремонт підр.спос.;Загальновиробничі витрати;АКТ/Особовий рахунок;№ договора (тільки для приєднання);Нормативні кошторисні трудовитрати бригади, люд-год. ;Нормативні кошторисні трудовитрати водіїв, люд-год. ";
+        $fn = 'Report_'.date('d.m.Y') . '.csv';
         $f = fopen($fn, "w+");
         $hap = mb_convert_encoding($hap, 'CP1251', mb_detect_encoding($hap));
         $cnt=0;
@@ -1315,44 +1782,60 @@ class SiteController extends Controller
 //        return;
 
         foreach($z2 as $z) {
-
+            $kol_e=$z['kol'];
+            $nazv=$z['nazv'];
+            $summa=$z['summa'];
             if ($u1 != 'Оперативно-технічне обслуговування') {
                 $cnt++;
                 $res = mb_substr($z['contract'], 0, 2, "UTF-8");
                 $u=trim($z['work']);
-                $sql1 = 'select case when lic=1 then 0 else sum(stavka_grn) end as stavka_grn
+                $sql1 = 'select case when lic=1 then 0 else sum(stavka_grn) end as stavka_grn,lic
                 from costwork where work=:search group by lic';
                 $model2 = Calc::findBySql($sql1,[':search'=>"$u"])->all();
 
                 $pole = viewschet::tr_res($res);  // Определение поля с данными по автомобилю
-                $time_t = $z['time_t'];        // Время проезда
+                if($model2[0]->lic==0) {
+                    $time_t = $z['time_t'];        // Время проезда (только для нелицензированной деятельности)
+                    $notlic=1;  // Признак нелицензированной деятельности
+                }
+                else {
+                    $time_t = 0;
+                    $notlic=0;   // Признак нелицензированной деятельности
+                }
                 $summa_delivery=round($time_t*$model2[0]->stavka_grn,2);  // Доставка бригады
-               
+
                 $time_prostoy = $z['time_prostoy'];        // Время простоя
                 $time_work = $z['time_work'];             // Время работы
                 $n_work = trim($z['n_work']);
+//                $norm_time = trim($z['norm_time']);
                 $norm_time = trim($z['norm_time']);
-                 $code_mvp=$z['mvp'];
+                $norm_time = round((float)str_replace(',', '.', $norm_time)*$kol_e,2);
+                $norm_time = str_replace('.', ',', $norm_time);
+                $code_mvp=$z['mvp'];
                 $sch=$z['schet'];
                 $w = $z['work'];
 
-                $sql = "select zp,common_minus,time_transp,tmc,repair,usluga from costwork where work=:search";
+                $sql = "select zp,common_minus,time_transp,tmc,repair,usluga,lic,verification from costwork where work=:search";
                 $z1 = viewschet::findBySql($sql, [':search' => "$u"])->asArray()->all();
-                $zp = (float)str_replace(',', '.', $z1[0]['zp']);
+                $zp = round((float) str_replace(',', '.', $z1[0]['zp'])*$kol_e,2);
                 $zp_e = round(0.22 * $zp, 2);
                 $cm = $z1[0]['common_minus'];
-
+                $verification = $z1[0]['verification'];
+                $cm = round((float)str_replace(',', '.', $cm)*$kol_e,2);
+                $cm_tr=$cm;
                 $tmc = $z1[0]['tmc']; // ТМЦ
-                $repair = $z1[0]['repair']; // Ремонты
-                $tr_usl = ($z1[0]['usluga'] == 'Транспортні послуги') ? 1 : 0;
+                $tmc = round((float)str_replace(',', '.', $tmc)*$kol_e,2);
 
+                $lic = $z1[0]['lic'];    // Признак лицензированной деятельности
+                $repair = $z1[0]['repair']; // Ремонты
+                $repair = round((float)str_replace(',', '.', $repair)*$kol_e,2);
+
+                $tr_usl = ($z1[0]['usluga'] == 'Транспортні послуги') ? 1 : 0;
 
                 if ($tr_usl == 0)
                     $time_prostoy = $z1[0]['time_transp']; // Время простоя
 
-
                 $sql = "select $pole as nomer from costwork a where a.work=:search and $pole is not null";
-
 
                 $z1 = viewschet::findBySql($sql, [':search' => "$u"])->asArray()->all();
                 if (count($z1) > 0)
@@ -1363,7 +1846,7 @@ class SiteController extends Controller
                 $sql = "select * from vw_transport a where a.number=:search";
 
                 $z1 = viewschet::findBySql($sql, [':search' => "$nomer"])->asArray()->all();
-                if (count($z1) > 0) {
+                if (count($z1) > 0 && $lic==0) {
                     $oil = $z1[0]['oil_p'];
                     $amort = $z1[0]['amort'];
                     $wage = $z1[0]['wage'];
@@ -1415,7 +1898,6 @@ class SiteController extends Controller
                 $zp_drive_c = (float)str_replace(',', '.', $wage);
                 $zp_drive = round($zp_drive_c * $time_t, 2);
 
-
                 // Транспорт простой
                 $oil_prostoy = round($oil_c * $time_prostoy, 2);
                 $amort_prostoy = round($amort_c * $time_prostoy, 2);
@@ -1444,7 +1926,6 @@ class SiteController extends Controller
                 $fuel_df_work = round($fuel_df_work * $time_work, 2);
                 $fuel_g_work = round($fuel_g_work * $time_work, 2);
 
-
                 // --Подсчет итога--
                 // Топливо:
                 $fuel_92 = $fuel_92 + $fuel_92_work;        // 92-й бензин
@@ -1469,6 +1950,16 @@ class SiteController extends Controller
                 if (($fuel_92 + $fuel_95 + $fuel_df + $fuel_g) > 0) $priz_proezd = 1;
                 else $priz_proezd = 0;
 
+                if($time_t>0)
+                    $time_t = $time_t + ($notlic==1) ? $time_prostoy:0;
+
+                $cm_tr = round($cm_tr*$time_t,2);
+                $ff=fopen('aaa_sap.txt','w+');
+                fputs($ff,$notlic);
+                fputs($ff,"\n");
+                fputs($ff,$time_prostoy);
+                fputs($ff,"\n");
+                fputs($ff,$time_t);
 
                 // Преобразуем точку в запятую в показателях
                 $time_t = str_replace('.', ',', $time_t);
@@ -1482,6 +1973,7 @@ class SiteController extends Controller
                 $zp_esv = str_replace('.', ',', round($esv * $zp_drive / 100, 2));
                 $zp_d = str_replace('.', ',', $zp_drive);
                 $cm = trim(str_replace('.', ',', $cm));
+                $cm_tr = trim(str_replace('.', ',', $cm_tr));
                 $amort = str_replace('.', ',', $amort);
             }
 
@@ -1497,6 +1989,7 @@ class SiteController extends Controller
                 $code_mvp=$z['mvp'];
                 $sch=$z['schet'];
                 $w = $z['work'];
+                $verification = 0;  // Поверка
 
                 $sql = "select a.zp,a.common_minus,a.time_transp,a.tmc,a.repair,a.usluga,a.other,
                     b.* from costwork a left join a_transport b on trim(a.work)=trim(b.number) 
@@ -1509,6 +2002,7 @@ class SiteController extends Controller
                 $zp = (float)str_replace(',', '.', $z1[0]['zp']);
                 $zp_e = round(0.22 * $zp, 2);
                 $cm = $z1[0]['common_minus'];
+                $cm_tr = 0;
                 $time_prostoy = $z1[0]['time_transp']; // Время простоя
                 $tmc = trim($z1[0]['tmc']); // ТМЦ
                 $repair = $z1[0]['repair']; // Ремонты
@@ -1516,12 +2010,10 @@ class SiteController extends Controller
                 $tr_usl = 0;
 
                 if (count($z1) > 0) {
-
                     $oil_p = $z1[0]['oil_p'];
                     $oil_move = $z1[0]['oil_move'];
                     $amort = $z1[0]['amort'];
                     $amort_move = $z1[0]['amort_move'];
-
                     $wage = $z1[0]['wage'];
                     $wage_move = $z1[0]['wage_move'];
                     $c92 = $z1[0]['cost_92_move'];
@@ -1578,7 +2070,6 @@ class SiteController extends Controller
                 $amort = $amort_move + $amort_prostoy;           // Аммортизация
                 $zp_drive = $wage_move + $zp_drive_prostoy;  // Зарплата водителей
 
-
                 if ($time_t == 0) {
                     $fuel_92 = 0;
                     $fuel_95 = 0;
@@ -1589,10 +2080,9 @@ class SiteController extends Controller
                     $amort = 0;
                 }
 
-
                 if (($fuel_92 + $fuel_95 + $fuel_df + $fuel_g) > 0) $priz_proezd = 1;
                 else $priz_proezd = 0;
-
+                $time_t = $time_t + $time_prostoy;
                 // Преобразуем точку в запятую в показателях
                 $time_t = str_replace('.', ',', $time_t);
                 $oil = str_replace('.', ',', $oil);
@@ -1608,12 +2098,11 @@ class SiteController extends Controller
                 $amort = str_replace('.', ',', $amort);
             }
 
-
 //        fputs($f,$tr_usl);
 //        fputs($f,$priz_proezd);
 
             if($cnt==1)
-            fputs($f, $hap);
+                fputs($f, $hap);
 
             // Добавляем к зарплате сумму доставки бригады
             $zp = (float)str_replace(',', '.', $zp);
@@ -1622,11 +2111,13 @@ class SiteController extends Controller
             $zp_e = $zp_e+round(round($summa_delivery/1.22,2)*0.22,2);
             $zp = str_replace('.', ',', $zp);
             $zp_e = str_replace('.', ',', $zp_e);
+            $summa = str_replace('.', ',', $summa);
 
             if ($priz_proezd == 0 || $tr_usl == 1) {
-
-                $e[0] = 'CK01';         // const
-                $e[1] = $n_work;       // № услуги
+                $e[-2] = $nazv;            // Поставщик
+                $e[-1] = $summa;           // Сумма с НДС
+                $e[0] = 'CK01';           // const
+                $e[1] = $n_work;        // № услуги
                 $e[2] = $code_mvp;    //  МВП пока const
                 $e[3] = $tmc;        // ТМЦ
                 $e[4] = $zp;        // Зарплата бригады
@@ -1644,7 +2135,529 @@ class SiteController extends Controller
                 $e[16] = $amort;        // Аммортизация транспорт
                 $e[17] = 0;        // Коммандировки
                 $e[18] = 0;        // Коммандировки
+                $e[19] = $verification;        // Поверка средств учета
+                $e[20] = $other;        // other
+                $e[21] = $repair;        // Ремонт
+                $e[22] = $cm;        // Общепроизводственные затраты
+                $e[23] = $sch;     // Счет
+                $e[24] = '';       // № договора
+                $e[25] = $norm_time;      // Нормативные трудозатраты бригады
+                $e[26] = $time_t;        // Нормативные трудозатраты водителей
+                fputs($f, "\n");
+                $content = implode(";", $e);
+                $content = mb_convert_encoding($content, 'CP1251', mb_detect_encoding($content));
+                fputs($f, $content);
+            } else {
+                $e[-2] = $nazv;            // Поставщик
+                $e[-1] = $summa;           // Сумма с НДС
+                $e[0] = 'CK01';         // const
+                $e[1] = $n_work;       // № услуги
+                $e[2] = $code_mvp;    //  МВП пока const
+                $e[3] = $tmc;        // ТМЦ
+                $e[4] = $zp;        // Зарплата бригады
+                $e[5] = $zp_e;     // Соц. взнос от зарплаты бригады
+                $e[6] = 0;        // Коммандировки
+                $e[7] = 0;       // Коммандировки
+                $e[8] = 0;      // Коммандировки
+                $e[9] = 0;        // топливо а-92
+                $e[10] = 0;       // топливо а-95
+                $e[11] = 0;       // топливо дт
+                $e[12] = 0;        // топливо газ
+                $e[13] = 0;        // масло
+                $e[14] = 0;       // зп водителей
+                $e[15] = 0;        // Соц. взнос от зарплаты водителей
+                $e[16] = 0;        // Аммортизация транспорт
+                $e[17] = 0;        // Коммандировки
+                $e[18] = 0;        // Коммандировки
                 $e[19] = 0;        // Поверка средств учета
+                $e[20] = $other;        // other
+                $e[21] = $repair;        // Ремонт
+                $e[22] = $cm;        // Общепроизводственные затраты
+                $e[23] = $sch;     // Счет
+                $e[24] = '';       // № договора
+                $e[25] = $norm_time;      // Нормативные трудозатраты бригады
+                $e[26] = 0;        // Нормативные трудозатраты водителей
+                fputs($f, "\n");
+                $content = implode(";", $e);
+                $content = mb_convert_encoding($content, 'CP1251', mb_detect_encoding($content));
+                fputs($f, $content);
+
+                $e[-2] = $nazv;            // Поставщик
+                $e[-1] = $summa;           // Сумма с НДС
+                $e[0] = 'CK01';         // const
+                if ($tr_usl == 0)
+                    $e[1] = '2300000380';       // № услуги
+                else
+                    $e[1] = '2300000385';       // № услуги
+
+                $e[2] = $code_mvp;    //  МВП пока const
+                $e[3] = 0;        // ТМЦ
+                $e[4] = 0;        // Зарплата бригады
+                $e[5] = 0;     // Соц. взнос от зарплаты бригады
+                $e[6] = 0;        // Коммандировки
+                $e[7] = 0;       // Коммандировки
+                $e[8] = 0;      // Коммандировки
+                $e[9] = $fuel_92;        // топливо а-92
+                $e[10] = $fuel_95;       // топливо а-95
+                $e[11] = $fuel_df;       // топливо дт
+                $e[12] = $fuel_g;        // топливо газ
+                $e[13] = $oil;        // масло
+                $e[14] = $zp_d;       // зп водителей
+                $e[15] = $zp_esv;        // Соц. взнос от зарплаты водителей
+                $e[16] = $amort;        // Аммортизация транспорт
+                $e[17] = 0;        // Коммандировки
+                $e[18] = 0;        // Коммандировки
+                $e[19] = 0;        // Поверка средств учета
+                $e[20] = 0;        // other
+                $e[21] = 0;        // Ремонт
+                $e[22] = $cm_tr;        // Общепроизводственные затраты
+                $e[23] = $sch;     // Счет
+                $e[24] = '';       // № договора
+                $e[25] = 0;      // Нормативные трудозатраты бригады
+                $e[26] = $time_t;        // Нормативные трудозатраты водителей
+                fputs($f, "\n");
+                $content = implode(";", $e);
+                $content = mb_convert_encoding($content, 'CP1251', mb_detect_encoding($content));
+                fputs($f, $content);
+
+            }
+        }
+//        debug($e);
+//        return;
+
+        if (file_exists($fn)) {
+            return \Yii::$app->response->sendFile($fn);
+        }
+        else{
+            $model = new info();
+            $model->title = 'УВАГА!';
+            $model->info1 = "Помилка при формуванні файлу експорту в САП.";
+            $model->style1 = "d15";
+            $model->style2 = "info-text";
+            $model->style_title = "d9";
+
+            return $this->render('info', [
+                'model' => $model]);
+        }
+    }
+
+    // Выгрузка за период в САП
+    public function actionUpload_sap($date1,$date2,$usl,$id_sw)
+    {
+
+        $sql = "select usluga from costwork WHERE id=$usl";
+        $z = viewschet::findBySql($sql)->asArray()->all();
+        $u=trim($z[0]['usluga']);
+
+//        debug($u);
+//        return;
+
+        if($u!='Підключення та/або відключення електроустановок')
+{          $sql = "select distinct a.*,b.work,b.usluga,
+            b.repair,b.tmc,b.norm_time,b.other,b.common_minus from vschet a 
+            inner join costwork b on b.work=a.usluga WHERE a.date_akt>='$date1' and a.date_akt<='$date2'
+             and trim(b.usluga)=".'"'.$u.'"'." and a.status=7";
+
+//            debug($sql);
+//            return;
+}
+        else {
+            if($id_sw==0)
+            {
+                    $sql = "select distinct a.*,b.work,b.usluga,
+                    b.repair,b.tmc,b.norm_time,b.other,b.common_minus from vschet a 
+                    inner join costwork b on b.work=a.usluga WHERE a.date_akt>='$date1' and a.date_akt<='$date2'
+                     and trim(b.usluga)='$u' and a.status=7";
+            }
+            else{
+                    $sql = "select distinct a.*,b.work,b.usluga,
+                    b.repair,b.tmc,b.norm_time,b.other,b.common_minus from vschet a 
+                    inner join costwork b on b.work=a.usluga 
+                     inner join spr_con_usl c on b.work=c.work 
+                     WHERE a.date_akt>='$date1' and a.date_akt<='$date2'
+                     and trim(b.usluga)='$u' and a.status=7 and c.type=2-$id_sw";
+            }
+        }
+
+        $z2 = viewschet::findBySql($sql)->asArray()->all();
+
+        if(count($z2)==0)
+        {
+            $model = new info();
+            $model->title = 'УВАГА!';
+            $model->info1 = "Немає жодної послуги для вигрузки.";
+            $model->style1 = "d15";
+            $model->style2 = "info-text";
+            $model->style_title = "d9";
+
+            return $this->render('info', [
+                'model' => $model]);
+        }
+
+        $u1=$u;
+        $other = '0';
+        $hap = "БО;Номер послуги;МВП (підрозділ);ТМЦ;Зарплата бригади;ЄСВ_Зарплата бригади;Відрядження Добові_Бригади;Відрядження Проїзд_Бригади;Відрядження Проживання_Бригади;А-92_А/транспорт;А-95 А/транспорт;ДП А/транспорт;Газ_А/транспорт;Автомастила_А/транспорт;Зарплата водіїв;ЄСВ_зарплата водіїв;Амортизація_А/транспорт;Відрядження Добові_Водії;Відрядження Проживання_Водії;Повірка приладів обліку;Інші;Ремонт підр.спос.;Загальновиробничі витрати;АКТ/Особовий рахунок;№ договора (тільки для приєднання);Нормативні кошторисні трудовитрати бригади, люд-год. ;Нормативні кошторисні трудовитрати водіїв, люд-год. ";
+        $fn = date('d.m.Y') . '.csv';
+        $f = fopen($fn, "w+");
+        $hap = mb_convert_encoding($hap, 'CP1251', mb_detect_encoding($hap));
+        $cnt=0;
+        $summa_delivery=0;
+
+//        debug($sql);
+//        return;
+
+        foreach($z2 as $z) {
+            $kol_e=$z['kol'];
+            if ($u1 != 'Оперативно-технічне обслуговування') {
+                $cnt++;
+                $res = mb_substr($z['contract'], 0, 2, "UTF-8");
+                $u=trim($z['work']);
+                $sql1 = 'select case when lic=1 then 0 else sum(stavka_grn) end as stavka_grn,lic
+                from costwork where work=:search group by lic';
+                $model2 = Calc::findBySql($sql1,[':search'=>"$u"])->all();
+
+                $pole = viewschet::tr_res($res);  // Определение поля с данными по автомобилю
+                if($model2[0]->lic==0) {
+                    $time_t = $z['time_t'];        // Время проезда (только для нелицензированной деятельности)
+                    $notlic=1;  // Признак нелицензированной деятельности
+                }
+                else {
+                    $time_t = 0;
+                    $notlic=0;   // Признак нелицензированной деятельности
+                }
+                $summa_delivery=round($time_t*$model2[0]->stavka_grn,2);  // Доставка бригады
+               
+                $time_prostoy = $z['time_prostoy'];        // Время простоя
+                $time_work = $z['time_work'];             // Время работы
+                $n_work = trim($z['n_work']);
+//                $norm_time = trim($z['norm_time']);
+                $norm_time = trim($z['norm_time']);
+                $norm_time = round((float)str_replace(',', '.', $norm_time)*$kol_e,2);
+                $norm_time = str_replace('.', ',', $norm_time);
+                 $code_mvp=$z['mvp'];
+                $sch=$z['schet'];
+                $w = $z['work'];
+
+                $sql = "select zp,common_minus,time_transp,tmc,repair,usluga,lic,verification from costwork where work=:search";
+                $z1 = viewschet::findBySql($sql, [':search' => "$u"])->asArray()->all();
+                $zp = round((float) str_replace(',', '.', $z1[0]['zp'])*$kol_e,2);
+                $zp_e = round(0.22 * $zp, 2);
+                $cm = $z1[0]['common_minus'];
+                $verification = $z1[0]['verification'];
+                $cm = round((float)str_replace(',', '.', $cm)*$kol_e,2);
+                $cm_tr=$cm;
+                $tmc = $z1[0]['tmc']; // ТМЦ
+                $tmc = round((float)str_replace(',', '.', $tmc)*$kol_e,2);
+
+                $lic = $z1[0]['lic'];    // Признак лицензированной деятельности
+                $repair = $z1[0]['repair']; // Ремонты
+                $repair = round((float)str_replace(',', '.', $repair)*$kol_e,2);
+
+                $tr_usl = ($z1[0]['usluga'] == 'Транспортні послуги') ? 1 : 0;
+
+                if ($tr_usl == 0)
+                    $time_prostoy = $z1[0]['time_transp']; // Время простоя
+
+                $sql = "select $pole as nomer from costwork a where a.work=:search and $pole is not null";
+
+                $z1 = viewschet::findBySql($sql, [':search' => "$u"])->asArray()->all();
+                if (count($z1) > 0)
+                    $nomer = $z1[0]['nomer'];
+                else
+                    $nomer = '';
+
+                $sql = "select * from vw_transport a where a.number=:search";
+
+                $z1 = viewschet::findBySql($sql, [':search' => "$nomer"])->asArray()->all();
+                if (count($z1) > 0 && $lic==0) {
+                    $oil = $z1[0]['oil_p'];
+                    $amort = $z1[0]['amort'];
+                    $wage = $z1[0]['wage'];
+                    $c92 = $z1[0]['cost_92_move'];
+                    $c95 = $z1[0]['cost_95_move'];
+                    $cdf = $z1[0]['cost_df_move'];
+                    $cg = $z1[0]['cost_g_move'];
+
+                    $c92w = $z1[0]['cost_92_work'];
+                    $c95w = $z1[0]['cost_95_work'];
+                    $cdfw = $z1[0]['cost_df_work'];
+                    $cgw = $z1[0]['cost_g_work'];
+                } else {
+                    $oil = '0';
+                    $amort = '0';
+                    $wage = '0';
+                    $c92 = '0';
+                    $c95 = '0';
+                    $cdf = '0';
+                    $cg = '0';
+
+                    $c92w = '0';
+                    $c95w = '0';
+                    $cdfw = '0';
+                    $cgw = '0';
+
+                }
+                $esv = 22;
+
+                // Транспорт проезд
+                $fuel_92 = (float)str_replace(',', '.', $c92);
+                $fuel_95 = (float)str_replace(',', '.', $c95);
+                $fuel_df = (float)str_replace(',', '.', $cdf);
+                $fuel_g = (float)str_replace(',', '.', $cg);
+                $time_t = (float)str_replace(',', '.', $time_t);
+                if ($tr_usl == 0)
+                    $time_prostoy = (float)str_replace(',', '.', $time_prostoy);
+
+
+                $oil_c = (float)str_replace(',', '.', $oil);
+                $amort_c = (float)str_replace(',', '.', $amort);
+
+                $oil = round($oil_c * $time_t, 2);
+                $fuel_92 = round($fuel_92 * $time_t, 2);
+                $fuel_95 = round($fuel_95 * $time_t, 2);
+                $fuel_df = round($fuel_df * $time_t, 2);
+                $fuel_g = round($fuel_g * $time_t, 2);
+                $amort = round($amort_c * $time_t, 2);
+                $zp_drive_c = (float)str_replace(',', '.', $wage);
+                $zp_drive = round($zp_drive_c * $time_t, 2);
+
+                // Транспорт простой
+                $oil_prostoy = round($oil_c * $time_prostoy, 2);
+                $amort_prostoy = round($amort_c * $time_prostoy, 2);
+                $zp_drive_prostoy = round($zp_drive_c * $time_prostoy, 2);
+
+                // Транспорт работа
+                $fuel_92_work = (float)str_replace(',', '.', $c92w);
+                $fuel_95_work = (float)str_replace(',', '.', $c95w);
+                $fuel_df_work = (float)str_replace(',', '.', $cdfw);
+                $fuel_g_work = (float)str_replace(',', '.', $cgw);
+
+                if ($tr_usl == 0) $time_work = $time_prostoy;
+
+                if ($tr_usl == 1) {
+                    $oil_work = round($oil_c * $time_work, 2);
+                    $amort_work = round($amort_c * $time_work, 2);
+                    $zp_drive_work = round($zp_drive_c * $time_work, 2);
+                } else {
+                    $oil_work = 0;
+                    $amort_work = 0;
+                    $zp_drive_work = 0;
+                }
+
+                $fuel_92_work = round($fuel_92_work * $time_work, 2);
+                $fuel_95_work = round($fuel_95_work * $time_work, 2);
+                $fuel_df_work = round($fuel_df_work * $time_work, 2);
+                $fuel_g_work = round($fuel_g_work * $time_work, 2);
+
+
+                // --Подсчет итога--
+                // Топливо:
+                $fuel_92 = $fuel_92 + $fuel_92_work;        // 92-й бензин
+                $fuel_95 = $fuel_95 + $fuel_95_work;        // 95-й бензин
+                $fuel_df = $fuel_df + $fuel_df_work;        // Диз. топливо
+                $fuel_g = $fuel_g + $fuel_g_work;           // Газ
+                // Другие показатели
+                $oil = $oil + $oil_prostoy + $oil_work;                 // Масло
+                $amort = $amort + $amort_prostoy + $amort_work;           // Аммортизация
+                $zp_drive = $zp_drive + $zp_drive_prostoy + $zp_drive_work;  // Зарплата водителей
+
+                if ($time_t == 0) {
+                    $fuel_92 = 0;
+                    $fuel_95 = 0;
+                    $fuel_df = 0;
+                    $fuel_g = 0;
+                    $oil = 0;
+                    $zp_drive = 0;
+                    $amort = 0;
+                }
+
+                if (($fuel_92 + $fuel_95 + $fuel_df + $fuel_g) > 0) $priz_proezd = 1;
+                else $priz_proezd = 0;
+
+                if($time_t>0)
+                    $time_t = $time_t + ($notlic==1) ? $time_prostoy:0;
+
+                $cm_tr = round($cm_tr*$time_t,2);
+                $ff=fopen('aaa_sap.txt','w+');
+                fputs($ff,$notlic);
+                fputs($ff,"\n");
+                fputs($ff,$time_prostoy);
+                fputs($ff,"\n");
+                fputs($ff,$time_t);
+
+                // Преобразуем точку в запятую в показателях
+                $time_t = str_replace('.', ',', $time_t);
+                $oil = str_replace('.', ',', $oil);
+                $fuel_92 = str_replace('.', ',', $fuel_92);
+                $fuel_95 = str_replace('.', ',', $fuel_95);
+                $fuel_df = str_replace('.', ',', $fuel_df);
+                $fuel_g = str_replace('.', ',', $fuel_g);
+                $zp = str_replace('.', ',', $zp);
+                $zp_e = str_replace('.', ',', $zp_e);
+                $zp_esv = str_replace('.', ',', round($esv * $zp_drive / 100, 2));
+                $zp_d = str_replace('.', ',', $zp_drive);
+                $cm = trim(str_replace('.', ',', $cm));
+                $cm_tr = trim(str_replace('.', ',', $cm_tr));
+                $amort = str_replace('.', ',', $amort);
+            }
+
+            if ($u1 == 'Оперативно-технічне обслуговування') {
+                $cnt++;
+                $res = mb_substr($z['contract'], 0, 2, "UTF-8");
+
+                $time_t = $z['time_t'];        // Время проезда
+                $time_prostoy = $z['time_prostoy'];        // Время простоя
+                $time_work = $z['time_work'];             // Время работы
+                $n_work = trim($z['n_work']);
+                $norm_time = trim($z['norm_time']);
+                $code_mvp=$z['mvp'];
+                $sch=$z['schet'];
+                $w = $z['work'];
+                $verification = 0;  // Поверка
+
+                $sql = "select a.zp,a.common_minus,a.time_transp,a.tmc,a.repair,a.usluga,a.other,
+                    b.* from costwork a left join a_transport b on trim(a.work)=trim(b.number) 
+                    where a.work=:search";
+                $z1 = viewschet::findBySql($sql, [':search' => "$w"])->asArray()->all();
+
+//                debug($sql);
+//                return;
+
+                $zp = (float)str_replace(',', '.', $z1[0]['zp']);
+                $zp_e = round(0.22 * $zp, 2);
+                $cm = $z1[0]['common_minus'];
+                $cm_tr = 0;
+                $time_prostoy = $z1[0]['time_transp']; // Время простоя
+                $tmc = trim($z1[0]['tmc']); // ТМЦ
+                $repair = $z1[0]['repair']; // Ремонты
+                $other = $z1[0]['other'];   // Другие
+                $tr_usl = 0;
+
+                if (count($z1) > 0) {
+                    $oil_p = $z1[0]['oil_p'];
+                    $oil_move = $z1[0]['oil_move'];
+                    $amort = $z1[0]['amort'];
+                    $amort_move = $z1[0]['amort_move'];
+                    $wage = $z1[0]['wage'];
+                    $wage_move = $z1[0]['wage_move'];
+                    $c92 = $z1[0]['cost_92_move'];
+                    $c95 = $z1[0]['cost_95_move'];
+                    $cdf = $z1[0]['cost_df_move'];
+                    $cg = $z1[0]['cost_g_move'];
+
+                    $c92w = $z1[0]['cost_92_work'];
+                    $c95w = $z1[0]['cost_95_work'];
+                    $cdfw = $z1[0]['cost_df_work'];
+                    $cgw = $z1[0]['cost_g_work'];
+                } else {
+                    $oil = '0';
+                    $amort = '0';
+                    $wage = '0';
+                    $c92 = '0';
+                    $c95 = '0';
+                    $cdf = '0';
+                    $cg = '0';
+
+                    $c92w = '0';
+                    $c95w = '0';
+                    $cdfw = '0';
+                    $cgw = '0';
+
+                }
+                $esv = 22;
+
+
+                // Транспорт проезд
+                $fuel_92 = (float)str_replace(',', '.', $c92);
+                $fuel_95 = (float)str_replace(',', '.', $c95);
+                $fuel_df = (float)str_replace(',', '.', $cdf);
+                $fuel_g = (float)str_replace(',', '.', $cg);
+                $time_t = (float)str_replace(',', '.', $time_t);
+                $oil_p = (float)str_replace(',', '.', $oil_p);
+                $oil_move = (float)str_replace(',', '.', $oil_move);
+                $amort = (float)str_replace(',', '.', $amort);
+                $amort_move = (float)str_replace(',', '.', $amort_move);
+                $wage = (float)str_replace(',', '.', $wage);
+                $wage_move = (float)str_replace(',', '.', $wage_move);
+
+                if ($tr_usl == 0)
+                    $time_prostoy = (float)str_replace(',', '.', $time_prostoy);
+
+                // Транспорт простой
+                $oil_prostoy = round($oil_p * $time_prostoy, 2);
+                $amort_prostoy = round($amort * $time_prostoy, 2);
+                $zp_drive_prostoy = round($wage * $time_prostoy, 2);
+
+                // --Подсчет итога--
+                // Другие показатели
+                $oil = $oil_move + $oil_prostoy;                 // Масло
+                $amort = $amort_move + $amort_prostoy;           // Аммортизация
+                $zp_drive = $wage_move + $zp_drive_prostoy;  // Зарплата водителей
+
+                if ($time_t == 0) {
+                    $fuel_92 = 0;
+                    $fuel_95 = 0;
+                    $fuel_df = 0;
+                    $fuel_g = 0;
+                    $oil = 0;
+                    $zp_drive = 0;
+                    $amort = 0;
+                }
+
+                if (($fuel_92 + $fuel_95 + $fuel_df + $fuel_g) > 0) $priz_proezd = 1;
+                else $priz_proezd = 0;
+                $time_t = $time_t + $time_prostoy;
+                // Преобразуем точку в запятую в показателях
+                $time_t = str_replace('.', ',', $time_t);
+                $oil = str_replace('.', ',', $oil);
+                $fuel_92 = str_replace('.', ',', $fuel_92);
+                $fuel_95 = str_replace('.', ',', $fuel_95);
+                $fuel_df = str_replace('.', ',', $fuel_df);
+                $fuel_g = str_replace('.', ',', $fuel_g);
+                $zp = str_replace('.', ',', $zp);
+                $zp_e = str_replace('.', ',', $zp_e);
+                $zp_esv = str_replace('.', ',', round($esv * $zp_drive / 100, 2));
+                $zp_d = str_replace('.', ',', $zp_drive);
+                $cm = trim(str_replace('.', ',', $cm));
+                $amort = str_replace('.', ',', $amort);
+            }
+
+//        fputs($f,$tr_usl);
+//        fputs($f,$priz_proezd);
+
+            if($cnt==1)
+            fputs($f, $hap);
+
+            // Добавляем к зарплате сумму доставки бригады
+            $zp = (float)str_replace(',', '.', $zp);
+            $zp_e = (float)str_replace(',', '.', $zp_e);
+            $zp = $zp+round($summa_delivery/1.22,2);
+            $zp_e = $zp_e+round(round($summa_delivery/1.22,2)*0.22,2);
+            $zp = str_replace('.', ',', $zp);
+            $zp_e = str_replace('.', ',', $zp_e);
+
+            if ($priz_proezd == 0 || $tr_usl == 1) {
+
+                $e[0] = 'CK01';           // const
+                $e[1] = $n_work;        // № услуги
+                $e[2] = $code_mvp;    //  МВП пока const
+                $e[3] = $tmc;        // ТМЦ
+                $e[4] = $zp;        // Зарплата бригады
+                $e[5] = $zp_e;     // Соц. взнос от зарплаты бригады
+                $e[6] = 0;        // Коммандировки
+                $e[7] = 0;       // Коммандировки
+                $e[8] = 0;      // Коммандировки
+                $e[9] = $fuel_92;        // топливо а-92
+                $e[10] = $fuel_95;       // топливо а-95
+                $e[11] = $fuel_df;       // топливо дт
+                $e[12] = $fuel_g;        // топливо газ
+                $e[13] = $oil;        // масло
+                $e[14] = $zp_d;       // зп водителей
+                $e[15] = $zp_esv;        // Соц. взнос от зарплаты водителей
+                $e[16] = $amort;        // Аммортизация транспорт
+                $e[17] = 0;        // Коммандировки
+                $e[18] = 0;        // Коммандировки
+                $e[19] = $verification;        // Поверка средств учета
                 $e[20] = $other;        // other
                 $e[21] = $repair;        // Ремонт
                 $e[22] = $cm;        // Общепроизводственные затраты
@@ -1717,7 +2730,7 @@ class SiteController extends Controller
                 $e[19] = 0;        // Поверка средств учета
                 $e[20] = 0;        // other
                 $e[21] = 0;        // Ремонт
-                $e[22] = 0;        // Общепроизводственные затраты
+                $e[22] = $cm_tr;        // Общепроизводственные затраты
                 $e[23] = $sch;     // Счет
                 $e[24] = '';       // № договора
                 $e[25] = 0;      // Нормативные трудозатраты бригады
@@ -1777,21 +2790,18 @@ class SiteController extends Controller
         $sch = Yii::$app->request->post('sch');
         $mail = Yii::$app->request->post('mail');
         $sch1 = Yii::$app->request->post('sch1');
+
+//        debug($sch);
+//        return;
+
         if(empty($sch1)) $sch1='0';
         if(!isset(Yii::$app->user->identity->role))
         {      $flag=0;}
         else {
             $role = Yii::$app->user->identity->role;
         }
-//        debug($role);
-//        return;
+
         if($role<>11) {
-//        {$sql = 'select distinct a.*,b.Director,b.parrent_nazv,b.mail,'
-//                . 'c.exec_person,c.exec_person_pp,c.exec_post,c.exec_post_pp,c.assignment,c.date_assignment'
-//                . ' from vschet a,spr_res b,spr_uslug c,costwork d'
-//                . ' where a.res=b.nazv and a.usluga=d.work '
-//                . ' and c.usluga=d.usluga'
-//                . ' and (schet=:search or cast(schet as dec(10,0)) in ('.$sch1."))";
             $sql = 'select distinct a.*,b.Director,b.parrent_nazv,b.mail,
                 case when a.res in ("СДІЗП","СЗОЕ","СЦ","СПС") then e.exec_person else c.exec_person end as exec_person,
                 case when a.res in ("СДІЗП","СЗОЕ","СЦ","СПС") then e.exec_person_pp else c.exec_person_pp end as exec_person_pp,
@@ -1815,26 +2825,84 @@ class SiteController extends Controller
                 . ' and c.id=14'
                 . ' and (schet=:search or cast(schet as dec(10,0)) in ('.$sch1."))".' limit 1';
         }
-        $model = viewschet::findBySql($sql,[':search'=>"$sch"])->asArray()->all();
-//        if($role==11) {
-//          debug($sql);
-//            return;
-//        }
+        $model1 = viewschet::findBySql($sql,[':search'=>"$sch"])->asArray()->all();
 
-        $q=count($model);
-        $total_beznds=0;
-        $total=0;
-        for ($i = 0; $i < $q; $i++)
-        { $total+= $model[$i]['summa'];
-          $total_beznds+= $model[$i]['summa_beznds'];}
-        $model[0]['usluga']=del_brackets($model[0]['usluga']);
-//        $model[0]['usluga']=mb_strrev($model[0]['usluga']);
-//        debug($model[0]['usluga']);
+        $model = new InputData();
+        if ($model->load(Yii::$app->request->post()))
+        {
+//            debug($model);
+//            return;
+            // Меняем в базе № договора
+            $sql = 'select * from schet where schet=:search limit 1';
+
+            $model2 = schet::findBySql($sql,[':search'=>"$model->sch"])->one();
+//            debug($model2);
+//            return;
+            $model2->contract=$model->n_cnt;
+            $model2->save(false);
+
+            return $this->redirect([ 'create_contract','n_cnt' => $model->n_cnt,'sch' => $model->sch,'mail' => $model->mail,'sch1' => $model->sch1]);
+        }
+        else {
+             return $this->render('input_contract', [
+                'model' => $model, 'model1' => $model1,'sch' => $sch,'mail' => $mail,'sch1' => $sch1
+            ]);
+        }
+
+    }
+
+     public function actionCreate_contract($n_cnt,$sch,$mail,$sch1)
+     {  $sch = Yii::$app->request->get('sch');
+         $mail = Yii::$app->request->get('mail');
+         $sch1 = Yii::$app->request->get('sch1');
+
+         if(empty($sch1)) $sch1='0';
+         if(!isset(Yii::$app->user->identity->role))
+         {      $flag=0;}
+         else {
+             $role = Yii::$app->user->identity->role;
+         }
+
+         if($role<>11) {
+             $sql = 'select distinct a.*,b.Director,b.parrent_nazv,b.mail,
+                case when a.res in ("СДІЗП","СЗОЕ","СЦ","СПС") then e.exec_person else c.exec_person end as exec_person,
+                case when a.res in ("СДІЗП","СЗОЕ","СЦ","СПС") then e.exec_person_pp else c.exec_person_pp end as exec_person_pp,
+                case when a.res in ("СДІЗП","СЗОЕ","СЦ","СПС") then e.exec_post else c.exec_post end as exec_post,
+                case when a.res in ("СДІЗП","СЗОЕ","СЦ","СПС") then e.exec_post_pp else c.exec_post_pp end as exec_post_pp,
+                case when a.res in ("СДІЗП","СЗОЕ","СЦ","СПС") then e.assignment else c.assignment end as assignment,
+                case when a.res in ("СДІЗП","СЗОЕ","СЦ","СПС") then e.date_assignment else c.date_assignment end as date_assignment, 
+               c.usluga as usl
+                from vschet a left join spr_res b on a.res=b.nazv
+                left join costwork d on a.usluga=d.work 
+                left join spr_uslug c on c.usluga=d.usluga 
+                left join spr_uslug e on 1=1 and e.id=17'.
+                 ' where schet=:search or cast(schet as dec(10,0)) in ('.$sch1.")" .' limit 1';
+         }
+         else
+         {
+             $sql = 'select distinct a.*,b.Director,b.parrent_nazv,b.mail,'
+                 . 'c.exec_person,c.exec_person_pp,c.exec_post,c.exec_post_pp,c.assignment,c.date_assignment,c.usluga as usl'
+                 . ' from vschet a,spr_res b,spr_uslug c,costwork d'
+                 . ' where a.res=b.nazv and a.usluga=d.work '
+                 . ' and c.id=14'
+                 . ' and (schet=:search or cast(schet as dec(10,0)) in ('.$sch1."))".' limit 1';
+         }
+         $model = viewschet::findBySql($sql,[':search'=>"$sch"])->asArray()->all();
+
+//         debug($model);
 //        return;
 
-        return $this->render('contract',['model' => $model,'style_title' => 'd9','mail' => $mail,
-            'q' => $q,'total' => $total,'total_beznds' => $total_beznds,'sch' => $sch,'sch1' => $sch1]);
-    }
+         $q=count($model);
+         $total_beznds=0;
+         $total=0;
+         for ($i = 0; $i < $q; $i++)
+         { $total+= $model[$i]['summa'];
+             $total_beznds+= $model[$i]['summa_beznds'];}
+         $model[0]['usluga']=del_brackets($model[0]['usluga']);
+
+         return $this->render('contract',['model' => $model,'style_title' => 'd9','mail' => $mail,'n_cnt' => $n_cnt,
+             'q' => $q,'total' => $total,'total_beznds' => $total_beznds,'sch' => $sch,'sch1' => $sch1]);
+     }
 
     // Формирование инф. сообщения
     public function actionMessage()
@@ -1977,7 +3045,7 @@ class SiteController extends Controller
                      ->all();
                  $last_r = $last[0]->date_edit;
 
-                 $sql="update schet set status=8 WHERE date<(now()- INTERVAL 30 DAY) and status<3
+                 $sql="update schet set status=8 WHERE date<(now()- INTERVAL 370 DAY) and status<3
                           and res='Дніпропетровські РЕМ'";
 
                 $data = \Yii::$app->db->createCommand($sql)->execute();;
@@ -2043,7 +3111,7 @@ class SiteController extends Controller
                     'select  max(date_edit) as date_edit from schet where res=:res',[':res'=>'Жовтоводські РЕМ'])
                     ->all();
                 $last_r = $last[0]->date_edit;
-                $sql="update schet set status=8 WHERE date<(now() - INTERVAL 120 DAY) and status<3
+                $sql="update schet set status=8 WHERE date<(now() - INTERVAL 220 DAY) and status<3
                           and res='Жовтоводські РЕМ'";
 
                 $data = \Yii::$app->db->createCommand($sql)->execute();
@@ -2104,29 +3172,35 @@ class SiteController extends Controller
     }
 
     // Подгрузка видов работ - происходит при выборе услуги
-    public function actionGetworks($id,$res) {
+    public function actionGetworks($id,$res,$calc_ind) {
     Yii::$app->response->format = Response::FORMAT_JSON;
+     $calc_ind--;
     if (Yii::$app->request->isAjax) {
         $usluga = Calc::find()->select(['usluga'])->where('id=:id',[':id' => $id])->all();
         $usl = $usluga[0]->usluga;
 
         if(empty($usl))
-        $sql = "Select cast(min(id) as char(3)) as nomer,concat(cast(min(id) as char(3)),'  ',trim(work)) as work "
-                . "from costwork group by work ";
+        $sql = "Select cast(min(id) as char(3)) as nomer,concat(cast(min(id) as char(3)),'  ',trim(work),'  ',cast(cast_4 as char(10))) as work "
+                . "from costwork where calc_ind=$calc_ind group by work,cast_4 ";
         else
         {
             switch($usl) {
                 case "Послуги з технічного обслуговування об'єктів":
                     $usl1 = "Послуги з технічного обслуговування об";
-                    $sql = "Select min(id) as nomer,concat(cast(min(id) as char(3)),'  ',trim(work)) as work "
-                        . "from costwork where usluga like " . "'%" . $usl1 . "%'" . " group by work";
+                    $sql = "Select min(id) as nomer,concat(cast(min(id) as char(3)),'  ',trim(work),'  ',cast(cast_4 as char(10))) as work "
+                        . "from costwork where usluga like " . "'%" . $usl1 . "%'" . " group by work,cast_4";
                     break;
                 case "Оперативно-технічне обслуговування":
                     $usl1 = "Оперативно-технічне обслуговування";
+//                    $sql = "Select min(id) as nomer,concat(cast(min(id) as char(3)),'  ',trim(work)) as work "
+//                        . "from costwork where usluga like " . "'%" . $usl1 . "%'" .
+//                        ' and rem='.$res." group by work";
+
                     $sql = "Select min(id) as nomer,concat(cast(min(id) as char(3)),'  ',trim(work)) as work "
                         . "from costwork where usluga like " . "'%" . $usl1 . "%'" .
-                        ' and rem='.$res." group by work";
-                    //debug($sql);
+                        " group by work";
+
+//                    debug($sql);
                     break;
                 case "Транспортні послуги":
                     $r = 'T_';
@@ -2167,19 +3241,21 @@ class SiteController extends Controller
                     }
 
                     $sql = "Select min(a.id) as nomer,concat(cast(min(a.id) as char(3)),
-                         IF(b.rabota is null,' -','  '),trim(a.work)) as work "  // - нет данных в поле rabota< , + есть данные
+                         IF(b.rabota is null,' -','  '),trim(a.work),'  ',cast(a.cast_4 as char(10)),' ','грн.') as work "  // - нет данных в поле rabota< , + есть данные
                         . "from costwork a inner join transport b on a.$r=b.nomer
                         where a.usluga =" . "'" . $usl . "'"
-                        . " and b.locale=$res group by a.work,b.rabota";
+                        . " and b.locale=$res and a.calc_ind=$calc_ind group by a.work,b.rabota,a.cast_4";
                         //. " and id_res=".$res." group by work";
 
                     break;
                 default:
-                        $sql = "Select min(id) as nomer,concat(cast(min(id) as char(3)),'  ',trim(work)) as work "
-                        . "from costwork where usluga =" . "'" . $usl . "'" . " group by work";
+                        $sql = "Select min(id) as nomer,concat(cast(min(id) as char(3)),
+                        '  ',trim(work),'  ',cast(cast_4 as char(10)),' ','грн.') as work "
+                        . "from costwork where usluga =" . "'" . $usl . "'" . " and calc_ind=$calc_ind group by work,cast_4";
             }
 
         }
+//        var_dump($sql);
         $works = Calc::findBySql($sql)->all();
         return ['success' => true, 'works' => $works,'usl' => $usl];
     }
@@ -2331,7 +3407,6 @@ class SiteController extends Controller
         }
         return ['oh no' => 'you are not allowed :('];
     }
-
 
 // Определяем расстояние по дороге от базы до объекта - происходит при нажатии на карту (
 // с ресурса (GoogleMAp)
@@ -2546,6 +3621,7 @@ class SiteController extends Controller
             $inn = $model->inn;
             $res = $model->res;
             $usl = $model->usluga;
+            $res1 = mb_substr($model->contract, 0, 2, "UTF-8");
 
             if(!empty($model->date))
                 $model->date = date("d.m.Y", strtotime($model->date));
@@ -2555,10 +3631,29 @@ class SiteController extends Controller
 
 //      Определяем данные исполнительной службы
         $usluga = spr_work::find()->select('usluga')->where('work=:usl',[':usl' => $usl])->all();
-        if(isset($usluga[0]->usluga))
+        if(isset($usluga[0]->usluga)) {
             $usluga = $usluga[0]->usluga;
-        else
+
+        }
+        else {
             $usluga = '';
+
+        }
+
+        $pole = viewschet::tr_res($res1);  // Определение поля с данными по автомобилю
+
+        $sql = "select $pole as nomer from costwork a where a.work=:search and $pole is not null";
+        $z1 = viewschet::findBySql($sql, [':search' => "$usl"])->asArray()->all();
+        if (count($z1) > 0)
+            $nomer = $z1[0]['nomer'];
+        else
+            $nomer = '';
+
+        $z1 = viewschet::findBySql($sql, [':search' => "$usl"])->asArray()->all();
+        if (count($z1) > 0)
+            $nomer = $z1[0]['nomer'];
+        else
+            $nomer = '';
 
         $exec = spr_uslug::find()->select('exec_office')->where('usluga=:usluga',[':usluga' => $usluga])->all();
         if(isset($exec[0]->exec_office))
@@ -2660,11 +3755,11 @@ class SiteController extends Controller
             if($mod=='schet')
                 if($role<>2)
                     return $this->render('update_schet', [
-                        'model' => $model,'nazv' => $nazv,'mail'=> $mail,'data_koord' => $data_koord
+                        'model' => $model,'nazv' => $nazv,'mail'=> $mail,'data_koord' => $data_koord,'nomer'=>$nomer
                     ]);
                 else
                     return $this->render('update_schet_opl', [
-                        'model' => $model,'nazv' => $nazv,'mail'=> $mail,'data_koord' => $data_koord
+                        'model' => $model,'nazv' => $nazv,'mail'=> $mail,'data_koord' => $data_koord,'nomer'=>$nomer
                     ]);
         }
     }
@@ -2789,6 +3884,8 @@ class SiteController extends Controller
         date_default_timezone_set('Europe/Kiev');
         $sch = Yii::$app->request->post('sch');
         $sch1 = Yii::$app->request->post('sch1');
+        $n_cnt = Yii::$app->request->post('n_cnt');
+
         if(empty($sch1)) $sch1='0';
         if(!isset(Yii::$app->user->identity->role))
         {      $flag=0;}
@@ -2841,7 +3938,7 @@ class SiteController extends Controller
         $pdf = new Pdf([
             'mode' => Pdf::MODE_UTF8 , // leaner size using standard fonts
             'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
-            'content' => $this->renderPartial('contract_print',['model' => $model,'style_title' => 'd9',
+            'content' => $this->renderPartial('contract_print',['model' => $model,'style_title' => 'd9','n_cnt' => $n_cnt,
                 'q' => $q,'total' => $total,'total_beznds' => $total_beznds]),
             'options' => [
                 'title' => 'Друк договора',
@@ -4053,6 +5150,411 @@ class SiteController extends Controller
                                             }
                                             if(($ps2+$ps3+$ps4+$ps5)==0)
                                                        $ss.=$pieces[$a].' ';
+                                        }
+                                        $summa_o = $pieces[8];
+                                        $pos = strpos($summa_o, '>');
+                                        $summa_o = substr($summa_o, $pos + 1);
+                                        $pos2 = preg_match('/([\d.\s])+/', $summa_o, $match1);
+                                        if($pos2==1) {
+                                            $summa_o = $match1[0];
+                                            if($summa_o<1000 && $summa_o>100 ) {
+                                                $res2['summa'][$elem2] = $summa_o;
+                                                $res2['note'][$elem2] = $ss;
+                                                $elem2++;
+                                            }
+                                        }
+//                                        $res['summa'][0] = 0;
+//                                        $res['contract'][0]='';
+//                                        $res['res'][0]='';
+//                                        $res['note'][0]='';
+
+
+                                    }
+                                    $exl++;
+                                    $data_exl[$exl]=$exl;
+                                    $trig2 = 0;
+                                    $trig1 = 0;
+                                    $status = 0;
+                                    $elem1++;
+
+                                }
+                            }
+                            $i++;
+                            $s = fgets($f);
+                            if ($i > $j) $status = 0;
+                        }
+                    }
+                }
+
+            }
+
+//            debug($res);
+//            return;
+
+            end($res1);         // move the internal pointer to the end of the array
+            $key = key($res1);
+            $prop=[];
+            $i=0;
+            for($e=0;$e<=$key;$e++){
+                if (!array_key_exists($e, $res1)) {
+                    $prop[$i]=$e;   // Пропущенные записи
+                    $i++;
+                }
+            }
+
+
+            return $this->render('import_otp', ['result' => $res, 'date' => $date,
+                'prop' => $prop,'warn' => $res2,'kol_warn' => $elem2]);
+        }
+        else {
+            return $this->render('upload_file_opl', [
+                'model' => $model,
+            ]);
+        }
+    }
+
+    // Импорт с выписки для проставления оплаты
+    // с OTP банка финансовому отделу атоматом (для новой выписки с банка
+    //    формат выписки поменялся 04.08.2020)
+    public function actionImport_otp_new() {
+        $model = new Import_otp();
+        $ff=fopen('aotp.txt','w+');
+        if ($model->load(Yii::$app->request->post())) {
+            $model->file = UploadedFile::getInstance($model,'file');;
+            if($model->file) {
+                $model->upload('file');
+            }
+            $file = $model->file->name;
+            $f = fopen($file, 'r');
+
+            $i = 0;
+            $res = [];
+            $res1 = [];
+            $res2 = [];
+            $data_exl =[];
+            $start1 = 0;
+            $trig1 = 0;
+            $trig2 = 0;
+            $elem = 0;
+            $elem1 = 0;
+            $elem2 = 0;
+            $exl = 0;
+            $j = 0;
+            // Узнаем кол-во строк в файле и дату оплаты
+
+            $s = file_get_contents($file);
+
+            $p = xml_parser_create();
+            xml_parse_into_struct($p, $s, $vals, $index);
+            xml_parser_free($p);
+
+//            debug($vals);
+//            return;
+
+            $y=count($vals);
+            $j=0;
+            $j2=0;
+            for($i=0;$i<$y;$i++){
+                if(trim($vals[$i]['tag'])<>'ROW')  continue;
+                $date = $vals[$i]['attributes']['BOOKEDDATE'];   // Дата оплаты
+
+                if(trim($vals[$i]['attributes']['DOCSUBTYPESNAME'])=='Меморіальний ордер' ||
+                    trim($vals[$i]['attributes']['DOCSUBTYPESNAME'])=='Платіжне доручення' ||
+                    trim($vals[$i]['attributes']['DOCSUBTYPESNAME'])=='Мемориальный ордер' ||
+                    trim($vals[$i]['attributes']['DOCSUBTYPESNAME'])=='Платежное поручение' ||
+                    trim($vals[$i]['attributes']['DOCSUBTYPESNAME'])=='Вход мем ордер по СЄП') {
+                    $s1 = $vals[$i]['attributes']['PLATPURPOSE'];
+                    $pattern = '/000\d{6}\s/';
+                    preg_match('/000\d{6}\s/', $s1, $match);
+                    if (isset($match[0]))
+                        $match[0] = substr($match[0], 1);
+                    else {
+                        $pattern = '/00\d{6}\s/';
+                        preg_match('/00\d{6}\s/', $s1, $match);
+                }
+
+
+                    if (!isset($match[0])){
+                        $pattern = '/00\d{6},\s/';
+                        preg_match('/00\d{6},/', $s1, $match);
+                        if (isset($match[0]))
+                             $match[0]=str_replace(',','',$match[0]);
+
+                     }
+//                    debug($s1);
+//                    debug($match);
+
+
+//                    if (isset($match[0]))
+//                        preg_match('/00\d{6};/', $s1, $match);
+//                    else {
+//                        if (count($match) == 0) {
+//                            preg_match('/00\d{6};/', $s1, $match);
+//                            $match[0]=str_replace(',','',$match[0]);
+//                        }
+//                    }
+
+//                   if($vals[$i]['attributes']['SUMMA']=='833771')
+//                   {           debug($match);
+//                                return;}
+
+
+
+                    if(($vals[$i]['attributes']['DOCSUBTYPESNAME']=='Платіжне доручення' ||
+                        $vals[$i]['attributes']['DOCSUBTYPESNAME']=='Платежное поручение') && isset($match[0])==false)
+                        continue;
+
+                    $res['date'][$j] =$date;
+                    $summa_o = ((int) $vals[$i]['attributes']['SUMMA'])/100;
+                    $res['summa'][$j] = $summa_o;
+
+                    if (isset($match[0]))
+                        $res['contract'][$j] = $match[0];
+                    else
+                        $res['contract'][$j] ='';
+
+                    // Выявление  правильного № счета из нескольких счетов
+                    preg_match_all($pattern, $s1, $all_schets);
+                    $y_schets = count($all_schets[0]);
+                    if($y_schets>1) {
+                        $true_schet = '';
+                        foreach ($all_schets[0] as $v_i) {
+                            // Находим счет который является только утвержденным
+                            $z_i = "select schet from schet where schet='$v_i' and status=2";
+                            $data_i = schet::findbysql($z_i)->asarray()->all();
+                            if(isset( $data_i[0]['schet']))
+                                $true_schet=$v_i;  // и если находится - тогда берем этот счет
+                        }
+                        $res['contract'][$j]=$true_schet;
+//                         debug($true_schet);
+//                         return;
+                    }
+                    // End
+
+//                    debug($true_schet);
+//                    return;
+
+                    if( $res['contract'][$j]<>'')
+                    $sql = 'Select res,summa from schet where trim(schet)=' . '"' . trim($res['contract'][$j]) . '"'.
+                        ' and status<3';
+                    else
+                        $sql = 'Select res,summa from schet where 1=2';
+
+
+                    $spr = schet::findbysql($sql)->all();
+
+                    fputs($ff,$sql);
+
+//                                        debug($spr);
+//                                        return;
+                    $j_count=count($spr);
+                    if($j_count<>0)
+                        $res['res'][$j] = $spr[0]->res;
+                    else
+                        $res['res'][$j] = '';
+
+                    // Сравниваем сумму по заявке и оплаченную
+
+                    if($j_count<>0) {
+                        if (abs($spr[0]->summa - (float) $summa_o)<=0.1)
+                            $res['note'][$j] = 'округлення до 10 коп.';
+                        else
+                            $res['note'][$j] = 'часткова оплата';
+
+                        if ($spr[0]->summa == $summa_o)
+                            $res['note'][$j] = '';
+
+//                                            if ($spr[0]->summa <> $summa_o)
+//                                                $res['note'][$elem] = 'часткова оплата';
+//                                            else
+//                                                $res['note'][$elem] = '';
+                    }
+                    else
+                    {
+                        $res['note'][$j] = '';
+                        $res1['summa'][$j2] = 'ПОМИЛКА';
+                        $res1['note'][$j2] = 'Неправильно вказаний рахунок в виписці, № рахунку '.$res['contract'][$j];
+                        $j2++;
+                    }
+
+                    $sql1 = 'update schet set status=3,date_opl=' . '"' .
+                        date("Y-m-d", strtotime($date)) . '"' .
+                        ' where schet=' . '"' . trim($res['contract'][$j]) . '"' . ' and status=2';
+                    Yii::$app->db->createCommand($sql1)->execute();
+
+                    $j++;
+                }
+
+            }
+//            debug($res);
+//            return;
+
+            end($res1);         // move the internal pointer to the end of the array
+            $key = key($res1);
+            if(is_null(($key)) || empty($key))
+                $key=-1;
+            $prop=[];
+            $i=0;
+            for($e=0;$e<=$key;$e++){
+                if (!array_key_exists($e, $res1)) {
+                    $prop[$i]=$e;   // Пропущенные записи
+                    $i++;
+                }
+            }
+
+//            echo 'res';
+//            debug($res);
+//            echo 'res1';
+//            debug($res1);
+//            echo 'prop';
+//            debug($prop);
+//            echo $key;
+
+            return $this->render('import_otp', ['result' => $res, 'date' => $date,
+                'prop' => $prop,'warn' => $res1,'kol_warn' => $j2]);
+
+
+
+            while (!feof($f)) {
+                $status = 1;
+                $i++;
+                $s = fgets($f);
+
+                $pos = strpos($s, "Opening balance:");
+                if (!($pos === false)) $start1 = 1;
+                if ($start1 == 1) {
+                    $pos1 = strpos($s, "</tr>");
+                    if (!($pos1 === false) || $elem > 0) {
+                        $trig1 = 1;
+                    }
+
+                    if ($trig1 == 1) {
+                        while ($status == 1) {
+                            $pos = strpos($s, '<tr style="height:1px">');
+                            if (!($pos === false)) {
+                                $trig2 = 1;
+                            }
+
+                            if ($trig2 == 1) {
+                                $pos = strpos($s, 'Платіжне доручення');
+                                if ($pos === false) $pos = strpos($s, 'Меморіальний ордер');
+                                if (!($pos === false)) {
+                                    $s1 = substr($s,$pos);
+
+                                    $pos1 = preg_match('/00\d{6}\s/', $s1);
+                                    if ($pos1 == 1) {
+                                        $pieces = explode(" ", substr($s, $pos));
+//                                        debug($s1);
+//                                        debug( $pieces);
+//                                        debug('7777777');
+
+                                        $summa_o = $pieces[8];
+                                        //debug($summa_o);
+                                        $pos = strpos($summa_o, '>');
+                                        $summa_o = substr($summa_o, $pos + 1);
+
+                                        //debug($summa_o);
+                                        //return;
+                                        if(isset($pieces[9]))
+                                        {
+                                            $pos9 = strpos($pieces[9], '>');
+//                                            $summa_o9 = substr($pieces[9], $pos9 + 1);
+                                            $summa_o=$summa_o.$pieces[9];
+                                            //debug($summa_o9);
+
+                                        }
+                                        //debug($summa_o);
+
+                                        preg_match('/([\d.\s])+/', $summa_o, $match1);
+                                        $summa_o = $match1[0];
+                                        $res['summa'][$elem] = $summa_o;
+                                        $res1[$elem1] = $summa_o;
+                                        //preg_match('/[а-яА-Я]{4}\d\d_\d{8}/', $s, $match);
+                                        preg_match('/000\d{6}\s/', $s1, $match);
+
+                                        if (isset($match[0]))
+                                            $match[0]=substr($match[0],1);
+                                        else
+                                            preg_match('/00\d{6}\s/', $s1, $match);
+                                        $res['contract'][$elem] = $match[0];
+
+//                                        debug($match[0]);
+
+                                        $short_res = trim(mb_substr($match[0], 0, 2, 'UTF-8'));
+                                        $sql = 'Select res,summa from schet where schet=' . '"' . $match[0] . '"'.
+                                            ' and status<3';
+//                                        debug($sql);
+//                                        return;
+
+//                                        $f1=fopen('aac_','w+');
+//                                        fputs($f1,$sql);
+
+                                        $spr = schet::findbysql($sql)->all();
+
+//                                        debug($spr);
+//                                        return;
+                                        $j_count=count($spr);
+                                        if($j_count<>0)
+                                            $res['res'][$elem] = $spr[0]->res;
+                                        else
+                                            $res['res'][$elem] = '';
+
+                                        // Сравниваем сумму по заявке и оплаченную
+
+                                        if($j_count<>0) {
+                                            if (abs($spr[0]->summa - (float) $summa_o)<=0.1)
+                                                $res['note'][$elem] = 'округлення до 10 коп.';
+                                            else
+                                                $res['note'][$elem] = 'часткова оплата';
+
+                                            if ($spr[0]->summa == $summa_o)
+                                                $res['note'][$elem] = '';
+
+//                                            if ($spr[0]->summa <> $summa_o)
+//                                                $res['note'][$elem] = 'часткова оплата';
+//                                            else
+//                                                $res['note'][$elem] = '';
+                                        }
+                                        else
+                                        {
+                                            $res['note'][$elem] = '';
+                                            $res2['summa'][$elem2] = 'ПОМИЛКА';
+                                            $res2['note'][$elem2] = 'Неправильно вказаний рахунок в виписці, № рахунку '.$match[0];
+                                            $elem2++;
+                                        }
+
+                                        $sql = 'update schet set status=3,date_opl=' . '"' .
+                                            date("Y-m-d", strtotime($date)) . '"' .
+                                            ' where schet=' . '"' . trim($match[0]) . '"';
+                                        Yii::$app->db->createCommand($sql)->execute();
+
+                                        //debug($sql);
+
+                                        $elem++;
+
+                                    }
+                                    else{
+                                        // Если не указан № счета или договора
+                                        $pieces = explode(" ", substr($s, $pos));
+                                        $ss='';
+                                        $y=count($pieces);
+                                        for($a=9;$a<$y;$a++){
+                                            $ps2=0;
+                                            $ps3=0;
+                                            $ps4=0;
+                                            $ps5=0;
+                                            if($a<>($y-1)) {
+                                                $pos2 = strpos($pieces[$a], '>');
+                                                if ($pos2 === false) $ps2 = 0; else $ps2 = 1;
+                                                $pos3 = strpos($pieces[$a], 'colspan');
+                                                if ($pos3 === false) $ps3 = 0; else $ps3 = 1;
+                                                $pos4 = strpos($pieces[$a], 'rowspan');
+                                                if ($pos4 === false) $ps4 = 0; else $ps4 = 1;
+                                                $pos5 = strpos($pieces[$a], 'class');
+                                                if ($pos5 === false) $ps5 = 0; else $ps5 = 1;
+                                            }
+                                            if(($ps2+$ps3+$ps4+$ps5)==0)
+                                                $ss.=$pieces[$a].' ';
                                         }
                                         $summa_o = $pieces[8];
                                         $pos = strpos($summa_o, '>');

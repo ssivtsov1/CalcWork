@@ -67,6 +67,9 @@ class Viewschet extends \yii\db\ActiveRecord
             'read_z' => 'Прочитана',
             'pib_dir' => 'П.І.Б. уповноваженої особи',
             'post_dir' => 'Посада уповноваженої особи',
+            'kol' => 'Кількість калькуляц. одиниць',
+            'time_t' => 'Час проїзду, годин:',
+            'n_work' => '№ САП:',
         ];
     }
 
@@ -194,7 +197,15 @@ class Viewschet extends \yii\db\ActiveRecord
             case 'СЗ':
                 $r = 'a.Szoe';
                 break;
-
+            case 'СЦ':
+                $r =$r . 'Sc';
+                break;
+            case 'СПС':
+                $r =$r . 'Sp';
+                break;
+            case 'СП':
+                $r =$r . 'Sp';
+                break;
 
         }
         return $r;

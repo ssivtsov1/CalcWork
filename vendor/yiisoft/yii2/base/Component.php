@@ -97,7 +97,8 @@ use Yii;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Component extends Object
+
+class Component extends BaseObject
 {
     /**
      * @var array the attached event handlers (event name => handlers)
@@ -550,6 +551,7 @@ class Component extends Object
             }
         }
         // invoke class-level attached handlers
+	
         Event::trigger($this, $name, $event);
     }
 

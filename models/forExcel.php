@@ -12,6 +12,7 @@ use yii\db\ActiveRecord;
 class ForExcel extends Model
 {
     public $nazv;
+    public $nazv1;
     public $rabota;
     public $delivery;
     public $transp;
@@ -38,7 +39,7 @@ class ForExcel extends Model
     public function rules()
     {
         return [
-            [['nazv','rabota','delivery','transp',
+            [['nazv','nazv1','rabota','delivery','transp',
                 'all','nds','all_nds','adr_work','comment'], 'safe']
         ];
     }

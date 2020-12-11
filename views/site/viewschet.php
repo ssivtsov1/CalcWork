@@ -9,14 +9,39 @@ use yii\grid\ActionColumn;
 use yii\grid\CheckboxColumn;
 use yii\grid\SerialColumn;
 use yii\helpers\Url;
-
-$this->title = 'Перегляд замовлень';
-$this->params['breadcrumbs'][] = $this->title;
+if(empty($last))
+    $this->title = 'Перегляд замовлень';
+else
+    $this->title = 'Перегляд замовлень [остання дата редагування: '.date("d.m.Y", strtotime($last)).']';
+//$this->params['breadcrumbs'][] = $this->title;
 //echo Yii::$app->user->identity->role;
 ?>
 
-<div class="site-spr">
-    <h3><?= Html::encode($this->title) ?></h3>
+<div class="site-spr1">
+<!--    --><?php //if(empty($last)): ?>
+        <h4><?= Html::encode($this->title) ?></h4>
+<!--    --><?php //endif; ?>
+<!--    --><?php //if(!empty($last)): ?>
+<!--        <h3>--><?//= Html::encode($this->title) ?><!--</h3>-->
+<!--        <span>--><?//= Html::encode('[остання дата редагування: '.date("d.m.Y", strtotime($last)).']'); ?><!--</span>-->
+<!--    --><?php //endif; ?>
+<!--    --><?php
+        if($role==2 || $role==3 || $role==5){
+            echo Html::a('Імпорт з виписки', ['import_otp_new'], ['class' => 'btn btn-success']);
+         if($role==3 || $role==5){
+            echo '&nbsp';
+            echo '&nbsp';}
+         else  {
+            echo '<br>';
+            echo '<br>';
+         }
+        }
+    if($role==1 || $role==2 || $role==3 || $role==5){
+        echo Html::a('Пошук заявок', ['search_request'], ['class' => 'btn btn-success']);
+        echo '<br>';
+        echo '<br>';
+    }
+    ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -42,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
              */
             'template' => '{update}',
         ],
-                     [
+             [
                 'format' => 'raw',
                 'header' => 'Форм. <br /> рах.',
                 'value' => function($model) {
@@ -59,22 +84,33 @@ $this->params['breadcrumbs'][] = $this->title;
                     return '';
                 }
             ],
-            [
+//            [
+//                'format' => 'raw',
+//                'header' => 'Форм. <br /> док.',
+//                'value' => function($model) {
+//                    if($model->status==5)    
+//                    return \yii\helpers\Html::a( '<span class="glyphicon glyphicon-briefcase"></span>', ['site/doc_email'],[
+//                        'data' => [
+//                            'method' => 'post',
+//                            'params' => [
+//                                'sch' => $model->schet,
+//                                //'mail'=> $mail
+//                            ]]],
+//                        ['title' => Yii::t('yii', 'Формування документів'), 'data-pjax' => '0']
+//                    );
+//                    else
+//                    return '';    
+//                }
+//            ],
+                    
+             [
                 'format' => 'raw',
-                'header' => 'Форм. <br /> док.',
+                'header' => 'Прочит.',
                 'value' => function($model) {
-                    if($model->status==5)    
-                    return \yii\helpers\Html::a( '<span class="glyphicon glyphicon-briefcase"></span>', ['site/doc_email'],[
-                        'data' => [
-                            'method' => 'post',
-                            'params' => [
-                                'sch' => $model->schet,
-                                //'mail'=> $mail
-                            ]]],
-                        ['title' => Yii::t('yii', 'Формування документів'), 'data-pjax' => '0']
-                    );
+                    if($model->read_z==0)    
+                    return 'Ні';
                     else
-                    return '';    
+                    return 'Так';    
                 }
             ],
             [
@@ -93,30 +129,43 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
            // 'id',
-            ['attribute' =>'id',
+            
+            ['attribute' =>'main_u',
+                'value' => function ($model){
+                    $q = $model->union_sch;
+                    if(!empty($q))
+                        return '1';
+                    else
+                        return '';
+                },
+                'format' => 'raw'
+            ],
+            ['attribute' =>'schet',
                 'value' => function ($model){
                     $q = $model->status;
                     switch($q){
                         case 1:
-                            return "<span class='text-info'> $model->id </span>";
+                            return "<span class='text-info'> $model->schet </span>";
                         case 2:
-                            return "<span class='text-proc'> $model->id </span>";
+                            return "<span class='text-proc'> $model->schet </span>";
                         case 3:
-                            return "<span class='text-opl'> $model->id </span>";
+                            return "<span class='text-opl'> $model->schet </span>";
                         case -1:
-                            return "<span class='text-info fontbld'> $model->id </span>";
+                            return "<span class='text-info fontbld'> $model->schet </span>";
                         case 5:
-                            return "<span class='text-success fontbld'> $model->id </span>";
+                            return "<span class='text-success fontbld'> $model->schet </span>";
                         case 8:
-                            return "<span class='text-bad fontbld'> $model->id </span>";
+                            return "<span class='text-bad fontbld'> $model->schet </span>";
                         default:
-                            return $model->id;}
+                            return $model->schet;}
                 },
                 'format' => 'raw'
             ],
 //            'okpo',
 //            'inn',
             ['attribute' =>'status_sch',
+                'label' => 'Статус <br /> заявки:',
+                'encodeLabel' => false,
                 'value' => function ($model){
                     $q = $model->status;
                     switch($q){
@@ -135,10 +184,40 @@ $this->params['breadcrumbs'][] = $this->title;
                          default:
                     return $model->status_sch;}
                 },
+                'filter'=>array('Нова перерахована' => 'Нова перерахована',
+                    'Нова' => 'Нова',
+                    'Узгоджена' => 'Узгоджена',
+                    'Оплачена' => 'Оплачена',
+                    'В роботі' => 'В роботі',
+                    'Виконана' => 'Виконана',
+                    'Відмова' => 'Відмова',
+
+                ),
                 'format' => 'raw'
             ],
             
             //'nazv',
+            ['attribute' =>'n_work',
+                'value' => function ($model){
+                    $q = $model->status;
+                    switch($q){
+                        case 1:
+                            return "<span class='text-info'> $model->n_work </span>";
+                        case 2:
+                            return "<span class='text-proc'> $model->n_work </span>";
+                        case 3:
+                            return "<span class='text-opl'> $model->n_work </span>";
+                        case -1:
+                            return "<span class='text-info fontbld'> $model->n_work </span>";
+                        case 5:
+                            return "<span class='text-success fontbld'> $model->n_work </span>";
+                        case 8:
+                            return "<span class='text-bad fontbld'> $model->n_work </span>";
+                        default:
+                            return $model->n_work;}
+                },
+                'format' => 'raw'
+            ],
                 ['attribute' =>'nazv',
                 'value' => function ($model){
                     $q = $model->status;
@@ -209,7 +288,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'usluga',
             ['attribute' =>'usluga',
                 'value' => function ($model){
-                    $q = $model->status;
+                    $q = $model->status;   
                     switch($q){
                         case 1:
                             return "<span class='text-info'> $model->usluga </span>";
@@ -230,6 +309,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             //'summa',
             ['attribute' =>'summa',
+                'label' => 'Сума <br /> з ПДВ,грн:',
+                'encodeLabel' => false,
                 'value' => function ($model){
                     $q = $model->status;
                     switch($q){
@@ -297,12 +378,27 @@ $this->params['breadcrumbs'][] = $this->title;
                         default:
                             return $model->res;}
                 },
-                'format' => 'raw'
+                        
+                'filter'=>array('Жовтоводські РЕМ' => 'Жовтоводські РЕМ',
+                        'Дніпропетровські РЕМ' => 'Дніпропетровські РЕМ',
+                        'Гвардійська дільниця' => 'Гвардійська дільниця',
+                        'Криворізькі РЕМ' => 'Криворізькі РЕМ',
+                        'Павлоградські РЕМ' => 'Павлоградські РЕМ',
+                        'Вільногірські РЕМ' => 'Вільногірські РЕМ',
+                        'Інгулецька дільниця' => 'Інгулецька дільниця',
+                        'Апостолівська дільниця' => 'Апостолівська дільниця',
+                        'СПС' => 'СПС',
+                        'СЗОЕ' => 'СЗОЕ',
+                        'СДІЗП' => 'СДІЗП',
+                        'СЦ' => 'СЦ',
+                        
+                       ),        
+                 'format' => 'raw'
             ],
                          [
                 'attribute' => 'date_opl',
-                'format' =>  ['DateTime','php:d.m.Y'],
-                'label' => 'Дата оплати:',
+                //'format' =>  ['DateTime','php:d.m.Y'],
+                'label' => 'Дата  <br /> оплати:',
                 'encodeLabel' => false,
                 'value' => function ($model){
                     $q = $model->status;
@@ -322,13 +418,21 @@ $this->params['breadcrumbs'][] = $this->title;
                         default:
                             return $model->date_opl;}
                 },
-                'format' => 'raw'
+                             'filter' => \yii\jui\DatePicker::widget([
+                                 'model'=>$searchModel,
+                                 'attribute'=>'date_opl',
+                                 'language' => 'uk',
+                                 //'dateFormat' => 'yy-mm-dd',
+                             ]),
+                             //'format' => 'html',
+
+                           'format' => 'raw'
 
             ],
             [
                 'attribute' => 'date_z',
                 'format' =>  ['DateTime','php:d.m.Y'],
-                'label' => 'Бажана дата отрим. <br /> послуги:',
+                'label' => 'Бажана <br /> дата отрим. <br /> послуги:',
                 'encodeLabel' => false,
                 'value' => function ($model){
                     $q = $model->status;
@@ -374,6 +478,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         default:
                             return $model->date;}
                 },
+                'filter' => \yii\jui\DatePicker::widget([
+                    'model'=>$searchModel,
+                    'attribute'=>'date',
+                    'language' => 'uk',
+                    //'dateFormat' => 'yy-mm-dd',
+                ]),
                 'format' => 'raw'
             ],
             //'time',
@@ -398,15 +508,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'format' => 'raw'
             ],
-
-           
-            
         ],
     ]); ?>
 
     <?= Html::a('Сброс в Excel', ['site/viewschet?'.
         'item=Excel'],
-        ['class' => 'btn btn-info'])  ?>
+        ['class' => 'btn btn-info']);  
+    echo Html::encode('  ');  
+            
+    echo Html::a('Аналітика', ['site/analytics'],
+        ['class' => 'btn btn-success']);  
+    ?>
 
 </div>
 

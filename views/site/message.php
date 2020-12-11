@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
 </span>
 <br>
 <span class="contract_center_text" >
-    <?= Html::encode($model->nazv);?>
+    <?= Html::encode($model[0]['nazv']);?>
 </span>
 <br>
 
@@ -34,9 +34,24 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= Html::encode("Назва послуги:");?>
 </span>
 <br>
-<span class="contract_center_text" >
-    <?= Html::encode($model->usluga);?>
-</span>
+<?php if($q==1): ?>
+    <span class="contract_center_text" >
+        <?= Html::encode($model[0]['usluga']);?>
+    </span>
+<?php endif; ?>
+
+<?php if($q>1): ?>
+<?php 
+        $str_u='';
+        for ($i = 0; $i < $q; $i++) { 
+            $str_u.=mb_strtolower($model[$i]['usluga'],'utf-8').', ';
+        } 
+        $str_u=mb_substr($str_u,0,mb_strlen($str_u,'utf-8')-2,'utf-8');
+?>        
+    <div class="contract_center_text1" >  
+        <?= Html::encode($str_u);?>
+    </div>
+<?php endif; ?>
 <br>
 
 <hr class="inf_line_main">
@@ -46,9 +61,16 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= Html::encode("Вартість послуги:");?>
 </span>
 <br>
-<span class="contract_center_text" >
-    <?= Html::encode($model->summa);?>
-</span>
+<?php if($q==1): ?>
+    <span class="contract_center_text" >
+        <?= Html::encode($model[0]['summa']).' грн.';?>
+    </span>
+<?php endif; ?>
+<?php if($q>1): ?>
+    <span class="contract_center_text" >
+        <?= Html::encode($total.' грн.');?>
+    </span>
+<?php endif; ?>
 <br>
 <hr class="inf_line_main">
 <br>
@@ -57,7 +79,7 @@ $this->params['breadcrumbs'][] = $this->title;
 </span>
 <br>
 <span class="contract_center_text" >
-    <?= Html::encode($model->adres);?>
+    <?= Html::encode($model[0]['adres']);?>
 </span>
 <br>
 <hr class="inf_line_main">
@@ -67,7 +89,7 @@ $this->params['breadcrumbs'][] = $this->title;
 </span>
 <br>
 <span class="contract_center_text" >
-    <?= Html::encode(changeDateFormat($model->date_exec, 'd.m.Y'));?>
+    <?= Html::encode(changeDateFormat($model[0]['date_exec'], 'd.m.Y'));?>
 </span>
 <br>
 <hr class="inf_line_main">
@@ -100,7 +122,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'data' => [
                 'method' => 'post',
                 'params' => [
-                'sch' => $model->schet,
+                'sch' => $sch,
+                'sch1' => $sch1
          ],],
             'class' => 'btn btn-primary','target'=>'_blank', ]); ?>
 
@@ -110,7 +133,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'data' => [
             'method' => 'post',
             'params' => [
-                'sch' => $model->schet,
+                'sch' => $sch,
+                'sch1' => $sch1,
                 'email' => $mail,
             ],],
         'class' => 'btn btn-primary']); ?>

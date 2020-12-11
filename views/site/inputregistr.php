@@ -5,14 +5,17 @@
  * Date: 21.06.2017
  * Time: 9:43
  */
-
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
-
 $this->title = 'Замовлення послуги';
 $model->person = '1';
+if($role=3 || $role=5)
+    $model->comment = 'ЦЕК';
+if($role>0){
+    $model->email = $email;
+}
 //$this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -21,7 +24,6 @@ $model->person = '1';
         localStorage.setItem("person", 1);
         localStorage.setItem("plat_nds",false);
     }
-
 </script>
 <div class="site-login">
 
@@ -53,7 +55,7 @@ $model->person = '1';
 
 
             <?= $form->field($model, 'inn')->textInput(
-                ['maxlength' => true,'onblur' => '$.get("' . Url::to('/CalcWork/web/site/getklient?inn=') .
+                ['onblur' => '$.get("' . Url::to('/CalcWork/web/site/getklient?inn=') .
                     '"+$(this).val(),
                     function(data) {
                      //alert(data.nazv); 
@@ -114,6 +116,17 @@ $model->person = '1';
                     }   
                 });',
                 ]) ?>
+
+            <?= $form->field($model, 'woinn')->checkbox([
+                'onchange' => 'woinn(this.checked);',
+                'label' => 'Індивідуальний податковий № відсутній',
+                'labelOptions' => [
+                    'style' => 'padding-left:20px;'
+                ],
+                'disabled' => false
+            ]); ?>
+
+
             <span class="nazv_kl"></span>
 
             <?= $form->field($model, 'okpo')->textInput(
@@ -193,11 +206,16 @@ $model->person = '1';
                 'onDblClick' => 'rmenu($(this).val(),"#klient-addr")']) ?>
              <div class='rmenu' id='rmenu-klient-addr'></div>  
              
-            <?= $form->field($model, 'fio_dir')->textarea(['rows' => 1, 'cols' => 25]) ?>
+            <!--<?= $form->field($model, 'fio_dir')->textarea(['rows' => 1, 'cols' => 25]) ?>-->
+             
+            <?= $form->field($model, 'post_dir')->textarea(['rows' => 1, 'cols' => 25]) ?>
+            <?= $form->field($model, 'pib_dir')->textarea(['rows' => 1, 'cols' => 25]) ?>
             <?= $form->field($model, 'contact_person')->textarea(['rows' => 1, 'cols' => 25]) ?>
             <?= $form->field($model, 'tel',['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
             . '<span class="glyphicon glyphicon-phone"></span></span>{input}</div>'])->textInput(
                 ['maxlength' => true,'onBlur' => 'norm_tel($(this).val())']) ?>
+
+
             <?= $form->field($model, 'email',['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
             . '<span class="glyphicon glyphicon-envelope"></span></span>{input}</div>']) ?>
 
@@ -205,7 +223,11 @@ $model->person = '1';
             <?= $form->field($model, 'date_z')->widget(\yii\jui\DatePicker::classname(), [
                 'language' => 'uk',
             ]) ?>
-
+            
+            <?= $form->field($model, 'object')->textarea(['rows' => 1, 'cols' => 25,
+                'onDblClick' => 'rmenu($(this).val(),"#klient-object")']) ?>
+             <div class='rmenu' id='rmenu-klient-object'></div>
+             
             <?= $form->field($model, 'adr_work')->textarea(['rows' => 3, 'cols' => 25,
                 'onDblClick' => 'rmenu($(this).val(),"#adr_work")']) ?>
              <div class='rmenu' id='rmenu-adr_work'></div>
@@ -219,7 +241,6 @@ $model->person = '1';
 
             </div>
             <?php
-
             ActiveForm::end(); ?>
         </div>
     </div>
@@ -229,6 +250,16 @@ $model->person = '1';
     function f_inn(p){
         $("#klient-inn").val(p);
     }
+
+    function woinn(p){
+        if (p == 1) {
+            v=8000000000+Math.floor(Math.random()*(1000000000-1));;
+            $("#klient-inn").val(v);
+        }
+        else
+            $("#klient-inn").val('');
+    }
+
     function showfields(p){
         //alert(p);
         var tip = localStorage.getItem("person");
@@ -257,24 +288,27 @@ $model->person = '1';
                 $('.field-klient-inn').show();
                 $('.control-label[for=klient-nazv]').text("Повна назва юридичної особи:");
             }
-
             else {
                 // Юр. лицо не плат НДС
                 $('.field-klient-okpo').show();
                 $('.field-klient-regsvid').show();
-                $('.field-klient-inn').show();
+                $('.field-klient-inn').hide();
                 $('.control-label[for=klient-nazv]').text("Повна назва юридичної особи:");
+                $('#klient-inn').val(Math.floor(990000000000+Math.random()*1000000)); // левый ИНН
+                //alert(111);
             }
         }
     }
-
 // Срабатывает при изменении значения радиокнопок
     function showfields_person(p){
         var nds = localStorage.getItem("plat_nds");
         //alert(nds);
-        if(p==2)  $('.field-klient-priz_nds').show();
+        if(p==2)  {$('.field-klient-priz_nds').show();
+                   $('#klient-priz_nds').get(0).checked = true;
+                   //localStorage.setItem("plat_nds",true);
+                   //nds = true;
+                   }
         if(p==1)  $('.field-klient-priz_nds').hide();
-
         if(nds=='true') {
 //            Плательщик НДС
             if (p == 1) {
@@ -284,6 +318,8 @@ $model->person = '1';
                 $('.field-klient-regsvid').hide();
                 $('.field-klient-inn').show();
                 $('.field-klient-fio_dir').hide();
+                $('.field-klient-pib_dir').hide();
+                $('.field-klient-post_dir').hide();
                 $('.field-klient-contact_person').hide();
                 $('.control-label[for=klient-addr]').text("Адреса проживання:");
                 $('.control-label[for=klient-nazv]').text("Прізвище, ім’я та по батькові:");
@@ -295,6 +331,8 @@ $model->person = '1';
                 localStorage.setItem("person", 2);
                 $('.field-klient-okpo').show();
                 $('.field-klient-fio_dir').show();
+                $('.field-klient-pib_dir').show();
+                $('.field-klient-post_dir').show();
                 $('.field-klient-contact_person').show();
                 $('.field-klient-regsvid').show();
                 $('.field-klient-inn').show();
@@ -303,7 +341,6 @@ $model->person = '1';
                 //$('.control-label[for=klient-inn]').text("ЄДРПОУ:");
             }
         }
-
         if(nds=='false') {
 //          не плательщик НДС
             if (p == 1) {
@@ -326,18 +363,18 @@ $model->person = '1';
                 $('.field-klient-regsvid').show();
                 $('.field-klient-fio_dir').show();
                 $('.field-klient-contact_person').show();
-                $('.field-klient-inn').show();
+
+               // $('.field-klient-inn').hide();
                 $('.control-label[for=klient-addr]').text("Юридична адреса:");
                 $('.control-label[for=klient-nazv]').text("Повна назва юридичної особи:");
+
                 //$('.control-label[for=klient-inn]').text("ЄДРПОУ:");
             }
         }
     }
-
     function norm_tel(p){
         var y,i,c,tel = '',kod,op,flag=0,rez='';
         y = p.length;
-
         for(i=0;i<y;i++)
         {
             c = p.substr(i,1);
@@ -360,7 +397,6 @@ $model->person = '1';
                     break;
                 case '099':  flag = 1;
                     break;
-
                 case '091':  flag = 1;
                     break;
                 case '063':  flag = 1;
@@ -371,7 +407,6 @@ $model->person = '1';
                     break;
                 case '066':  flag = 1;
                     break;
-
                 case '093':  flag = 1;
                     break;
                 case '095':  flag = 1;
@@ -385,14 +420,12 @@ $model->person = '1';
                 case '094':  flag = 1;
                     break;
             }
-
             var add = tel.substr(3,3);
             rez+=add+'-';
             add = tel.substr(6,2);
             rez+=add+'-';
             add = tel.substr(8);
             rez+=add;
-
         if(flag) {
             rez = op+' '+rez;
         }
@@ -401,7 +434,6 @@ $model->person = '1';
         }
         $('#klient-tel').val(rez);
     }
-
 </script>
     
 
@@ -409,3 +441,4 @@ $model->person = '1';
 
 
 
+   

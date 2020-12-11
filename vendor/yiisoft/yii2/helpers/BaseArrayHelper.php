@@ -500,6 +500,7 @@ class BaseArrayHelper
         $result = [];
         foreach ($array as $element) {
             $key = static::getValue($element, $from);
+            
             $value = static::getValue($element, $to);
             if ($group !== null) {
                 $result[static::getValue($element, $group)][$key] = $value;
@@ -507,7 +508,7 @@ class BaseArrayHelper
                 $result[$key] = $value;
             }
         }
-
+        //debug($result);
         return $result;
     }
 

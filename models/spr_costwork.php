@@ -6,10 +6,8 @@ use Yii;
 use yii\base\Model;
 use yii\behaviors\TimestampBehavior;
 
-
 class Spr_costwork extends \yii\db\ActiveRecord
 {
-
     public static function tableName()
     {
         return 'costwork';
@@ -26,6 +24,7 @@ class Spr_costwork extends \yii\db\ActiveRecord
     {
         return [
             [['work', 'id'], 'required'],
+            [['T_Ap','T_Vg','T_Krr','T_Yv','T_Dn','T_Pvg','T_Gv','T_Sp','T_ing','Szoe','Sdizp'],'safe']
         ];
     }
 

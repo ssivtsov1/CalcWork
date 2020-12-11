@@ -33,6 +33,8 @@ use yii\bootstrap\ActiveForm;
      <div class='rmenu' id='rmenu-spr_res-town_fromwhere_sz'></div>
     <?= $form->field($model, 'relat')->textInput(['onDblClick' => 'rmenu($(this).val(),"#spr_res-relat")']) ?>
      <div class='rmenu' id='rmenu-spr_res-relat'></div>
+     <?= $form->field($model, 'Director')->textInput(['onDblClick' => 'rmenu($(this).val(),"#spr_res-director")']) ?>
+     <div class='rmenu' id='rmenu-spr_res-director'></div>
     
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'ОК' : 'OK', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

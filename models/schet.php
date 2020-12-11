@@ -11,6 +11,9 @@ use yii\data\ActiveDataProvider;
 class Schet extends \yii\db\ActiveRecord
 {
    
+    public $nazv;
+    public $direct;
+
     public static function tableName()
     {
         return 'schet';
@@ -23,8 +26,9 @@ class Schet extends \yii\db\ActiveRecord
             'inn' => 'ІНН:',
             'schet' => 'Заявка:',
             'usluga' => 'Послуга:',
-            'summa' => 'Сума з ПДВ:',
+            'summa' => 'Сума з ПДВ,грн:',
             'adres' => 'Адреса робіт:',
+            'object' => 'Назва об`єкта:',
             'res' => 'Виконавча служба:',
             'comment' => 'Коментарій споживача:',
             'time' => 'Час створення',
@@ -36,8 +40,13 @@ class Schet extends \yii\db\ActiveRecord
             'contract' => '№ договору:',
             'summa_work' => 'Вартість робіт:',
             'summa_transport' => 'Транспорт всього,грн.:',
+            'summa_tmc' => 'Матеріали та устаткування,грн.:',
             'summa_delivery' => 'Доставка бригади,грн.:',
             'summa_beznds' => 'Сума без ПДВ:',
+            'union_sch' => "Об'єднання заявок:",
+            'read_z' => 'Прочитана',
+            'time_t' => 'Годин в дорозі',
+            'direct' => 'Напрямок роботи'
         ];
     }
 
@@ -47,9 +56,11 @@ class Schet extends \yii\db\ActiveRecord
         return [
 
             [['inn','schet','usluga','summa','date','summa_work','act_work','date_akt',
-                'summa_delivery','summa_transport','summa_beznds',
-              'time','res','adres','comment','date_z','status',
-                'contract','geo','kol','date_opl'], 'safe'],
+
+                'summa_delivery','summa_transport','summa_beznds','summa_tmc',
+              'time','res','adres','comment','date_z','status','time_t','user',
+                'contract','geo','kol','date_opl','union_sch','read_z','date_edit','nazv','cost_auto_work','direct'], 'safe'],
+
             [['date'], 'default', 'value' => date('Y-m-d')],
             [['date_akt'], 'default', 'value' => date('Y-m-d')],
             ['date_z', 'compare',
@@ -87,6 +98,23 @@ class Schet extends \yii\db\ActiveRecord
 
         return $dataProvider;
     }
+
+    public function search1($params,$sql)
+    {
+        $query = schet::findBySql($sql);
+        $query->sql = $sql;
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query
+
+        ]);
+        if (!($this->load($params) && $this->validate())) {
+            return $dataProvider;
+        }
+
+        return $dataProvider;
+    }
+
 
     public function getId()
     {

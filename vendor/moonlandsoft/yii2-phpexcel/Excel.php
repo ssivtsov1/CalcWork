@@ -720,12 +720,18 @@ class Excel extends \yii\base\Widget
 	{
 		if (!isset($this->format))
 			$this->format = 'Excel2007';
-		$objectwriter = \PHPExcel_IOFactory::createWriter($sheet, $this->format);
+
+		$objectwriter = \PHPExcel_IOFactory::createWriter($sheet, 'Excel5');
+
 		$path = 'php://output';
 		if (isset($this->savePath) && $this->savePath != null) {
 			$path = $this->savePath . '/' . $this->getFileName();
 		}
-		$objectwriter->save($path);
+        //$path =  '/home/sivtcov/'.$this->getFileName();
+//        $f = fopen('aaaaa','w');
+//        fputs($f,__DIR__ . '/LogReport/');
+		$objectwriter->save('php://output');
+
 		exit();
 	}
 	
@@ -848,6 +854,8 @@ class Excel extends \yii\base\Widget
 	    	if ($this->asAttachment) {
 	    		$this->setHeaders();
 	    	}
+
+
 	    	$this->writeFile($sheet);
 		} 
 		elseif ($this->mode == 'import') 

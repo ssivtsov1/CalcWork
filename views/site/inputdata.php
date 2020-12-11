@@ -7,9 +7,63 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
 $this->title = 'Розрахунок вартості робіт';
+//echo phpinfo();
 ?>
 
-<script>
+ <script>
+
+     window.onload=function(){
+
+        $("#inputdataform-region").val(3);
+
+        $('.field-inputdataform-transp_cek').hide();
+        localStorage.setItem("lat1", '');
+        localStorage.setItem("lng1", '');
+        localStorage.setItem("geo_res", '');
+        localStorage.setItem("geo_lat", '');
+        localStorage.setItem("geo_lng", '');
+        localStorage.setItem("geo_lat_sd", '');
+        localStorage.setItem("geo_lng_sd", '');
+        localStorage.setItem("geo_lat_sz", '');
+        localStorage.setItem("geo_lng_sz", '');
+        localStorage.setItem("id_res", '');
+        localStorage.setItem("usluga", '');
+        //localStorage.setItem("work", '');
+        localStorage.setItem("town_sz", '');
+        localStorage.setItem("town_sd", '');
+        var geo,y1,p1,lat,lon;
+        geo = $("#inputdataform-geo").val();
+
+        localStorage.setItem("geo_marker", '');
+        localStorage.setItem("geo_k", '');
+        if(geo!='') {
+            y1 = geo.length;
+            p1 = geo.indexOf(',') - 1
+            lat = geo.substring(0, p1);
+            lon = geo.substring(p1 + 2);
+            localStorage.setItem("geo_lat", lat);
+            localStorage.setItem("geo_lng", lon);
+            localStorage.setItem("geo_lat_save", lat);
+            localStorage.setItem("geo_lng_save", lon);
+            localStorage.setItem("geo_marker", '('+geo+')');
+            localStorage.setItem("geo_k", geo);
+            $("#inputdataform-res").change();
+            //initMap();
+        }
+
+        var p,u = $("#inputdataform-potrebitel").val();
+        p = u.length;
+        if(p!=0)
+        $("#inputdataform-potrebitel").blur();
+    });
+   </script>
+   
+   <script>
+       
+    function set_dist(p){   
+        if(p==0)
+           $('.dst').val(0);
+    }
     // Показывает или прячет блок время работы (в зависимости от выбранной машины)
     // работает только при выборе транспортных услуг
     // если первый символ текста выбр. машины '-', тогда работа прячется, т.к. сумма работы в табл. Transport
@@ -35,16 +89,53 @@ $this->title = 'Розрахунок вартості робіт';
             $('.field-inputdataform-time_work').show();
         }
     }
+    
+        
     }
 
-       
+    function fill_mvp(r){
+        //alert(r);
+        if(r==3) r=6;
+        if(r==1 || r==7) r=8;
+        $.ajax({
+            url: '/CalcWork/web/site/getmvp',
+
+            data: {res: r },
+            type: 'GET',
+            success: function(data){
+                $("#inputdataform-mvp").empty();
+                for(var ii = 0; ii<data.mvp.length; ii++) {
+                    var q = data.mvp[ii].descr;
+
+                    if (q == null) continue;
+                    var q1 = q.substr(3);
+                    var n = q.substr(0, 3);
+
+                    $("#inputdataform-mvp").append("<option value=" + n +
+                        " style=" + String.fromCharCode(34) + "font-size: 10px;" +
+                        String.fromCharCode(34) + ">" + q1 + "</option>");
+                }
+
+                    if(!res) alert('Данные не верны!');
+            },
+            error: function (data) {
+                console.log('Error', data);
+            },
+
+        });
+
+    }
+
+
     function find_on_map(addr){
 
         localStorage.setItem("addr_work", addr);
                 var addr_work = addr;
                 var region = $("#inputdataform-region option:selected").text();
                 if(typeof(addr_work)!='undefuned' && addr_work!=''){
-                    addr_work = addr_work+region+' область';
+                    //addr_work = addr_work+region+' область';
+                    addr_work = region+' область '+addr_work;
+
                     var addr_request = 'https://maps.googleapis.com/maps/api/geocode/json?'+
                             'components=country:UA'+'&key='+'AIzaSyDSyQ_ATqeReytiFrTiqQAS9FyIIwuHQS4'+
                             '&address='+addr_work;
@@ -67,48 +158,8 @@ $this->title = 'Розрахунок вартості робіт';
                     
 
     }
-
-    window.onload=function(){
-        //$("#inputdataform-potrebitel").hide();
-        $("#inputdataform-region").val(3);
-        localStorage.setItem("lat1", '');
-        localStorage.setItem("lng1", '');
-        localStorage.setItem("geo_res", '');
-        localStorage.setItem("geo_lat", '');
-        localStorage.setItem("geo_lng", '');
-        localStorage.setItem("geo_lat_sd", '');
-        localStorage.setItem("geo_lng_sd", '');
-        localStorage.setItem("geo_lat_sz", '');
-        localStorage.setItem("geo_lng_sz", '');
-        localStorage.setItem("id_res", '');
-        localStorage.setItem("usluga", '');
-        //localStorage.setItem("work", '');
-        localStorage.setItem("town_sz", '');
-        localStorage.setItem("town_sd", '');
-        var geo,y1,p1,lat,lon;
-        geo = $("#inputdataform-geo").val();
-        localStorage.setItem("geo_marker", '');
-        localStorage.setItem("geo_k", '');
-        if(geo!='') {
-            y1 = geo.length;
-            p1 = geo.indexOf(',') - 1
-            lat = geo.substring(0, p1);
-            lon = geo.substring(p1 + 2);
-            localStorage.setItem("geo_lat", lat);
-            localStorage.setItem("geo_lng", lon);
-            localStorage.setItem("geo_lat_save", lat);
-            localStorage.setItem("geo_lng_save", lon);
-            localStorage.setItem("geo_marker", '('+geo+')');
-            localStorage.setItem("geo_k", geo);
-            $("#inputdataform-res").change();
-            //initMap();
-        }
-
-        var p,u = $("#inputdataform-potrebitel").val();
-        p = u.length;
-        if(p!=0)
-        $("#inputdataform-potrebitel").blur();
-    }
+    //$(document).ready(function(){
+   
 </script>
 
 <div class="site-login">
@@ -124,26 +175,44 @@ $this->title = 'Розрахунок вартості робіт';
                     'class' => 'form-horizontal col-lg-25',
                     'enctype' => 'multipart/form-data'
                     
-                ]]); ?>
+                ]]);
 
+            ?>
+
+
+            <?php if($role==5)
+                echo $form->field($model, 'nazv1')->textInput();
+                //select id,concat(town,'  (',nazv,')') as nazv from spr_res
+            ?>    
             <? if($model->refresh==0): ?>
             <?=$form->field($model, 'res')->dropDownList(
                     ArrayHelper::map(app\models\spr_res::findbysql(
-                            "select id,concat(town,'  (',nazv,')') as nazv from spr_res")->all(), 'id', 'nazv'), 
+                            select_res($role))->all(), 'id', 'nazv'), 
             [
             'prompt' => 'Виберіть виробничий підрозділ, який обслуговує Ваш регіон.',
             'onchange' => '$.get("' . Url::to('/CalcWork/web/site/getres?id=') . 
              '"+$(this).val(),
                     function(data) {
+                    
+//                     $.getJSON("/CalcWork/web/site/getmvp?res=1", function(data) {
+//
+//                         //$("#inputdataform-mvp").empty();
+//                         alert("mvp");
+//
+//                    });
+                    
+                    
                      $("#inputdataform-addr_work").empty();
                      localStorage.setItem("lat1", "");
                      localStorage.setItem("lng1", "");
                      localStorage.setItem("geo_res", data.geo_koord);
                      var geo_marker = localStorage.getItem("geo_marker");
-
-                     if(geo_marker=="") {
+                     //alert(geo_marker);
+                     if(geo_marker=="" || geo_marker==null) {
                      localStorage.setItem("geo_lat", data.lat);
                      localStorage.setItem("geo_lng", data.lng);
+                     localStorage.setItem("geo_lat_save", data.lat);
+                     localStorage.setItem("geo_lng_save", data.lng);
                      }
                      localStorage.setItem("geo_lat_res", data.lat);
                      localStorage.setItem("geo_lng_res", data.lng);
@@ -203,6 +272,7 @@ $this->title = 'Розрахунок вартості робіт';
                     }, 1000); // время в мс
                     
                     var punct = $("#inputdataform-res :selected").text();
+                    
                     var pos = punct.indexOf("(");
                     punct = punct.substr(0,pos);
                     $("#inputdataform-addr_work").val(punct);
@@ -217,6 +287,10 @@ $this->title = 'Розрахунок вартості робіт';
                         
                     
                     $("#inputdataform-addr_work").blur();
+                    
+                    $("#inputdataform-mvp1").blur();
+                   
+                                      
                     
                        
                 });',
@@ -233,6 +307,7 @@ $this->title = 'Розрахунок вартості робіт';
                         'onchange' => '$.get("' . Url::to('/CalcWork/web/site/getres?id=') .
                             '"+$(this).val(),
                     function(data) {
+                     
                      $("#inputdataform-addr_work").empty();
                      localStorage.setItem("lat1", "");
                      localStorage.setItem("lng1", "");
@@ -350,6 +425,54 @@ $this->title = 'Розрахунок вартості робіт';
                        
                 });',
                 ]) ?>
+
+
+            <?= $form->field($model, 'mvp1')->textInput(['maxlength' => true,
+                'onBlur' => 'fill_mvp(localStorage.getItem("id_res"))']) ?>
+
+<!--            --><?//=$form->field($model, 'mvp1')->
+//            dropDownList(ArrayHelper::map(
+//                app\models\sprav_mvp::findbysql('Select min(id) as id,descr from sprav_mvp  group by 2 order by 2')
+//                    ->all(), 'id', 'descr'),
+//                [
+//                    'prompt' => 'Виберіть підрозділ в головній службі',
+//                    'onchange' => '$.get("' . Url::to('/CalcWork/web/site/getmvp?res=') .
+//                        '"+localStorage.getItem("id_res"),
+//                    function(data) {
+//                         $("#inputdataform-mvp").empty();
+//                         for(var ii = 0; ii<data.mvp.length; ii++) {
+//                         var q = data.mvp[ii].descr;
+//                         //alert(q);
+//                         if(q==null) continue;
+//                         var q1 = q.substr(3);
+//                         var n = q.substr(0,3);
+//
+//                         $("#inputdataform-mvp").append("<option value="+n+
+//                         " style="+String.fromCharCode(34)+"font-size: 10px;"+
+//                         String.fromCharCode(34)+">"+q1+"</option>");
+//                  });',
+//                ]
+//            ) ?>
+
+            <?=$form->field($model, 'mvp')->
+            dropDownList(ArrayHelper::map(
+                app\models\sprav_mvp::findbysql('Select min(id) as id,descr from sprav_mvp  group by 2 order by 2')
+                    ->all(), 'id', 'descr'),
+                [
+
+                ]
+            ) ?>
+
+            <?= $form->field($model, 'calc_ind')
+                ->dropDownList([
+                    '1' => 'Типова',
+                    '2' => 'Індивідуальна',
+                ],
+                    [
+                        'prompt' => ''
+                    ]);?>
+
+
             <span class="nazv_kl"></span>
 
             <?php  if(strpos(Yii::$app->request->url,'/web')==0)
@@ -375,9 +498,19 @@ $this->title = 'Розрахунок вартості робіт';
                     [
             'prompt' => 'Виберіть послугу',
             'onchange' => '$.get("' . Url::to('/CalcWork/web/site/getworks?id=') . 
-             '"+$(this).val()+"&res="+localStorage.getItem("id_res"),
+             '"+$(this).val()+"&res="+localStorage.getItem("id_res")+"&calc_ind="+$("#inputdataform-calc_ind").val(),
                     function(data) {
                          var flag=0,fl=0;
+                         var id_usl=$("#inputdataform-usluga").val();
+                         if(id_usl==220){
+                            $("#inputdataform-distance").val(1);
+                            //$("#inputdataform-distance").attr("disabled", true);
+                         }
+                         else
+                         {  
+                            $("#inputdataform-distance").val(0);
+                            $("#inputdataform-distance").attr("disabled", false);
+                         }
                          var geo_marker = localStorage.getItem("geo_marker");
                          if(geo_marker!="")
                          {var tmp_work = $("#inputdataform-work").val();
@@ -389,6 +522,7 @@ $this->title = 'Розрахунок вартості робіт';
                          for(var ii = 0; ii<data.works.length; ii++) {
                          var q = data.works[ii].work;
                          //alert(q);
+//                         alert($(this).val());
                          if(q==null) continue;
                          var q1 = q.substr(3);
                          var n = q.substr(0,3);
@@ -397,14 +531,21 @@ $this->title = 'Розрахунок вартості робіт';
                          $("#inputdataform-work").append("<option value="+n+
                          " style="+String.fromCharCode(34)+"font-size: 10px;"+
                          String.fromCharCode(34)+">"+q1+"</option>");
-                         if(+n>=166) flag=1; // Транспортні послуги
+                         
+                         if((+n>=166) && (+n<193)) flag=1; // Транспортні послуги
+                         
+                         if((+n==209) || (+n==210)) flag=0;
+                         if((+n>=211) && (+n<=214)) flag=0;
+                      // if((+n>=219) && (+n<=222)) flag=2;
                          if(+n==90)  fl=1;
                          if((+n==88) || (+n==37)) fl=2;
-                         //alert(n);
+//                         alert(n);
+//                         alert(flag);
                         } 
                          if(geo_marker!="")
                          {$("#inputdataform-work").val(tmp_work);
                          }
+                        
                          if(flag==1) {
                              localStorage.setItem("usluga", "transp");  // Признак что выбраны Транспортні послуги
                              $(".field-inputdataform-time_work").show();
@@ -412,11 +553,19 @@ $this->title = 'Розрахунок вартості робіт';
                              $(".field-inputdataform-kol").hide();
                              $(".field-inputdataform-poezdka").hide();
                          }
+                          if(flag==2) {
+                             $(".field-inputdataform-tmc").show();
+                         }
+                         else
+                        {
+                             $(".field-inputdataform-tmc").hide();
+                         }
                          if(flag==0) {
                              $(".field-inputdataform-time_work").hide();
                              $(".field-inputdataform-time_prostoy").hide();
                              $(".field-inputdataform-kol").show();
                              $(".field-inputdataform-poezdka").show();
+                             
                          }
                          if(fl==1) localStorage.setItem("work", "sd");
                          if(fl==2) localStorage.setItem("work", "sz");
@@ -438,20 +587,57 @@ $this->title = 'Розрахунок вартості робіт';
 //                ['onchange' => 'hidepole_rabota($("#inputdataform-work :selected").text());']
 //                ) ?>
 
+        <!--            --><?//=$form->field($model, 'work')->
+        //    dropDownList(ArrayHelper::map(
+        //    app\models\spr_costwork::findbysql('Select min(id) as id,work from costwork where '
+        //    . 'hide=:hide and work is not null group by work order by work',[':hide' => 0])
+        //   all(), 'id', 'work'),
+        //    ['onchange' => 'hidepole_rabota($("#inputdataform-work :selected").text());']
+        //    ) ?>
+
             <?=$form->field($model, 'work')->
             dropDownList(ArrayHelper::map(
             app\models\spr_costwork::findbysql('Select min(id) as id,work from costwork where '
             . 'hide=:hide and work is not null group by work order by work',[':hide' => 0])
-            ->all(), 'id', 'work'),
-            ['onchange' => 'hidepole_rabota($("#inputdataform-work :selected").text());']
+            ->all(), 'id', 'work')
+//            ['onchange' => '$.get("' . Url::to('/CalcWork/web/site/gettransp_cek?id=') .
+//                    '"+$(this).val(),
+//                    function(data) {
+//                     //alert(data.transp_cek);
+//                    var r = $("#inputdataform-work :selected").text();
+//                    hidepole_rabota(r);
+//                    if(data.transp_cek==0){
+//                         $(".field-inputdataform-transp_cek").show();
+//                        }
+//                    else
+//                    {
+//                        $(".field-inputdataform-transp_cek").hide();
+//                    }
+//
+//
+//                });',]
             ) ?>
-            
+
            <img src="sarrow31.png" class="img_uslug">
            <span class="span_work"><? echo $model->work; ?> </span>
+
+            <?=$form->field($model, 'tmc')->
+            dropDownList(ArrayHelper::map(
+                app\models\spr_tmc::findbysql('Select id,name_tmc from tmc')
+                    ->all(), 'id', 'name_tmc'),
+                []
+            ) ?>
             
             <?= $form->field($model, 'kol') ?>
             <?= $form->field($model, 'time_work') ?>
             <?= $form->field($model, 'time_prostoy') ?>
+            <?= $form->field($model, 'transp_cek')->checkbox([
+                'onchange' => 'set_dist(this.checked);',
+                'label' => 'Транспорт ЦЕК',
+                'labelOptions' => [
+                    'class' => 'lab-tr'
+                ],
+              ]); ?>
 
             <?= $form->field($model, 'geo') ?>
 
@@ -505,6 +691,8 @@ $this->title = 'Розрахунок вартості робіт';
 
         // Определяем переменную map
         var map;
+            
+        var vzoom = 0;
         var geo_marker = localStorage.getItem("geo_marker");
         if(geo_marker=='') {
             if (localStorage.getItem("geo_koord") == null) {
@@ -517,11 +705,13 @@ $this->title = 'Розрахунок вартості робіт';
         function initMap() {
             
             
-            
             var geo_marker = localStorage.getItem("geo_marker");
+
             if(geo_marker!='') {
             var lat1 = +localStorage.getItem("geo_lat");
-            var lng1 = +localStorage.getItem("geo_lng");}
+            var lng1 = +localStorage.getItem("geo_lng");
+
+            }
             else{
                 var lat1 = +localStorage.getItem("geo_lat_res");
                 var lng1 = +localStorage.getItem("geo_lng_res");
@@ -530,6 +720,7 @@ $this->title = 'Розрахунок вартості робіт';
 
             var addr_work = localStorage.getItem("addr_work");
             //var addr_work = $("#inputdataform-addr_work").text();
+            
             if(typeof(addr_work)!='undefuned' && addr_work!=''){
                  var lat1 = +localStorage.getItem("lat1");
                  var lng1 = +localStorage.getItem("lng1");
@@ -537,7 +728,8 @@ $this->title = 'Розрахунок вартості робіт';
                  if ( addr_work.search(/\d/) != -1 ) vzoom = 1;
              }
             
-                        
+                  
+            //while(true){
             if(lat1==48.446203)
             {    
             // В переменной map создаем объект карты GoogleMaps и вешаем эту переменную на <div id="map"></div>
@@ -553,7 +745,7 @@ $this->title = 'Розрахунок вартості робіт';
             }
             else
             {    
-               
+                   
                 if(!vzoom)
                 map = new google.maps.Map(document.getElementById('map_q'), {
                 // При создании объекта карты необходимо указать его свойства
@@ -562,6 +754,7 @@ $this->title = 'Розрахунок вартості робіт';
                 // zoom - определяет масштаб. 0 - видно всю платнеу. 18 - видно дома и улицы города.
                  zoom: 15
             });
+                
                 else
                  map = new google.maps.Map(document.getElementById('map_q'), {
                 // При создании объекта карты необходимо указать его свойства
@@ -570,7 +763,10 @@ $this->title = 'Розрахунок вартості робіт';
                  zoom: 17
             });   
             }
-          
+        // if(typeof(map)!='undefuned') break; 
+        //}
+       
+              
         var marker;
         $('.distance').val('');
 
@@ -578,7 +774,8 @@ $this->title = 'Розрахунок вартості робіт';
 //            alert(localStorage.getItem("geo_k"));
             var geo_k = localStorage.getItem("geo_k");
             var geo_marker = localStorage.getItem("geo_marker");
-        
+
+        //alert(geo_k);
         if(geo_marker!='') {
 //            var lat_save = localStorage.getItem("geo_lat_save");
 //            var lon_save = localStorage.getItem("geo_lng_save");
@@ -594,39 +791,66 @@ $this->title = 'Розрахунок вартості робіт';
 
             //            Уст. координат откуда будет ехать машина
             if(localStorage.getItem("work")=='sd'
-                && ((idr==1) || (idr==2) || (idr==3) || (idr==7) || (idr==8) || (idr==11)))
+                && ((idr==1) || (idr==2) || (idr==3) || (idr==4) || (idr==7) || (idr==8) || (idr==11)))
             {
                 var lat1 = +localStorage.getItem("geo_lat_sd");
                 var lng1 = +localStorage.getItem("geo_lng_sd");
                 var town = localStorage.getItem("town_sd");
+                if(idr!=4)
                 $('.primech').text('Увага! Машина їде з міста '+town+'.');
 //                localStorage.setItem("work", '');
             }
 
             if(localStorage.getItem("work")=='sz'
-                && ((idr==1) || (idr==2) || (idr==3) || (idr==6) || (idr==7) || (idr==11)))
+                && ((idr==1) || (idr==2) || (idr==3) || (idr==4) || (idr==6) || (idr==7) || (idr==11)))
             {
                 var lat1 = +localStorage.getItem("geo_lat_sz");
                 var lng1 = +localStorage.getItem("geo_lng_sz");
 
                 var town = localStorage.getItem("town_sz");
+                if(idr!=4)
                 $('.primech').text('Увага! Машина їде з міста '+town+'.');
 //                localStorage.setItem("work", '');
             }
 
 
-            var url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins="+lat1+','+lng1+'&destinations=';
+            var url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins="+
+                lat1+','+lng1+'&destinations='+'1';
             url = url + geo_k;
+            // alert(url);
 
             $.getJSON('/CalcWork/web/site/getdist?url='+url, function(data) {
 
                 a=data.output.rows[0].elements[0].distance.value;
                 a=Number(a)*2/1000;
                 a=a.toFixed(2);
-                $('.dst').val(a);
-                adr = 'Адреса виконання робіт: '+data.output.destination_addresses;
+
+                tr_cek = $("#inputdataform-transp_cek").prop('checked');
+                if(tr_cek==true){
+                if(a>1700)
+                    $('.dst').val(0);
+                else
+                    $('.dst').val(a);
+                }
+                else{
+                     $('.dst').val(0);
+                 }
+                if(a>1700)
+                    adr = '';
+                else
+                    adr = 'Адреса виконання робіт: '+data.output.destination_addresses;
+
                 adr = adr.replace("Украина","Україна");
-                $('.adr_potr').text(adr);
+
+                if(a<=1700)
+                {
+                    $('.adr_potr').text(adr);
+                    $('.dst').val(a);
+                }
+                else
+                {
+                    $('.dst').val(0);
+                }
                 $('#inputdataform-adr_potr').val(adr);
                 $('#inputdataform-geo').val(k);
                 //localStorage.setItem("geo_marker","1");
@@ -664,20 +888,22 @@ $this->title = 'Розрахунок вартості робіт';
 
 //            Уст. координат откуда будет ехать машина
             if(localStorage.getItem("work")=='sd'
-                && ((idr==1) || (idr==2) || (idr==3) || (idr==7) || (idr==8) || (idr==11)))
+                && ((idr==1) || (idr==2) || (idr==3) || (idr==4) || (idr==7) || (idr==8) || (idr==11)))
             {
                 var lat1 = +localStorage.getItem("geo_lat_sd");
                 var lng1 = +localStorage.getItem("geo_lng_sd");
                 var town = localStorage.getItem("town_sd");
+                if(idr!=4)
                 $('.primech').text('Увага! Машина їде з міста '+town+'.');
             }
 
             if(localStorage.getItem("work")=='sz'
-                && ((idr==1) || (idr==2) || (idr==3) || (idr==6) || (idr==7) || (idr==11)))
+                && ((idr==1) || (idr==2) || (idr==3) || (idr==4) || (idr==6) || (idr==7) || (idr==11)))
             {
                 var lat1 = +localStorage.getItem("geo_lat_sz");
                 var lng1 = +localStorage.getItem("geo_lng_sz");
                 var town = localStorage.getItem("town_sz");
+                if(idr!=4)
                 $('.primech').text('Увага! Машина їде з міста '+town+'.');
             }
 
@@ -688,24 +914,82 @@ $this->title = 'Розрахунок вартості робіт';
             url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins="+lat1+','+lng1+'&destinations=';
         }    
         k = location.toString();
-           
+
+
         l = k.length;
         k = k.substring(1,l-1);
         url = url + k;
 
-        $.getJSON('/CalcWork/web/site/getdist?url='+url, function(data) {
-                                               
-                a=data.output.rows[0].elements[0].distance.value;
-                a=Number(a)*2/1000;
-                a=a.toFixed(2);
-                $('.dst').val(a);
-                adr = 'Адреса виконання робіт: '+data.output.destination_addresses;
-                adr = adr.replace("Украина","Україна");
-                $('.adr_potr').text(adr);
-                $('#inputdataform-adr_potr').val(adr);
-                $('#inputdataform-geo').val(k);
-               
-         });
+        // Определение расстояния с ресурса calc-api.ru
+        //      k=k.replace('(', '');
+        //      k=k.replace(')', '');
+        //      k=k.replace(', ', '%20');
+        //      url = "http://calc-api.ru/app:geo-api/null?a="+lat1+"%20"+lng1+"&b="+k;
+        //      url="http://router.project-osrm.org/viaroute?loc=57.818023681640625,28.342592239379883&loc=57.812679290771484,28.28318214416504";
+             //alert(url);
+             // $.ajax({
+             //     url: url,
+             //     dataType: "json",
+             //     success: function(result){
+             //         //console.log(result);
+             //         alert(result);
+             //     }
+             // });
+
+
+        // Определение расстояния с ресурса GoogleMap
+        url = url + "&key=" + "AIzaSyDSyQ_ATqeReytiFrTiqQAS9FyIIwuHQS4";
+
+        var priz=1,cnt_i=1;
+       //r while (priz==1) {
+         //r   if(cnt_i>5) break;
+
+          //r   alert("Попытка "+cnt_i);
+
+            setTimeout($.getJSON('/CalcWork/web/site/getdist?url=' + url, function (data) {
+                a = data.output.status;
+                //alert(a);
+                if (a == 'OK') {
+                    priz=0;
+
+                    a = data.output.rows[0].elements[0].distance.value;
+                    a = Number(a) * 2 / 1000;
+                    a = a.toFixed(2);
+
+                    tr_cek = $("#inputdataform-transp_cek").prop('checked');
+                    if (tr_cek == true) {
+                        if (a > 1700)
+                            $('.dst').val(0);
+                        else
+                            $('.dst').val(a);
+                    }
+                    else {
+                        $('.dst').val(0);
+                    }
+
+                    adr = 'Адреса виконання робіт: ' + data.output.destination_addresses;
+                    adr = adr.replace("Украина", "Україна");
+                    if (a <= 1700) {
+                        $('.adr_potr').text(adr);
+                        $('.dst').val(a);
+                    }
+                    else {
+                        $('.dst').val(0);
+                    }
+                    $('#inputdataform-adr_potr').val(adr);
+                    $('#inputdataform-geo').val(k);
+                    //alert("Рассчет произведен");
+
+                }
+                 else{
+                    //sleep(300);
+                    cnt_i++;
+                    //alert(cnt_i);
+                 }
+
+
+            }),1500);
+        //}
          });
       }
 
@@ -717,31 +1001,57 @@ $this->title = 'Розрахунок вартості робіт';
 
       }
 
-   map.setMapDisplayLanguage(new Locale("ru"));
-   map.setMapSecondaryDisplayLanguage(new Locale("ru"));
+   //map.setMapDisplayLanguage(new Locale("ru"));
+   //map.setMapSecondaryDisplayLanguage(new Locale("ru"));
 
 
     </script>
     
     <script
-        window.onload=function(){
-        localStorage.setItem("geo_res", '');
-        localStorage.setItem("geo_lat", '');
-        localStorage.setItem("geo_lng", '');
-        localStorage.setItem("geo_lat_sd", '');
-        localStorage.setItem("geo_lng_sd", '');
-        localStorage.setItem("geo_lat_sz", '');
-        localStorage.setItem("geo_lng_sz", '');
-        localStorage.setItem("id_res", '');
-        localStorage.setItem("usluga", ' ');
-        }
 
-src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSyQ_ATqeReytiFrTiqQAS9FyIIwuHQS4&callback=initMap&language=ru&region=UA"
+
+
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSyQ_ATqeReytiFrTiqQAS9FyIIwuHQS4&callback=initMap&language=ru&region=UA"
         async defer>
+            
+    
             
     </script>
     
+ 
+<?php
+    // AIzaSyCio9wud5U4kI-Q_da8fgJ1yBSzFVvyFjo
+    // AIzaSyDSyQ_ATqeReytiFrTiqQAS9FyIIwuHQS4
+    function select_res($role) {
+        if(!($role>0)) 
+//            $r = "select id,concat(town,'  (',nazv,')') as nazv from spr_res where id<>12 and id<>13";
+              if ($role==13)
+                  $r = "select a.id,concat(a.town,'  (',a.nazv,')') as nazv,b.role,b.department from costwork.spr_res a 
+                  left join costwork.user b on trim(a.nazv) = trim(b.department) COLLATE utf8_unicode_ci
+                  where a.id<>12 and a.id<>13
+                  and a.id in (1,7,8)";
+              else
+                  $r = "select a.id,concat(a.town,'  (',a.nazv,')') as nazv,b.role,b.department from costwork.spr_res a 
+                  left join costwork.user b on trim(a.nazv) = trim(b.department) COLLATE utf8_unicode_ci
+                  where a.id<>12 and a.id<>13
+                  and case when $role<6 then 1=1 else b.role=$role and b.department is not null end ";
+        else
+//            $r = "select id,concat(town,'  (',nazv,')') as nazv from spr_res";
+            if ($role==13)
+                $r = "select a.id,concat(a.town,'  (',a.nazv,')') as nazv,b.role,b.department from costwork.spr_res a 
+                  left join costwork.user b on trim(a.nazv) = trim(b.department) COLLATE utf8_unicode_ci
+                  where a.id in (1,7,8)";
+            else
+                $r = "select a.id,concat(a.town,'  (',a.nazv,')') as nazv,b.role,b.department from costwork.spr_res a 
+                  left join costwork.user b on trim(a.nazv) = trim(b.department) COLLATE utf8_unicode_ci
+                  where case when $role<6 then 1=1 else b.role=$role and b.department is not null end ";
 
+
+            return $r;
+
+    }
+
+?>
 
 
 

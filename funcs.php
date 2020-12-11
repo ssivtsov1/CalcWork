@@ -251,4 +251,30 @@ function num2text_ua($num) {
     $fc = mb_strtoupper(mb_substr($str, 0, 1,$code),$code);
     return $fc.mb_substr($str,1,256,$code);
 }
+// Переворачивает русскую строку
+function mb_strrev($s) {
+       $ss='' ;
+       $y=mb_strlen($s,'UTF-8');
+       for($i=($y-1);$i>=0;$i--) {
+           $s1 = mb_substr($s,$i,1,'UTF-8');
+           $ss=$ss.$s1;
+       }
+       return $ss;
+}
+
+// Удаляем из строки все что внутри последних скобок
+function del_brackets($s) {
+ $q=mb_strrev($s);
+ $pos=strpos($q,'(');
+ if($pos)
+ {
+     $c=substr($q,$pos-1,1);
+     if (ctype_digit($c))
+         $q=substr($q,$pos+1);
+     else
+         return $s;
+ }
+  $q=mb_strrev($q);
+ return $q;
+}
 ?>

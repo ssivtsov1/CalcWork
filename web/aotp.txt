@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 Select res,summa from schet where trim(schet)="00011404" and status<3Select res,summa from schet where trim(schet)="00011361" and status<3Select res,summa from schet where trim(schet)="00011425" and status<3Select res,summa from schet where 1=2Select res,summa from schet where trim(schet)="00011138" and status<3Select res,summa from schet where trim(schet)="00011430" and status<3Select res,summa from schet where 1=2Select res,summa from schet where 1=2Select res,summa from schet where 1=2Select res,summa from schet where trim(schet)="00011349" and status<3Select res,summa from schet where trim(schet)="00011139" and status<3Select res,summa from schet where trim(schet)="00011348" and status<3
+=======
+Select res,summa from schet where trim(schet)="00010916" and status<3Select res,summa from schet where 1=2
+>>>>>>> 12b238a2c6bb3ae0eabaa20c14020c8d23e4a570

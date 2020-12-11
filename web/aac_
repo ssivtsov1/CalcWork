@@ -1,0 +1,1 @@
+Select res,summa from schet where schet="00042224 "

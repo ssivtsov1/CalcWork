@@ -1,0 +1,1 @@
+select a.* from vschet a where 1=1  and a.schet like '%11323%' order by schet ASC

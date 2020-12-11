@@ -1,0 +1,1 @@
+2019-01-16 16:00:24: file_put_contents(/mnt/DATA/www/html/CalcWork/web/phpqrcode/cache/frame_8.dat): failed to open stream: Permission denied2019-01-16 16:03:55: file_put_contents(/mnt/DATA/www/html/CalcWork/web/phpqrcode/cache/mask_0/mask_49_0.dat): failed to open stream: Permission denied

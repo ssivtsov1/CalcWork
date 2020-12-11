@@ -161,6 +161,22 @@ class Viewschet extends \yii\db\ActiveRecord
         return $dataProvider;
     }
 
+    public function search_r($params,$sql)
+    {
+        $query = viewschet::findBySql($sql);
+        $query->sql = $sql;
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            //'sort' => ['defaultOrder'=> ['sort1'=>SORT_ASC,'unit_2'=>SORT_ASC]]
+        ]);
+        if (!($this->load($params) && $this->validate())) {
+            return $dataProvider;
+        }
+
+        return $dataProvider;
+    }
+
+
     //  Формирование поля для РЭС
     public static function tr_res($res)
     {

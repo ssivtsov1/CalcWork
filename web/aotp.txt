@@ -1,0 +1,1 @@
+Select res,summa from schet where trim(schet)="00010916" and status<3Select res,summa from schet where 1=2

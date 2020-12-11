@@ -314,16 +314,19 @@ $year = date('Y');
                  <?= Html::encode("ПрАТ ") ?> &laquo; <?= Html::encode("ПЕЕМ ") ?>&laquo;<?= Html::encode("ЦЕК") ?>&raquo;
             </span>
             </div>
-                
-             <br>
-             <span class="contract_text_footer"> 
-                <?= Html::encode("49008 м. Дніпро, вул. Дмитра Кедріна, 28 
-                    р/р UA483005280000026004455048529 у ПАТ ") ?> &laquo;
-                 <?= Html::encode("Державний експортно-імпортний банк України") ?> &raquo;  
-                 <?= Html::encode("МФО 322313
-                         Св. № 100339376 ІПН 317930504629 
-                         Код ЄДРПОУ 31793056 
-                            тел. (056) 31-03-84 ") ?>
+
+            <br>
+            <span class="contract_text_footer">
+                <?= Html::encode("49008 м. Дніпро, вул. Дмитра Кедріна, 28,  
+                    р/р UA483005280000026004455048529 у АТ ") ?> &laquo;
+                 <?= Html::encode("ОТП Банк , ") ?> &raquo;
+                  <?= Html::encode(", МФО 300528,
+                         Код ЄДРПОУ 31793056,
+                         ІПН 317930504629, 
+                            тел. (0562) 31-03-84, 
+                            тел. (0800) 30-00-15, 
+                            e-mail: kanc@cek.dp.ua,
+                            http:cek.dp.ua") ?>
              </span>
              
              <br>

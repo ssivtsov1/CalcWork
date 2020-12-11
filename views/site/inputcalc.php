@@ -8,6 +8,44 @@ use yii\helpers\Url;
 $this->title = 'Введення калькуляцій';
 ?>
 
+<script>
+window.addEventListener('load', function(){
+
+$('.scrolldown').click(function() {
+// переместиться в верхнюю часть страницы
+
+$("html, body").animate({
+scrollTop:2000
+},400);
+})
+
+$('.scrollup').click(function() {
+// переместиться в верхнюю часть страницы
+
+$("html, body").animate({
+scrollTop:0
+},1000);
+})
+
+// при прокрутке окна (window)
+$(window).scroll(function() {
+// если пользователь прокрутил страницу более чем на 200px
+if ($(this).scrollTop()>200) {
+// то сделать кнопку scrollup видимой
+$('.scrollup').fadeIn();
+}
+// иначе скрыть кнопку scrollup
+else {
+$('.scrollup').fadeOut();
+}
+});
+
+var stat = $("#viewschet-status").val();
+//alert(stat);
+localStorage.setItem("status", stat);
+});
+</script>
+
 <div class="site-login">
     <h3><?= Html::encode('Введення калькуляцій') ?></h3>
     <div class="row">
@@ -21,6 +59,13 @@ $this->title = 'Введення калькуляцій';
                     'enctype' => 'multipart/form-data'
 
                 ]]); ?>
+
+            <div class="scrolldown">
+                <!-- Иконка fa-chevron-up (Font Awesome) -->
+                <i class="fa fa-chevron-down"></i>
+                <!--            <i class="glyphicon glyphicon-eject"></i>-->
+            </div>
+
             <?php
             $session = Yii::$app->session;
             $session->open();
@@ -48,7 +93,7 @@ $this->title = 'Введення калькуляцій';
                     '"+$(this).val(),
                    function(data) {
                          if(data.work.length>0)
-                                         alert("Така робота вже присутня в списку послуг. Введіть унікальну роботу");
+                                         alert("Така робота вже присутня в списку послуг. Максимальний № "+data.work+". Введіть унікальну роботу");
                              });']) ?>
 
             <?= $form->field($model, 'n_work')->textInput(['maxlength' => true]) ?>
@@ -254,6 +299,12 @@ $this->title = 'Введення калькуляцій';
             <?= $form->field($model, 'other')->textInput(['maxlength' => true])  ?>
             <?= $form->field($model, 'poverka')->textInput(['maxlength' => true])  ?>
             <div class="clearfix"></div>
+
+            <div class="scrollup">
+                <!-- Иконка fa-chevron-up (Font Awesome) -->
+                <i class="fa fa-chevron-up"></i>
+                <!--            <i class="glyphicon glyphicon-eject"></i>-->
+            </div>
 
 <!--            --><?//=$form->field($model, 'otv_contract')->dropDownList(
 //                ArrayHelper::map( app\models\spr_uslug::findbysql(

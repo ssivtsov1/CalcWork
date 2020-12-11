@@ -279,6 +279,9 @@ else{
     }
     $model->adr_work = str_replace('Адреса виконання робіт:','',$adr_work);
     $model->adr_work = str_replace('Украина','Україна',$adr_work);
+
+//    debug($model->all_nds);
+//    return;
     
     ?>
 
@@ -379,13 +382,27 @@ else{
                                 round($model1[0]->rabota*$time_work,2))*0.2,2)+
                         (round($model1[0]->proezd*$time_t,2)+
                             round($model1[0]->prostoy*$time_prostoy*$kol,2) +
-                            round($model1[0]->rabota*$time_work,2)),2)  ?></td>
+                            round($model1[0]->rabota*$time_work,2)),2);
+
+                    ?></td>
 
             </tr>
             </tbody>
         </table>
     <?php endif; ?>
-        
+
+    <?php
+    if($model1[0]->usluga!="Транспортні послуги")
+       $all_grn=(round((round($model1[0]->proezd*$time_t,2)+
+            round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
+            round($model1[0]->rabota*$kol,2)+
+            (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_)*0.2,2)+
+           (round($model1[0]->proezd*$time_t*$kol,2)+
+          round($model1[0]->rabota*$kol,2)+
+         round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
+         (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_));
+    ?>
+
     <div class="form-group">
         <?php if($model1[0]->usluga=="Транспортні послуги"): ?>
             <?php if(!$refresh): ?>

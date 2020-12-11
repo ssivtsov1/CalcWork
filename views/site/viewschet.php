@@ -28,9 +28,19 @@ else
 <!--    --><?php
         if($role==2 || $role==3 || $role==5){
             echo Html::a('Імпорт з виписки', ['import_otp_new'], ['class' => 'btn btn-success']);
+         if($role==3 || $role==5){
+            echo '&nbsp';
+            echo '&nbsp';}
+         else  {
             echo '<br>';
             echo '<br>';
+         }
         }
+    if($role==1 || $role==2 || $role==3 || $role==5){
+        echo Html::a('Пошук заявок', ['search_request'], ['class' => 'btn btn-success']);
+        echo '<br>';
+        echo '<br>';
+    }
     ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

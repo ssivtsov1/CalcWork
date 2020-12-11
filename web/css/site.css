@@ -808,5 +808,41 @@ a.desc:after {
     margin-top: -4%;
  }
 
+div.scrollup {
+    position: fixed; /* фиксированная позиция */
+    color: #fff; /* цвет текста */
+    background-color: #286090; /* цвет заднего фона */
+    right: 20px; /* расстояние от правого края */
+    bottom: 120px; /* расстояние от нижнего края */
+    padding: 4px 10px; /* отступы до содержимого блока */
+    font-size: 20px; /* размер шрифта (иконки) */
+    border-top-left-radius: 4px; /* скругление верхнего левого угла */
+    border-top-right-radius: 4px; /* скругление верхнего правого угла */
+    cursor: pointer; /* форма курсора */
+    display: none; /* не отображать элемент */
+    text-align: center; /*выравнивание содержимого элемента по центру */
+}
+div.scrollup:hover {
+    background-color: #000; /* цвет заднего фона при наведении */
+}
+
+
+div.scrolldown {
+    position: fixed; /* фиксированная позиция */
+    color: #fff; /* цвет текста */
+    background-color: #286090; /* цвет заднего фона */
+    right: 20px; /* расстояние от правого края */
+    top: 70px;
+    padding: 4px 10px; /* отступы до содержимого блока */
+    font-size: 20px; /* размер шрифта (иконки) */
+    border-top-left-radius: 4px; /* скругление верхнего левого угла */
+    border-top-right-radius: 4px; /* скругление верхнего правого угла */
+    cursor: pointer; /* форма курсора */
+    /*display: none; !* не отображать элемент *!*/
+    text-align: center; /*выравнивание содержимого элемента по центру */
+}
+div.scrolldown:hover {
+    background-color: #000; /* цвет заднего фона при наведении */
+}
 
 

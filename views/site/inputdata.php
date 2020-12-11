@@ -618,8 +618,6 @@ $this->title = 'Розрахунок вартості робіт';
 //                });',]
             ) ?>
 
-
-            
            <img src="sarrow31.png" class="img_uslug">
            <span class="span_work"><? echo $model->work; ?> </span>
 

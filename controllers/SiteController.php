@@ -2,7 +2,9 @@
 
 namespace app\controllers;
 
+use app\models\search_request;
 use app\models\Spr_towns;
+use app\models\Viewphone;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -124,7 +126,7 @@ class SiteController extends Controller
         $model = new InputDataForm();
         if ($model->load(Yii::$app->request->post()))
         {
-
+            $model->distance = str_replace(",", ".", $model->distance);
             return $this->redirect([ 'calc','id' => $model->work,'kol' => $model->kol,'poezdka' => $model->poezdka,
                 'distance' => $model->distance,'res' => $model->res ,
                 'potrebitel' => $model->potrebitel,
@@ -173,6 +175,201 @@ class SiteController extends Controller
         }
     }
 
+    //  Происходит при поиске заявок
+    public function actionSearch_request()
+    {  $role=0;
+        if(!isset(Yii::$app->user->identity->role))
+        {       $flag=0;}
+        else{
+            $role=Yii::$app->user->identity->role;
+        }
+        $model = new Search_Request();
+        if ($model->load(Yii::$app->request->post()))
+        { $where =' where 1=1 ';
+//            debug($model);
+//            return;
+            if (!empty($model->summ1)) {
+                $where .= ' and a.summa>= ' . "$model->summ1";
+            }
+            if (!empty($model->summ2)) {
+                $where .= ' and a.summa<= ' . "$model->summ2";
+            }
+
+            if (!empty($model->name)) {
+                    $where .= ' and a.schet like '."'%".$model->name."%'";
+            }
+            if (!empty($model->tel)) {
+                $where .= ' and a.tel like '."'%".$model->tel."%'";
+            }
+            if (!empty($model->text)) {
+                $where .= ' and a.nazv like '."'%".$model->text."%'";
+            }
+//            debug( ((int) ($model->summ_pdv))+1);
+//            return;
+
+            if (!empty($model->summ_pdv)) {
+                $where .= ' and a.summa>= ' . (string) $model->summ_pdv . ' and a.summa< ' . (string) (((int) ($model->summ_pdv))+1);
+            }
+
+            if (!empty($model->summ_pdv_1)) {
+                $where .= ' and a.summa= ' . (string) $model->summ_pdv_1 ;
+            }
+
+            if (!empty($model->date1)) {
+                $where .= ' and a.date_opl>= ' . "'".$model->date1."'";
+            }
+            if (!empty($model->date2)) {
+                $where .= ' and a.date_opl<= ' . "'".$model->date2."'";
+            }
+
+            if(!empty($model->pidrozdil)) {
+            switch ($model->pidrozdil) {
+                case 1:
+                    $where .= " and trim(a.res)='Дніпропетровські РЕМ'";
+                    break;
+                case 2:
+                    $where .= " and trim(a.res)='Вільногірські РЕМ'";
+                    break;
+                case 3:
+                    $where .= " and trim(a.res)='Павлоградські РЕМ'";
+                    break;
+                case 4:
+                    $where .= " and trim(a.res)='Гвардійська дільниця'";
+                    break;
+                case 5:
+                    $where .= " and trim(a.res)='Жовтоводські РЕМ'";
+                    break;
+                case 6:
+                    $where .= " and trim(a.res)='Криворізькі РЕМ'";
+                    break;
+                case 7:
+                    $where .= " and trim(a.res)='Апостолівська дільниця'";
+                    break;
+                case 8:
+                    $where .= " and trim(a.res)='Інгулецька дільниця'";
+                    break;
+            }
+            }
+
+            if(!empty($model->status)) {
+                switch ($model->status) {
+                    case 1:
+                        $where .= " and a.status=2";
+                        break;
+                    case 2:
+                        $where .= " and a.status=3";
+                        break;
+                    case 3:
+                        $where .= " and a.status=5";
+                        break;
+                    case 4:
+                        $where .= " and a.status=7";
+                        break;
+                    case 5:
+                        $where .= " and a.status=8";
+                        break;
+                }
+            }
+
+            $order = ' order by schet';
+
+            if(!empty($model->result)) {
+                switch ($model->result) {
+                    case 1:
+                        $order = ' order by a.schet';
+                        break;
+                    case 2:
+                        $order = ' order by a.date_opl';
+                        break;
+                    case 3:
+                        $order = ' order by a.summa';
+                        break;
+                }
+            }
+
+            $sorting = ' ASC';
+            if(!empty($model->sorting)) {
+                if ($model->sorting==1)
+                    $sorting = ' ASC';
+                else
+                    $sorting = ' DESC';
+            }
+
+           $order = $order.$sorting;
+
+            $where = trim($where);
+            $sql = "select a.* from vschet a " . $where . $order;
+
+            if(!empty($model->usl)) {
+                $z='Select usluga from costwork where id='.$model->usl;
+                $data_q = viewschet::findBySql($z)->all();
+
+                $usluga = trim($data_q[0]->usluga);
+                $sql = "select a.* from vschet a inner join costwork b on b.work=a.usluga 
+                            and trim(b.usluga)=".'"'.$usluga.'"' . ' '.$where . $order;
+            }
+
+//            debug($sql);
+//            return;
+
+            $f=fopen('aaa','w+');
+            fputs($f,$sql);
+
+            $data = viewschet::findBySql($sql)->all();
+            $data_a = viewschet::findBySql($sql)->asarray()->all();
+            $y=count($data_a);
+            $sum_z=(double) $model->summ_c;
+            if(!empty($sum_z)) {
+                $s = 0.0;
+                $s_z = [];
+                for ($i = 0; $i < $y; $i++) {
+                    $a = $data_a[$i]['summa'];
+                    $flag = 0;
+                    for ($j = $i + 1; $j < $y; $j++) {
+                        $b = $data_a[$j]['summa'];
+                        $s = (double)($a + $b);
+                        if (trim($sum_z) == trim($s)) {
+                            $s_z[0] = $data_a[$i]['schet'];
+                            $s_z[1] = $data_a[$j]['schet'];
+                            $flag = 1;
+                            break;
+                        }
+                    }
+                    if ($flag == 1) break;
+                }
+                if(!empty($s_z[0]))
+                     $sql1 = 'select * from vschet where schet=' . "'$s_z[0]'" . ' or schet=' . "'$s_z[1]'";
+                else
+                    $sql1 = 'select * from vschet where 1=2';
+
+                $data = viewschet::findBySql($sql1)->all();
+
+                $kol = count($data);
+                $searchModel = new viewschet();
+                $dataProvider = $searchModel->search_r(Yii::$app->request->queryParams, $sql1);
+            }
+            else{
+                $kol = count($data);
+                $searchModel = new viewschet();
+                $dataProvider = $searchModel->search_r(Yii::$app->request->queryParams, $sql);
+            }
+            $dataProvider->pagination = false;
+
+            return $this->render('viewschet', [
+                'model' => $searchModel,'dataProvider' => $dataProvider,
+                'searchModel' => $searchModel,
+                'role' => $role,'last' => ''
+            ]);
+        }
+        else {
+
+            return $this->render('search_request_data', [
+                'model' => $model,'role' => $role
+            ]);
+        }
+    }
+
+
     // Подгрузка населенных пунктов - происходит при наборе первых букв
     public function actionGet_check_work($name)
     {
@@ -180,8 +377,15 @@ class SiteController extends Controller
         $name1 = mb_strtolower($name,"UTF-8");
 
         if (Yii::$app->request->isAjax) {
-            $sql = 'select max(id) as id,work from costwork where lower(work) like '.'"'.$name1.'%"'.
-               ' group by 2 limit 1';
+//            $sql = 'select max(id) as id,work from costwork where lower(work) like '.'"'.$name1.'%"'.
+//               ' group by 2 limit 1';
+
+            $sql = "select max(cast(nn as unsigned)) as work from (
+                select max(id) as id,work,
+case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end as nn from costwork where lower(work) like " .
+                '"'.$name1.'%"'.
+' group by 2) f';
+
             $cur = spr_work::findBySql($sql)->all();
             if(!isset($cur[0]->work)) {
                 $work='';
@@ -1075,10 +1279,11 @@ class SiteController extends Controller
 
         if(strchr($u,'"'))
             $sql = 'select inn from schet where inn=' . "'" . $inn . "'" . ' and usluga=' . "'" . $u . "'" .
-                ' and summa=' . $g . ' and date=' . "'" . date('Y-m-d'). "'" . ' and adres='.'"' . $adr_work. '"';
+                ' and summa=' . $g . ' and date=' . "'" . date('Y-m-d'). "'" . ' and adres='.'"' . $adr_work. '"' .
+                ' and status<>8';
         else
             $sql = 'select inn from schet where inn=' . "'" . $inn . "'" . ' and usluga=' . '"' . $u . '"' .
-            ' and summa=' . $g . ' and date=' . "'" . date('Y-m-d'). "'" . ' and adres='.'"' . $adr_work. '"';
+            ' and summa=' . $g . ' and date=' . "'" . date('Y-m-d'). "'" . ' and adres='.'"' . $adr_work. '"' . ' and status<>8';
 
         $priz = schet::findBySql($sql)->one();
         $model->schet = '';
@@ -1247,11 +1452,10 @@ class SiteController extends Controller
                             where a.work=:search limit 1";
 
             $z1 = viewschet::findBySql($sql, [':search' => "$u"])->asArray()->all();
-
-            debug($z1);
-            debug($sql);
-            debug($u);
-            return;
+//            debug($z1);
+//            debug($sql);
+//            debug($u);
+//            return;
 
             $zp = round((float)str_replace(',', '.', $z1[0]['zp'])*$kol_e,2);
             $zp_e = round(0.22 * $zp, 2);
@@ -1278,7 +1482,6 @@ class SiteController extends Controller
                 $time_prostoy = $z1[0]['time_transp']; // Время простоя
 
             $sql = "select $pole as nomer from costwork a where a.work=:search and $pole is not null";
-
 
             $z1 = viewschet::findBySql($sql, [':search' => "$u"])->asArray()->all();
             if (count($z1) > 0)
@@ -3120,7 +3323,6 @@ class SiteController extends Controller
 
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams,$role);
 
-
         if (Yii::$app->request->get('item') == 'Excel' )
         {
             $newQuery = clone $dataProvider->query;
@@ -3699,6 +3901,9 @@ class SiteController extends Controller
             $model1->adres = $model->adres;
             $model1->date_edit = date("Y-m-d");
             $model1->why_refusal = $model->why_refusal;
+
+            $model1->user = $_SERVER['REMOTE_ADDR'];  // Запись IP - адреса
+
             if(!empty($model->date_z))
                 $model1->date_z = date("Y-m-d", strtotime($model->date_z));
 
@@ -5283,7 +5488,7 @@ class SiteController extends Controller
                      }
 //                    debug($s1);
 //                    debug($match);
-
+//
 
 //                    if (isset($match[0]))
 //                        preg_match('/00\d{6};/', $s1, $match);
@@ -5308,15 +5513,31 @@ class SiteController extends Controller
                     $summa_o = ((int) $vals[$i]['attributes']['SUMMA'])/100;
                     $res['summa'][$j] = $summa_o;
 
-                    if (isset($match[0]))
+                    if (isset($match[0])) {
                         $res['contract'][$j] = $match[0];
+//                        debug('11111111111');
+//                        debug($res);
+                    }
                     else
                         $res['contract'][$j] ='';
+
+//                       debug('11111111111');
+//                       debug($res);
 
                     // Выявление  правильного № счета из нескольких счетов
                     preg_match_all($pattern, $s1, $all_schets);
                     $y_schets = count($all_schets[0]);
-                    if($y_schets>1) {
+                    $_sch='';
+                    $i_v=0;
+                    $flag_v=0;
+                    // Выявление если в строке назначения платежа 2 одинаковых счета
+                    foreach ($all_schets[0] as $v_v) {
+                        if($i_v>0 && $_sch==trim($v_v))
+                            $flag_v=1;
+                        $_sch=trim($v_v);
+                        $i_v++;
+                    }
+                    if($y_schets>1 && $flag_v==0) {
                         $true_schet = '';
                         foreach ($all_schets[0] as $v_i) {
                             // Находим счет который является только утвержденным
@@ -5330,15 +5551,24 @@ class SiteController extends Controller
 //                         return;
                     }
                     // End
-
-//                    debug($true_schet);
+//                    debug('22222222222');
+//                    debug($all_schets);
+//                    debug($res);
 //                    return;
-
+                    $flg_summa=0;
                     if( $res['contract'][$j]<>'')
                     $sql = 'Select res,summa from schet where trim(schet)=' . '"' . trim($res['contract'][$j]) . '"'.
                         ' and status<3';
-                    else
+                    else {
+                        $sql_q = 'Select res,summa from schet where summa='.$summa_o;
+                        $spr_q = schet::findbysql($sql_q)->all();
+
+                        if(count($spr_q)==0) {
+                            $flg_summa = 1;
+
+                        }
                         $sql = 'Select res,summa from schet where 1=2';
+                    }
 
 
                     $spr = schet::findbysql($sql)->all();
@@ -5346,7 +5576,9 @@ class SiteController extends Controller
                     fputs($ff,$sql);
 
 //                                        debug($spr);
+//                                          debug($summa_o);
 //                                        return;
+
                     $j_count=count($spr);
                     if($j_count<>0)
                         $res['res'][$j] = $spr[0]->res;
@@ -5354,33 +5586,50 @@ class SiteController extends Controller
                         $res['res'][$j] = '';
 
                     // Сравниваем сумму по заявке и оплаченную
-
+                    $flg_let=0; // Флаг для разрешения записи в базу
+                    $flg_part=0;
                     if($j_count<>0) {
-                        if (abs($spr[0]->summa - (float) $summa_o)<=0.1)
-                            $res['note'][$j] = 'округлення до 10 коп.';
-                        else
-                            $res['note'][$j] = 'часткова оплата';
+                        $flg_part=1;
+                        if (abs($spr[0]->summa - (float) $summa_o)<=0.1) {
+                            $flg_let=1;
+                            $res['note'][$j] = 'округлення до 10 коп. (оплата проведена)';
+                        }
+                        else {
+                            $res['note'][$j] = 'часткова оплата або неправильна сума (оплата не проведена)';
+                        }
 
-                        if ($spr[0]->summa == $summa_o)
+                        if ($spr[0]->summa == $summa_o) {
                             $res['note'][$j] = '';
-
-//                                            if ($spr[0]->summa <> $summa_o)
-//                                                $res['note'][$elem] = 'часткова оплата';
-//                                            else
-//                                                $res['note'][$elem] = '';
+                            $flg_part=0;
+                            $flg_let=1;
+                        }
                     }
                     else
                     {
-                        $res['note'][$j] = '';
+                        $res['note'][$j] = 'Неправильно вказаний рахунок в виписці, № рахунку '.$res['contract'][$j] . ' (оплата не проведена)';
                         $res1['summa'][$j2] = 'ПОМИЛКА';
-                        $res1['note'][$j2] = 'Неправильно вказаний рахунок в виписці, № рахунку '.$res['contract'][$j];
+                        if (empty($res['contract'][$j]) || is_null($res['contract'][$j])) $res['contract'][$j]=' пустий - по сумі '.$summa_o. ' грн.';
+                        $res1['note'][$j2] = 'Неправильно вказаний рахунок в виписці, № рахунку '.$res['contract'][$j] . ' (оплата не проведена)';
+                        $j2++;
+                    }
+                    if($flg_part==1){
+                        $res1['summa'][$j2] = 'УВАГА!';
+                        $res1['note'][$j2] = $res['note'][$j] .', № рахунку '.$res['contract'][$j];
+                        $j2++;
+                    }
+                    if($flg_summa==1){
+                        $res['note'][$j] =  '[немає такої суми в базі] ' .$summa_o. ' грн.'.' (оплата не проведена)';
+                        $res1['summa'][$j2] = 'ПОМИЛКА';
+                        $res1['note'][$j2] = '[немає такої суми в базі] ' .$summa_o. ' грн.'.' (оплата не проведена)';
                         $j2++;
                     }
 
                     $sql1 = 'update schet set status=3,date_opl=' . '"' .
                         date("Y-m-d", strtotime($date)) . '"' .
                         ' where schet=' . '"' . trim($res['contract'][$j]) . '"' . ' and status=2';
-                    Yii::$app->db->createCommand($sql1)->execute();
+
+                    if($flg_let==1)
+                         Yii::$app->db->createCommand($sql1)->execute();
 
                     $j++;
                 }

@@ -11,9 +11,37 @@ $role = Yii::$app->user->identity->role;
 ?>
 <script>
 
-
     
    window.addEventListener('load', function(){
+
+       $('.scrolldown').click(function() {
+           // переместиться в верхнюю часть страницы
+
+           $("html, body").animate({
+               scrollTop:2000
+           },400);
+       })
+
+       $('.scrollup').click(function() {
+           // переместиться в верхнюю часть страницы
+
+           $("html, body").animate({
+               scrollTop:0
+           },1000);
+       })
+
+       // при прокрутке окна (window)
+       $(window).scroll(function() {
+           // если пользователь прокрутил страницу более чем на 200px
+           if ($(this).scrollTop()>200) {
+               // то сделать кнопку scrollup видимой
+               $('.scrollup').fadeIn();
+           }
+           // иначе скрыть кнопку scrollup
+           else {
+               $('.scrollup').fadeOut();
+           }
+       });
 
          var stat = $("#viewschet-status").val();   
          //alert(stat);
@@ -31,7 +59,9 @@ $role = Yii::$app->user->identity->role;
 	  e.stopPropagation();
 
 	  });
-   }        
+
+
+   }
 
 
     // Ограничение для установки статусов
@@ -43,6 +73,10 @@ $role = Yii::$app->user->identity->role;
            $("#viewschet-status").val(localStorage.getItem("status"));
        }
     }
+
+
+
+
 </script>
 
 <br>
@@ -52,6 +86,12 @@ $role = Yii::$app->user->identity->role;
     <?php $form = ActiveForm::begin([
         'options' => ['enctype' => 'multipart/form-data'],
         'enableAjaxValidation' => false,]); ?>
+
+        <div class="scrolldown">
+            <!-- Иконка fa-chevron-up (Font Awesome) -->
+            <i class="fa fa-chevron-down"></i>
+            <!--            <i class="glyphicon glyphicon-eject"></i>-->
+        </div>
 
     <?php
         // Установка статусов в соответствии с доступами
@@ -253,6 +293,12 @@ $role = Yii::$app->user->identity->role;
     <?= $form->field($model, 'time')->textInput() ?>
     <?= $form->field($model, 'kol')->textInput() ?>
 
+
+        <div class="scrollup">
+            <!-- Иконка fa-chevron-up (Font Awesome) -->
+                        <i class="fa fa-chevron-up"></i>
+<!--            <i class="glyphicon glyphicon-eject"></i>-->
+        </div>
     
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'ОК' : 'OK', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
@@ -355,12 +401,16 @@ $role = Yii::$app->user->identity->role;
 //                    ],'class' => 'btn btn-info']); ?>
 
 
+
         <?php }}} ?>
         
     </div>
 
+
+
     <?php ActiveForm::end(); ?>
     </div>
 </div>
+
 
 

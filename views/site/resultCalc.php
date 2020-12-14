@@ -128,6 +128,7 @@ else{
         <h3><?= Html::encode(" Результат розрахунку: ") ?></h3>
     </div>
     <br>
+
 <!--    <h4>--><?//= Html::encode("Координати: ".$geo) ?><!--</h4>-->
 
 <!--    <h4>--><?//= Html::encode("Результат розрахунку для:  ".$name_res[0]->nazv.', споживач: '.$nazv.' (ІНН: '.$potrebitel.').') ?><!--</h4>-->
@@ -314,7 +315,7 @@ else{
                     round($time_t*$model2[0]->stavka_grn,2)) ?></td>
         </tr>
         <tr>
-            <td>Всього: </td>
+            <td>Всього:</td>
             <td><?= (round($model1[0]->proezd*$time_t,2)+
                 round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
                 round($model1[0]->rabota*$kol,2)+
@@ -329,20 +330,61 @@ else{
                         (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_)*0.2,2) ?></td>
 
         </tr>
+<!--        <tr>-->
+<!--            <td>Разом з ПДВ: </td>-->
+<!--            <td class="itogo_s_nds">--><?//= (round((round($model1[0]->proezd*$time_t,2)+
+//                            round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
+//                            round($model1[0]->rabota*$kol,2)+
+//                            (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_)*0.2,2)+
+//                    (round($model1[0]->proezd*$time_t*$kol,2)+
+//                        round($model1[0]->rabota*$kol,2)+
+//                        round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
+//                        (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_))  ?><!--</td>-->
+<!---->
+<!--        </tr>-->
         <tr>
             <td>Разом з ПДВ: </td>
             <td class="itogo_s_nds"><?= (round((round($model1[0]->proezd*$time_t,2)+
                             round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
                             round($model1[0]->rabota*$kol,2)+
                             (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_)*0.2,2)+
-                    (round($model1[0]->proezd*$time_t*$kol,2)+
-                        round($model1[0]->rabota*$kol,2)+
+                    (round($model1[0]->proezd*$time_t,2)+
                         round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
+                        round($model1[0]->rabota*$kol,2)+
                         (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_))  ?></td>
 
         </tr>
         </tbody>
     </table>
+<!--    --><?//= round((round($model1[0]->proezd*$time_t,2)+
+//            round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
+//            round($model1[0]->rabota*$kol,2)+
+//            (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_)*0.2,2)?><!--<br><br><br>-->
+<!--        --><?//=round($model1[0]->proezd*$time_t,2) ?><!--<br><br>-->
+<!--        --><?//= round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2) ?><!--<br><br>-->
+<!--        --><?//=round($model1[0]->rabota*$kol,2)?><!--<br><br>-->
+<!--        --><?//=(round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_ ?><!--<br><br>-->
+<!--        --><?//= debug($model1[0]->proezd);
+//        debug($time_t);
+//        return;?>
+<!--        --><?//= round($model1[0]->proezd*$time_t*$kol,2)+
+//    round($model1[0]->rabota*$kol,2)+
+//    round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
+//    (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_?><!--<br><br><br>-->
+<!--    --><?//=round($model1[0]->proezd*$time_t*$kol,2) ?><!--<br>-->
+<!--    --><?//= debug($model1[0]->proezd);
+//        debug($time_t);
+//        debug($kol);
+//        return;?>
+<!--        --><?//=round($model1[0]->rabota*$kol,2)?><!--<br>-->
+<!--        --><?//= round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)?><!--<br>-->
+<!--        --><?//= (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_?><!--<br><br>-->
+
+<!--        --><?//= (round($model1[0]->proezd*$time_t,2)+
+//            round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
+//            round($model1[0]->rabota*$kol,2)+
+//            (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_) ?>
+
     <?php endif; ?>
 
     <?php if($model1[0]->usluga=="Транспортні послуги"): ?>

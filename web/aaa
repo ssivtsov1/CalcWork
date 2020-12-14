@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-select a.* from vschet a where 1=1  and a.schet like '%11323%' order by schet ASC
-=======
-select a.* from vschet a where 1=1  and trim(a.res)='Апостолівська дільниця' order by schet ASC
->>>>>>> 12b238a2c6bb3ae0eabaa20c14020c8d23e4a570
+select a.* from vschet a where 1=1  and a.schet like '%11322%' order by schet ASC

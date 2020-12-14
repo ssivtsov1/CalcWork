@@ -102,7 +102,7 @@ else{
         </thead>
         <tbody>
         <tr>
-                      
+
             <td><?= $model1[0]['work'] ?></td>
             <td><?= $kol*$model1[0]['cast_3'] ?></td>
         </tr>
@@ -124,11 +124,9 @@ else{
             <td class="itogo_s_nds"><?= $kol*$model1[0]['cast_3']+
                 round($kol*$model1[0]['cast_3']*0.2,2) ?>
             </td>
-
         </tr>
         </tbody>
     </table>
-
     <div class="form-group">
 
         <?php

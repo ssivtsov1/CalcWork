@@ -38,6 +38,7 @@ class Inputcalc extends Model
     public $id_auto9;           // Автомобиль 6
     public $id_auto10;           // Автомобиль 7
     public $id_auto11;           // Автомобиль 8
+    public $id_auto12;           // Автомобиль 9
     public $time_prostoy ;  // Время простоя в часах (для транспортных услуг)
     public $time_work ;  // Время работы в часах (для транспортных услуг)
     public $norm_time;         // Норма времени
@@ -85,6 +86,7 @@ class Inputcalc extends Model
             'id_auto9' => 'СЗОЄ: ',
             'id_auto10' => 'СДІЗП: ',
             'id_auto11' => 'Служба підстанцій: ',
+            'id_auto12' => 'СРЗА: ',
             'norm_time' => 'Норма часу: ',
             'salary_brig' => 'Зарплата бригади:',
             'common_expense' => 'Загальн. витрати:',
@@ -103,10 +105,10 @@ class Inputcalc extends Model
             [['work','n_work', 'cost_work', 'id_brig1','stavka_brig1','expense_brig'], 'required'],
 
            [ ['other','poverka','otv_contract', 'common_expense','salary_brig' ,'norm_time',
-                'id_auto11','id_auto10','id_auto9','id_auto8','id_auto7','id_auto6','id_auto5',
+               'id_auto12','id_auto11','id_auto10','id_auto9','id_auto8','id_auto7','id_auto6','id_auto5',
                 'id_auto4','id_auto3','id_auto2','id_auto1','time_prostoy','stavka_brig4','stavka_brig3',
                 'stavka_brig2','stavka_brig1','usluga','usluga1','id_brig1','id_brig2','id_brig3'
-               ,'id_brig4','id_brig5','time_work'],'safe']
+               ,'id_brig4','id_brig5','time_work','tmc'],'safe']
         ];
     }
 }

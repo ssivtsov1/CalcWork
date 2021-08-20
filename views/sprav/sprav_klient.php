@@ -48,6 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
             ],
             'okpo',
+            'budget_org',
             'regsvid',
             'tel',
             'email',

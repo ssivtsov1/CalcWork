@@ -11,7 +11,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\Response;
 use app\models\forExcel;
-
+//debug($model1[0]);
 
 $time_t = round($distance / 45,2);
 
@@ -20,6 +20,7 @@ $time_prostoy = str_replace(',','.',$time_prostoy);
 $flag =1;
 $role=0;
 $cost_auto_work=0;
+
 if(!is_null($tmc_price) && $tmc_price>0)
     $tmc_price_=$tmc_price;
 else
@@ -33,7 +34,9 @@ else{
 ?>
 
 <div class="site-login">
-    <?php if($flag): ?>
+    <?php
+
+    if($flag): ?>
 
     <h4><?= Html::encode("Результат розрахунку для:  ".$name_res[0]->nazv.', споживач: '.$nazv.' (ІНН: '.$potrebitel.').') ?></h4>
     <br>
@@ -53,6 +56,9 @@ else{
     <?php if(!is_null($tmc_price) && $tmc_price>0): ?>
         <h4><?= Html::encode("Вартість матеріалів та устаткування без ПДВ: ".$tmc_price.' грн.') ?></h4>
     <?php endif; ?>
+        <?php if(!is_null($verification) && $verification>0): ?>
+            <h4><?= Html::encode("Повірка: ".$verification.' грн.') ?></h4>
+        <?php endif; ?>
     <br>
     <div class="main_pokaz">
         <h4><?= Html::encode("Розрахунок доставки бригади:  ".round($time_t*$model2[0]->stavka_grn,2).' грн.') ?></h4>
@@ -74,12 +80,20 @@ else{
     <?php endif; ?>
 
     <?php if($model1[0]->usluga=="Транспортні послуги"): ?>
+
         <h4><?= Html::encode("Всього: ".(round($model1[0]->proezd*$time_t,2)+
                     round($model1[0]->prostoy*$time_prostoy*$kol,2) +
-                    round($model1[0]->rabota*$time_work,2)).' грн.') ?></h4>
+                    round($model1[0]->rabota*$time_work,2)).' грн.') ;
+
+
+            ?></h4>
         <br>
     <?php endif; ?>
-
+<!--    --><?php
+//        echo $model1[0]->prostoy . '<br>';
+//        echo $time_prostoy . '<br>';
+//        echo $kol. '<br>';
+//    ?>
     <h4><?= Html::encode(" Проїзд: ".round($model1[0]->proezd*$time_t,2).' грн.') ?></h4>
     </div>
     <?php if($model1[0]->usluga!="Транспортні послуги"): ?>
@@ -307,6 +321,20 @@ else{
         </tr>
         <?php endif; ?>
 
+        <?php if(!is_null($verification) && $verification>0): ?>
+            <tr>
+                <td><?= "Повірка: " ?></td>
+                <td><?= $verification ?></td>
+            </tr>
+        <?php endif; ?>
+        <?php
+
+        if(is_null($verification))
+            $verification=0;
+
+
+         ?>
+
         <tr>
             <td><?= "Транспортні послуги: " ?></td>
             <td><?= (round($model1[0]->proezd*$time_t,2)+
@@ -319,7 +347,7 @@ else{
             <td><?= (round($model1[0]->proezd*$time_t,2)+
                 round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
                 round($model1[0]->rabota*$kol,2)+
-                (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_) ?></td>
+                (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_+((float) $verification)) ?></td>
 
         </tr>
         <tr>
@@ -327,7 +355,7 @@ else{
             <td><?= round((round($model1[0]->proezd*$time_t,2)+
                         round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
                         round($model1[0]->rabota*$kol,2)+
-                        (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_)*0.2,2) ?></td>
+                        (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_+((float) $verification))*0.2,2) ?></td>
 
         </tr>
 <!--        <tr>-->
@@ -347,11 +375,11 @@ else{
             <td class="itogo_s_nds"><?= (round((round($model1[0]->proezd*$time_t,2)+
                             round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
                             round($model1[0]->rabota*$kol,2)+
-                            (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_)*0.2,2)+
+                            (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_+((float) $verification))*0.2,2)+
                     (round($model1[0]->proezd*$time_t,2)+
                         round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
                         round($model1[0]->rabota*$kol,2)+
-                        (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_))  ?></td>
+                        (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_+((float) $verification)))  ?></td>
 
         </tr>
         </tbody>
@@ -399,6 +427,7 @@ else{
 
             <tr>
                 <td><?= "Транспортні послуги: " ?></td>
+
                 <td><?= (round($model1[0]->proezd*$time_t,2)+
                         round($model1[0]->prostoy*$time_prostoy*$kol,2) +
                         round($model1[0]->rabota*$time_work,2)) ?></td>
@@ -435,14 +464,23 @@ else{
 
     <?php
     if($model1[0]->usluga!="Транспортні послуги")
-       $all_grn=(round((round($model1[0]->proezd*$time_t,2)+
-            round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
+//       $all_grn=(round((round($model1[0]->proezd*$time_t,2)+
+//            round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
+//            round($model1[0]->rabota*$kol,2)+
+//            (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_)*0.2,2)+
+//           (round($model1[0]->proezd*$time_t*$kol,2)+
+//          round($model1[0]->rabota*$kol,2)+
+//         round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
+//         (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_));
+// Убрано количество калкукяц. едениц
+    $all_grn=(round((round($model1[0]->proezd*$time_t,2)+
+                round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
+                round($model1[0]->rabota*$kol,2)+
+                (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_+((float) $verification))*0.2,2)+
+            (round($model1[0]->proezd*$time_t,2)+
             round($model1[0]->rabota*$kol,2)+
-            (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_)*0.2,2)+
-           (round($model1[0]->proezd*$time_t*$kol,2)+
-          round($model1[0]->rabota*$kol,2)+
-         round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
-         (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_));
+            round($model1[0]->prostoy*$model1[0]->time_transp*$kol,2)+
+            (round($time_t*$model2[0]->stavka_grn,2))+$kol*$model1[0]->cost+$tmc_price_+((float) $verification)));
     ?>
 
     <div class="form-group">
@@ -481,7 +519,7 @@ else{
             '&adr='.$model->adr_work.'&geo='.$geo.'&kol='.$kol.'&refresh='.$refresh.
             '&schet='.$schet.'&tmc='.$tmc_price_.'&tmc_name='.$tmc_name.
             '&time_t='.$time_t.'&mvp='.$mvp.'&time_prostoy='.$time_prostoy.'&time_work='.$time_work.
-            '&cost_auto_work='.$cost_auto_work],
+            '&cost_auto_work='.$cost_auto_work.'&verification='.$verification],
             ['class' => 'btn btn-primary']); ?>
 
         <?php endif; ?>

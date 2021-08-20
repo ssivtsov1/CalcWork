@@ -59,7 +59,8 @@ class Schet extends \yii\db\ActiveRecord
 
                 'summa_delivery','summa_transport','summa_beznds','summa_tmc',
               'time','res','adres','comment','date_z','status','time_t','user',
-                'contract','geo','kol','date_opl','union_sch','read_z','date_edit','nazv','cost_auto_work','direct'], 'safe'],
+                'contract','geo','kol','date_opl','union_sch','read_z','date_edit','nazv',
+                'cost_auto_work','direct','verification'], 'safe'],
 
             [['date'], 'default', 'value' => date('Y-m-d')],
             [['date_akt'], 'default', 'value' => date('Y-m-d')],

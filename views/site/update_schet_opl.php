@@ -32,7 +32,6 @@ $role = Yii::$app->user->identity->role;
    }        
 
 
-       
     // Ограничение для установки статусов
     // оплата и выполнено
     function restrict(p){  

@@ -11,6 +11,7 @@ $rr = 'UA483005280000026004455048529';
 $mfo = 'МФО: 300528 в АТ "ОТП БАНК"';
 //300528
 $okpo = '31793056';
+//debug($model[0]);
 ?>
 <!--<div class="site-about">-->
 <div class=<?= $style_title ?> >
@@ -37,6 +38,14 @@ $okpo = '31793056';
 
                 <br>
                 <?= Html::encode("ЄДРПОУ: $okpo") ?>
+
+                <br>
+                <?= Html::encode("Кол-центр: 0 800 300 015") ?>
+                <br>
+                <?= Html::encode("E-mail: call_center@cek.dp.ua") ?>
+                <br>
+                <?= Html::encode("Сайт: cek.dp.ua") ?>
+
 
                 <br>
                 <br>
@@ -67,13 +76,14 @@ $okpo = '31793056';
             <div class="opl_left">
                 <span class="span_single"><?= Html::encode("Рахунок за послугу №") ?>
 
-                    <? if((int) $model[0]['schet']==9031 || (int) $model[0]['schet']==9030 || (int) $model[0]['schet']==9029): ?>
-                        <?= Html::encode($model[0]['schet'] ) ?>
+                    <? if($model[0]['budget_org']==1): ?>
+                        <?= Html::encode('') ?>
                     <? else: ?>
                         <?= Html::encode($model[0]['schet'] . ' від ' . date("d.m.Y", strtotime($model[0]['date']))) ?>
+                        <?= Html::encode(' по договору ' . $model[0]['contract']) ?>
                     <? endif; ?>
 
-                    <?= Html::encode(' по договору ' . $model[0]['contract']) ?>
+
                 </span>
                 <br>
                 <br>
@@ -88,7 +98,12 @@ $okpo = '31793056';
                     <?= Html::encode("Послуга (призначення платежу):") ?>
 
                     <br>
-                    <?= Html::encode(del_brackets($model[0]['usluga'])) ?>
+                    <?= Html::encode(del_brackets($model[0]['usl'])) ?>
+                    <? if($model[0]['budget_org']<>1): ?>
+                        <?= Html::encode(", згідно № договору " . $model[0]['contract'] . '.') ?>
+                    <? endif; ?>
+                    <br>
+                    <?= Html::encode("Замовник послуги " . $model[0]['nazv']) ?>
                     <br>
                     <?= Html::encode("Кiлькiсть калькуляцiйних одиниць: ".$model[0]['kol']) ?>
 
@@ -154,7 +169,7 @@ $okpo = '31793056';
                     <? if(!((int) $model[0]['schet']==9031 || (int) $model[0]['schet']==9030 || (int) $model[0]['schet']==9029)): ?>
                         <?= Html::encode("Рахунок дійсний протягом однієї доби !") ?>
                     <?php endif; ?>
-                    <?= Html::encode("В призначенні платежу обов'язково указуйте № рахунку або договору!") ?>
+                    <?= Html::encode("В призначенні платежу обов'язково указуйте № договору та замовника послуги!") ?>
                 </div>
                 <br>
                 <br>

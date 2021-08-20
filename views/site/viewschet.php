@@ -9,6 +9,7 @@ use yii\grid\ActionColumn;
 use yii\grid\CheckboxColumn;
 use yii\grid\SerialColumn;
 use yii\helpers\Url;
+//debug($model);
 if(empty($last))
     $this->title = 'Перегляд замовлень';
 else
@@ -391,6 +392,7 @@ else
                         'СЗОЕ' => 'СЗОЕ',
                         'СДІЗП' => 'СДІЗП',
                         'СЦ' => 'СЦ',
+                        'СТІЛ' => 'СТІЛ',
                         
                        ),        
                  'format' => 'raw'

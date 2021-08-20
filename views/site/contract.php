@@ -5,6 +5,15 @@ $this->title = "Договір";
 $this->params['breadcrumbs'][] = $this->title;
 $year = date('Y');
 //debug($model[0]);
+//return;
+$pos = strpos($model[0]['res'], 'РЕМ');
+if ($pos === false) {
+    $res=0;
+} else {
+    $res=1;
+}
+//debug($res);
+//return;
 ?>
 <!--<div class="site-about">-->
     <div class=<?= $style_title ?> >
@@ -13,7 +22,9 @@ $year = date('Y');
     <div class="contract_center">
     <span class="span_single">
 <!--        --><?//= Html::encode(" ДОГОВІР №".$model[0]['contract']) ?>
-        <?= Html::encode(" ДОГОВІР №".$n_cnt) ?>
+        <? if($model[0]['budget_org']<>1): ?>
+             <?= Html::encode(" ДОГОВІР №".$n_cnt) ?>
+        <? endif; ?>
 
     </span>
     </div>
@@ -40,17 +51,27 @@ $year = date('Y');
 </span>
 <span class="contract_center_text" >
     <?php
+//    debug($res);
      $session = Yii::$app->session;
         if($session->has('contract_hap')) {
             if($session->get('contract_hap')==1)
-        
+            if($res==0) {
+                echo Html::encode(",іменоване надалі " . '"' . " ВИКОНАВЕЦЬ" . '"' .
+                    ", в особі " . $model[0]['exec_post_pp'] . ' ' . $model[0]['exec_person_pp'] . ", що діє на підставі доручення №" .
+                    $model[0]['assignment'] . ' від ' . $model[0]['date_assignment'] . ' р.' . ", з одного боку, і " .
+                    $model[0]['nazv'] . ", іменований надалі " . '"' . " ЗАМОВНИК" . '"' . ", в особі " .
+                    (empty($model[0]['fio_dir']) ? "_______________________________________________" : $model[0]['fio_dir']) .
+                    " , що діє на підставі ____________________________________________, з іншого боку, надалі " . '"' . " Сторони" . '"' .
+                    ", домовилися про нижченаведене:");
+            }
+            else
                 echo Html::encode(",іменоване надалі ".'"'." ВИКОНАВЕЦЬ".'"'.
-                ", в особі ".$model[0]['exec_post_pp'].' '. $model[0]['exec_person_pp'].", що діє на підставі доручення №".
-                        $model[0]['assignment'].' від '.$model[0]['date_assignment'].' р.'.", з одного боку, і ".
+                    ", в особі ".'начальника РЕМ'.' '. $model[0]['chief'].", що діє на підставі доручення №".
+                    $model[0]['n_dov'].' від '.$model[0]['d_dov'].' р.'.", з одного боку, і ".
                     $model[0]['nazv'].", іменований надалі ".'"'." ЗАМОВНИК".'"'.", в особі ".
                     (empty($model[0]['fio_dir']) ? "_______________________________________________" : $model[0]['fio_dir']) .
-                " , що діє на підставі ____________________________________________, з іншого боку, надалі ".'"'." Сторони".'"'.
-                ", домовилися про нижченаведене:");
+                    " , що діє на підставі ____________________________________________, з іншого боку, надалі ".'"'." Сторони".'"'.
+                    ", домовилися про нижченаведене:");
             else
                 echo Html::encode(",іменоване надалі ".'"'." ВИКОНАВЕЦЬ".'"'.
                 ", в особі "."_______________________________________________________________".", що діє на підставі ".
@@ -62,14 +83,24 @@ $year = date('Y');
             
         }
         else
-             echo Html::encode(",іменоване надалі ".'"'." ВИКОНАВЕЦЬ".'"'.
-                ", в особі ".$model[0]['exec_post_pp'].' '. $model[0]['exec_person_pp'].", що діє на підставі доручення №".
-                        $model[0]['assignment'].' від '.$model[0]['date_assignment'].' р.'.", з одного боку, і ".
-                    $model[0]['nazv'].", іменований надалі ".'"'." ЗАМОВНИК".'"'.", в особі ".
-                    (empty($model[0]['fio_dir']) ? "_______________________________________________" : $model[0]['fio_dir']) .
-                " , що діє на підставі ____________________________________________, з іншого боку, надалі ".'"'." Сторони".'"'.
+        if($res==0) {
+            echo Html::encode(",іменоване надалі " . '"' . " ВИКОНАВЕЦЬ" . '"' .
+                ", в особі " . $model[0]['exec_post_pp'] . ' ' . $model[0]['exec_person_pp'] . ", що діє на підставі доручення №" .
+                $model[0]['assignment'] . ' від ' . $model[0]['date_assignment'] . ' р.' . ", з одного боку, і " .
+                $model[0]['nazv'] . ", іменований надалі " . '"' . " ЗАМОВНИК" . '"' . ", в особі " .
+                (empty($model[0]['fio_dir']) ? "_______________________________________________" : $model[0]['fio_dir']) .
+                " , що діє на підставі ____________________________________________, з іншого боку, надалі " . '"' . " Сторони" . '"' .
                 ", домовилися про нижченаведене:");
-     ?>   
+        }
+        else
+            echo Html::encode(",іменоване надалі " . '"' . " ВИКОНАВЕЦЬ" . '"' .
+                ", в особі " . 'начальника РЕМ' . ' ' . $model[0]['chief'] . ", що діє на підставі доручення №" .
+                $model[0]['n_dov'] . ' від ' . $model[0]['d_dov'] . ' р.' . ", з одного боку, і " .
+                $model[0]['nazv'] . ", іменований надалі " . '"' . " ЗАМОВНИК" . '"' . ", в особі " .
+                (empty($model[0]['fio_dir']) ? "_______________________________________________" : $model[0]['fio_dir']) .
+                " , що діє на підставі ____________________________________________, з іншого боку, надалі " . '"' . " Сторони" . '"' .
+                ", домовилися про нижченаведене:");
+     ?>
 </span>
 <br>
 <br>
@@ -363,13 +394,23 @@ $year = date('Y');
              <?php endif; ?>
              <?php } 
              if(!$session->has('contract_hap')):?>
-             <span class="contract_text_footer"> 
-                <?= Html::encode(mb_ucfirst($model[0]['exec_post'], 'UTF-8')) ?> 
+             <span class="contract_text_footer">
+                <?php if($res==0): ?>
+                    <?= Html::encode(mb_ucfirst($model[0]['exec_post'], 'UTF-8')) ?>
+                <?php endif; ?>
+                <?php if($res==1): ?>
+                    <?= Html::encode(mb_ucfirst('Начальник РЕМ', 'UTF-8')) ?>
+                <?php endif; ?>
              </span>
              <br>
              <br>
-             <span class="contract_text_footer"> 
-                <?= Html::encode("________________________/".$model[0]['exec_person']." / ") ?> 
+             <span class="contract_text_footer">
+                 <?php if($res==0): ?>
+                    <?= Html::encode("________________________/".$model[0]['exec_person']." / ") ?>
+                 <?php endif; ?>
+                 <?php if($res==1): ?>
+                     <?= Html::encode("________________________/".$model[0]['chief']." / ") ?>
+                 <?php endif; ?>
              </span>
               <?php endif; ?>
             </div>

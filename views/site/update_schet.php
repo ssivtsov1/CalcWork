@@ -8,6 +8,7 @@ use yii\helpers\Url;
 use app\models\spr_res;
 use app\models\status_sch;
 $role = Yii::$app->user->identity->role;
+//debug($model);
 ?>
 <script>
 
@@ -15,7 +16,7 @@ $role = Yii::$app->user->identity->role;
    window.addEventListener('load', function(){
 
        $('.scrolldown').click(function() {
-           // переместиться в верхнюю часть страницы
+           // переместиться в нижнюю часть страницы
 
            $("html, body").animate({
                scrollTop:2000
@@ -100,27 +101,57 @@ $role = Yii::$app->user->identity->role;
         switch($role) {
         case 16: // Полный доступ Желтые Воды
                 echo $form->field($model, 'read_z')->checkbox();
-                echo $form->field($model, 'status')->dropDownList(ArrayHelper::map(status_sch::find()->all(), 'id', 'nazv'));
+                echo $form->field($model, 'status_sch')->textInput(['disabled' => true]);
+                echo $form->field($model, 'status')->label('Статус заявки (встановлення):')->
+                dropDownList(ArrayHelper::map(status_sch::find()
+                    ->where('id<>3')
+                    ->andwhere('id<>7')
+                    ->all(), 'id', 'nazv'));
                 break;
         case 15: // Полный доступ Вольногорск
                 echo $form->field($model, 'read_z')->checkbox();
-                echo $form->field($model, 'status')->dropDownList(ArrayHelper::map(status_sch::find()->all(), 'id', 'nazv'));
+                echo $form->field($model, 'status_sch')->textInput(['disabled' => true]);
+                echo $form->field($model, 'status')->label('Статус заявки (встановлення):')
+                    ->dropDownList(ArrayHelper::map(status_sch::find()
+                    ->where('id<>3')
+                    ->andwhere('id<>7')
+                    ->all(), 'id', 'nazv'));
                 break;
         case 14: // Полный доступ Павлоград
                 echo $form->field($model, 'read_z')->checkbox();
-                echo $form->field($model, 'status')->dropDownList(ArrayHelper::map(status_sch::find()->all(), 'id', 'nazv'));
+                echo $form->field($model, 'status_sch')->textInput(['disabled' => true]);
+                echo $form->field($model, 'status')->label('Статус заявки (встановлення):')
+                    ->dropDownList(ArrayHelper::map(status_sch::find()
+                    ->where('id<>3')
+                    ->andwhere('id<>7')
+                    ->all(), 'id', 'nazv'));
                 break;
         case 13: // Полный доступ Кр Рог
                 echo $form->field($model, 'read_z')->checkbox();
-                echo $form->field($model, 'status')->dropDownList(ArrayHelper::map(status_sch::find()->all(), 'id', 'nazv'));
+                echo $form->field($model, 'status_sch')->textInput(['disabled' => true]);
+                echo $form->field($model, 'status')->label('Статус заявки (встановлення):')
+                    ->dropDownList(ArrayHelper::map(status_sch::find()
+                    ->where('id<>3')
+                    ->andwhere('id<>7')
+                    ->all(), 'id', 'nazv'));
                 break;
         case 12: // Полный доступ Гвардейское
                 echo $form->field($model, 'read_z')->checkbox();
-                echo $form->field($model, 'status')->dropDownList(ArrayHelper::map(status_sch::find()->all(), 'id', 'nazv'));
+                echo $form->field($model, 'status_sch')->textInput(['disabled' => true]);
+                echo $form->field($model, 'status')->label('Статус заявки (встановлення):')
+                    ->dropDownList(ArrayHelper::map(status_sch::find()
+                    ->where('id<>3')
+                    ->andwhere('id<>7')
+                    ->all(), 'id', 'nazv'));
                 break;
         case 11: // Полный доступ Днепр
                 echo $form->field($model, 'read_z')->checkbox();
-                echo $form->field($model, 'status')->dropDownList(ArrayHelper::map(status_sch::find()->all(), 'id', 'nazv'));
+                echo $form->field($model, 'status_sch')->textInput(['disabled' => true]);
+                echo $form->field($model, 'status')->label('Статус заявки (встановлення):')
+                    ->dropDownList(ArrayHelper::map(status_sch::find()
+                    ->where('id<>3')
+                    ->andwhere('id<>7')
+                    ->all(), 'id', 'nazv'));
                 break;
         case 5: // Полный доступ
             echo $form->field($model, 'read_z')->checkbox(); 
@@ -291,6 +322,50 @@ $role = Yii::$app->user->identity->role;
                     )->textInput() ?>
 
     <?= $form->field($model, 'time')->textInput() ?>
+
+        <?= $form->field($model, 'date_edit'
+        )->textInput() ?>
+
+        <?= $form->field($model, 'time_edit')->textInput() ?>
+        <p>  <?
+            if(!empty($model->office_edit))
+            switch($model->office_edit){
+                case 3:
+                    echo('Останнє редагування: Адміністратор');
+                    break;
+                case 5:
+                    echo('Останнє редагування: Собко Лариса Володимирівна');
+                    break;
+                case 2:
+                    echo('Останнє редагування: Фінансовий відділ');
+                    break;
+                case 1:
+                    echo('Останнє редагування: Бухгалтерія');
+                    break;
+                case 11:
+                    echo('Останнє редагування: Дніпропетровські РЕМ');
+                    break;
+                case 12:
+                    echo('Останнє редагування: Гвардійські РЕМ');
+                    break;
+                case 13:
+                    echo('Останнє редагування: Криворізькі РЕМ');
+                    break;
+                case 14:
+                    echo('Останнє редагування: Павлоградські РЕМ');
+                    break;
+                case 15:
+                    echo('Останнє редагування: Вільногірські РЕМ');
+                    break;
+                case 16:
+                    echo('Останнє редагування: Жовтоводські РЕМ');
+                    break;
+                default:
+                    echo('Останнє редагування: Інші служби');
+            }
+
+            ?>
+        </p>
     <?= $form->field($model, 'kol')->textInput() ?>
 
 

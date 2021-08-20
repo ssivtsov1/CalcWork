@@ -163,7 +163,7 @@ localStorage.setItem("status", stat);
                                                                 where id<>48
                                                                 group by 2 
                             UNION
-                            SELECT 300+min(id) as id,number as T_Vg FROM a_transport
+                            SELECT 300+min(id) as id,number as T_Vg FROM a_transport_now
                                                                 where trim(place)='ВгРЕМ'
                                                                 group by 2
                             ) e
@@ -193,7 +193,7 @@ localStorage.setItem("status", stat);
                                                                 where id<>48
                                                                 group by 2 
                             UNION
-                            SELECT 300+min(id) as id,number as T_Dn FROM a_transport
+                            SELECT 300+min(id) as id,number as T_Dn FROM a_transport_now
                                                                 where trim(place)='ДнРЕМ'
                                                                 group by 2
                             ) e
@@ -234,7 +234,7 @@ localStorage.setItem("status", stat);
             where id<>48
             group by 2
             UNION
-            SELECT 300+min(id) as id,number as T_Krr FROM a_transport
+            SELECT 300+min(id) as id,number as T_Krr FROM a_transport_now
             where trim(place)='КрРЕМ'
             group by 2
             ) e
@@ -251,7 +251,7 @@ localStorage.setItem("status", stat);
             where id<>48
             group by 2
             UNION
-            SELECT 300+min(id) as id,number as T_Pvg FROM a_transport
+            SELECT 300+min(id) as id,number as T_Pvg FROM a_transport_now
             where trim(place)='ПвРЕМ'
             group by 2
             ) e
@@ -282,6 +282,14 @@ localStorage.setItem("status", stat);
                     'SELECT min(id) as id,T_Sp FROM costwork
                                     where id<>48
                                     group by 2 order by 2')->all(),  'id', 'T_Sp'),
+                []); ?>
+            <div class="clearfix"></div>
+
+            <?=$form->field($model, 'id_auto12')->dropDownList(
+                ArrayHelper::map( app\models\spr_costwork::findbysql(
+                    'SELECT min(id) as id,T_Srza FROM costwork
+                                    where id<>48
+                                    group by 2 order by 2')->all(),  'id', 'T_Srza'),
                 []); ?>
             <div class="clearfix"></div>
 

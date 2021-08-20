@@ -195,6 +195,14 @@ if($role>0){
                        
                 });',
                 ]) ?>
+
+            <?= $form->field($model, 'budget_org')->checkbox([
+                'labelOptions' => [
+                    'style' => 'padding-left:20px;'
+                ],
+                'disabled' => false
+            ]); ?>
+
             <?= $form->field($model, 'regsvid') ?>
             <?= $form->field($model, 'nazv')->textarea(['rows' => 3, 'cols' => 25,
                 'onDblClick' => 'rmenu($(this).val(),"#klient-nazv")']) ?>
@@ -214,7 +222,6 @@ if($role>0){
             <?= $form->field($model, 'tel',['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
             . '<span class="glyphicon glyphicon-phone"></span></span>{input}</div>'])->textInput(
                 ['maxlength' => true,'onBlur' => 'norm_tel($(this).val())']) ?>
-
 
             <?= $form->field($model, 'email',['inputTemplate' => '<div class="input-group"><span class="input-group-addon">'
             . '<span class="glyphicon glyphicon-envelope"></span></span>{input}</div>']) ?>

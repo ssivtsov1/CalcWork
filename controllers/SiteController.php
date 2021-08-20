@@ -49,6 +49,7 @@ use kartik\mpdf\Pdf;
 //use mpdf\mpdf;
 use yii\web\UploadedFile;
 
+
 class SiteController extends Controller
 {  /**
  *
@@ -135,7 +136,8 @@ class SiteController extends Controller
                 'nazv' => $model->nazv,'adr_work' => $model->adr_potr,
                 'geo' => $model->geo,'refresh' => 0,'schet' => '',
                 'nazv1' => $model->nazv1,'tmc' => $model->tmc,'mvp' => $model->mvp,
-                'calc_ind' => $model->calc_ind]);
+                'calc_ind' => $model->calc_ind,
+                'verification' => $model->verification]);
             }
          else {
             $flag=1;
@@ -417,7 +419,6 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
         }
     }
 
-
     //  Происходит при вводе индивидуальных какькуляций
     public function actionInput_calc()
     {
@@ -452,9 +453,9 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                 if($i==5) {
                     if($model->id_brig5==166) continue;
                     $model5 = spr_costwork::findBySql($sql, [':search' => $model->id_brig5])->all();
-                    $stavka=str_replace(",", ".", $model->stavka_brig5);
+                    $stavka=str_replace(",
+                ", ".", $model->stavka_brig5);
                 }
-
                 $model2 = spr_costwork::findBySql($sql, [':search' => $model->usluga])->all();
                 $sql1 = 'select *  from spr_uslug where trim(usluga)=:search';
                 $sql1 = 'select *  from spr_uslug where trim(usluga) like '.'"%'.trim($model2[0]->usluga).'%"';
@@ -520,7 +521,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                         $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto2])->all();
                    else
                     {
-                        $sql_t = 'select id,number as T_Vg from a_transport where id=:search';
+                        $sql_t = 'select id,number as T_Vg from a_transport_now where id=:search';
                         $model3 = spr_costwork::findBySql($sql_t, [':search' => $model->id_auto2-300])->all();
                     }
                     $costwork->T_Vg = $model3[0]->T_Vg;
@@ -563,7 +564,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                         $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto4])->all();
                     else
                     {
-                        $sql_t = 'select id,number as T_Dn from a_transport where id=:search';
+                        $sql_t = 'select id,number as T_Dn from a_transport_now where id=:search';
                         $model3 = spr_costwork::findBySql($sql_t, [':search' => $model->id_auto4-300])->all();
                     }
                     $costwork->T_Dn = $model3[0]->T_Dn;
@@ -625,7 +626,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                         $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto7])->all();
                     else
                     {
-                        $sql_t = 'select id,number as T_Krr from a_transport where id=:search';
+                        $sql_t = 'select id,number as T_Krr from a_transport_now where id=:search';
                         $model3 = spr_costwork::findBySql($sql_t, [':search' => $model->id_auto7-300])->all();
                     }
 //                    $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto7])->all();
@@ -669,7 +670,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                         $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto8])->all();
                     else
                     {
-                        $sql_t = 'select id,number as T_Pvg from a_transport where id=:search';
+                        $sql_t = 'select id,number as T_Pvg from a_transport_now where id=:search';
                         $model3 = spr_costwork::findBySql($sql_t, [':search' => $model->id_auto8-300])->all();
                     }
 //                    $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto7])->all();
@@ -737,6 +738,23 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
 //                        $costwork->T_Szoe = $model3[0]->T_Sp;
 //                        $costwork->T_Sdizp = $model3[0]->T_Sp;
                         $costwork->T_Ap = $model3[0]->T_Sp;
+                        $fl_a=1;
+                    }
+                }
+                if (!empty($model->id_auto12) && $model->id_auto12<>166 && $fl_a==0) {
+                    $model3 = spr_costwork::findBySql($sql, [':search' => $model->id_auto12])->all();
+                    $costwork->T_Srza = $model3[0]->T_Srza;
+                    if($model->usluga==220){
+                        $costwork->T_Vg = $model3[0]->T_Srza;
+                        $costwork->T_Gv = $model3[0]->T_Srza;
+                        $costwork->T_Dn = $model3[0]->T_Srza;
+                        $costwork->T_Ing = $model3[0]->T_Srza;
+                        $costwork->T_Yv = $model3[0]->T_Srza;
+                        $costwork->T_Krr = $model3[0]->T_Srza;
+                        $costwork->T_Pvg = $model3[0]->T_Srza;
+//                        $costwork->T_Szoe = $model3[0]->T_Sp;
+//                        $costwork->T_Sdizp = $model3[0]->T_Sp;
+                        $costwork->T_Ap = $model3[0]->T_Srza;
                         $fl_a=1;
                     }
                 }
@@ -875,7 +893,8 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
 
 // Оформление заявки пользователя
     public function actionProposal($rabota,$delivery,$transp,$all,$g,$u,$res,$adr,$geo,$kol,
-                                   $refresh,$schet,$tmc,$tmc_name,$time_t,$mvp,$time_prostoy,$time_work,$cost_auto_work){
+                                   $refresh,$schet,$tmc,$tmc_name,$time_t,$mvp,$time_prostoy,
+                                   $time_work,$cost_auto_work,$verification=0){
 
 //        debug($g);
 //        return;
@@ -911,6 +930,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                     $model1->pib_dir = $model->pib_dir;
                     $model1->post_dir = $model->post_dir;
                     $model1->contact_person = $model->contact_person;
+                    $model1->budget_org = $model->budget_org;
                     $model1->save();
                 }
 
@@ -921,7 +941,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                     'geo' => $geo, 'kol' => $kol,'tmc' => $tmc,
                     'tmc_name' => $tmc_name,'time_t' => $time_t,'mvp' => $mvp,
                     'time_prostoy' => $time_prostoy,'time_work' => $time_work,
-                    'cost_auto_work' =>$cost_auto_work]);
+                    'cost_auto_work' =>$cost_auto_work, 'verification' =>$verification]);
 
             } else {
                 $flag=1;
@@ -997,7 +1017,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
 
     // Расчет показателей (происходит при нажатии на кн. OK)
     public function actionCalc($id,$kol,$poezdka,$distance,$res,$potrebitel,$time_work,
-                               $time_prostoy,$nazv,$adr_work,$geo,$refresh,$schet,$nazv1,$tmc,$mvp,$calc_ind)
+                               $time_prostoy,$nazv,$adr_work,$geo,$refresh,$schet,$nazv1,$tmc,$mvp,$calc_ind,$verification=0)
     {
         $sql="select usluga from costwork where id=".$id;
 
@@ -1069,7 +1089,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                 'time_prostoy' => $time_prostoy,'adr_work' => $adr_work,
                 'geo' => $geo,'refresh' => $refresh,
                 'schet' => $schet,'nazv1' => $nazv1,'tmc_price'=> $tmc_price,
-                'tmc_name'=> $tmc_name,'mvp'=> $mvp]);
+                'tmc_name'=> $tmc_name,'mvp'=> $mvp,'verification'=> $verification]);
         else
             return $this->render('resultCalc_oto', ['model1' => $model1,'model2' => $model2,
                 'name_res' => $name_res,'kol' => $kol,'distance' => round((float) $distance * (float) $poezdka,2),
@@ -1271,7 +1291,8 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
 
     // Формирование счета
     public function actionCnt($rabota,$delivery,$transp,$all,$g,$u,$inn,$res,$adr_work,$comment,
-                              $date_z,$geo,$kol,$tmc,$tmc_name,$time_t,$mvp,$time_prostoy,$time_work,$cost_auto_work)
+                              $date_z,$geo,$kol,$tmc,$tmc_name,$time_t,$mvp,$time_prostoy,
+                              $time_work,$cost_auto_work,$verification)
 
     {
         $model = new schet();
@@ -1301,6 +1322,9 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
             $data_usluga = spr_work::find()->select(['kod_uslug','n_work','norm_time'])
                 ->where('trim(work)=:work',['work' => trim($u)])->all();
 
+//            debug($u);
+//            return;
+
             $kod_usluga = $data_usluga[0]->kod_uslug;  // Код услуги
             $n_work = $data_usluga[0]->n_work;         // № услуги
             $norm_time = $data_usluga[0]->norm_time;   // Норма времени
@@ -1329,6 +1353,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
             $model->n_work = $n_work;
             $model->norm_time = $norm_time;
             $model->mvp = $code_mvp;
+            $model->verification = $verification;
             $model->time_prostoy = $time_prostoy;
             $model->time_work = $time_work;
 
@@ -1364,11 +1389,13 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
         $sch = Yii::$app->request->post('sch');
         $sch1 = Yii::$app->request->post('sch1');
         if(empty($sch1)) $sch1='0';
-        $sql = "select * from vschet where schet=:search";
+        $sql = "select distinct a.*,case when b.usluga is null then a.usluga else b.usluga end as usl from vschet a left JOIN
+                    costwork b on trim(a.usluga)=trim(b.work) where a.schet=:search";
         //$sql = "select * from vschet where (schet=:search or cast(schet as dec(10,0)) in (".$sch1."))";
         $model = viewschet::findBySql($sql,[':search'=>"$sch"])->asArray()->all();
 //        debug($model);
 //        return;
+
         $q=count($model);
         $total=0;
         for ($i = 0; $i < $q; $i++)
@@ -1385,9 +1412,12 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
         $sql = "select * from vschet where schet=:search";
         $z = viewschet::findBySql($sql,[':search'=>"$sch"])->asArray()->all();
         $code_mvp=$z[0]['mvp'];
-        $u=$z[0]['usluga'];
+        $u=trim($z[0]['usluga']);
         $kol_e=$z[0]['kol'];
         $res_t=$z[0]['res'];
+        $date_doc=$z[0]['date'];
+
+        $verification_s = $z[0]['verification'];     // Поверка со счета
         if(trim($res_t)=='Дніпропетровські РЕМ') $rem_t='ДнРЕМ';
         if(trim($res_t)=='Вільногірські РЕМ') $rem_t='ВгРЕМ';
         if(trim($res_t)=='Жовтоводські РЕМ') $rem_t='ЖвРЕМ';
@@ -1396,28 +1426,40 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
         if(trim($res_t)=='Павлоградські РЕМ') $rem_t='ПвРЕМ';
         if(trim($res_t)=='Апостолівська дільниця') $rem_t='АпРЕМ';
         if(trim($res_t)=='Інгулецька дільниця') $rem_t='ІнРЕМ';
+        if(trim($res_t)=='СТІЛ') $rem_t='СТІЛ';
+        if(trim($res_t)=='СЗОЕ') $rem_t='СЗОЕ';
 
 //        debug($z);
 //        return;
 
         $sql = "select * from costwork where work=:search";
         $z2 = viewschet::findBySql($sql,[':search'=>"$u"])->asArray()->all();
+        if (count($z2) == 0) {
+            $sql = "select * from costwork_old where work=:search";
+            $z2 = viewschet::findBySql($sql,[':search'=>"$u"])->asArray()->all();
+        }
         $u1=$z2[0]['usluga'];
         $u2=$z2[0]['calc_ind'];
         $other = '0';
         $summa_delivery=0;
-
         if($u1!='Оперативно-технічне обслуговування' || ($u1=='Оперативно-технічне обслуговування' && $u2==1)) {
             $res = mb_substr($z[0]['contract'], 0, 2, "UTF-8");
             $sql1 = 'select case when lic=1 then 0 else sum(stavka_grn) end as stavka_grn,lic
                 from costwork where work=:search group by lic';
             $model2 = Calc::findBySql($sql1,[':search'=>"$u"])->all();
+            if (count($model2) == 0) {
+                $sql1 = 'select case when lic=1 then 0 else sum(stavka_grn) end as stavka_grn,lic
+                from costwork_old where work=:search group by lic';
+                $model2 = Calc::findBySql($sql1,[':search'=>"$u"])->all();
+            }
+
 
             $pole = viewschet::tr_res($res);  // Определение поля с данными по автомобилю
+            $time_tc=0;
 
 //            debug($z[0]);
 //            return;
-
+            $flag_work=0;
             if($model2[0]->lic==0)
                 if($u1<>'Транспортні послуги') {
                     $time_t = $z[0]['time_t'];        // Время проезда (только для нелицензированной деятельности)
@@ -1425,7 +1467,10 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                 }
                 else {
                     $time_t = $z[0]['time_t'] ; // Время проезда (только для нелицензированной деятельности)
-                    $time_tc=$z[0]['time_t'] + $z[0]['time_work']; // Время трудозатрат водителей (только для трансп. услуг)
+                    $time_tc=$z[0]['time_t'] + $z[0]['time_prostoy'] + $z[0]['time_work']; // Время трудозатрат водителей (только для трансп. услуг)
+                    if($z[0]['time_work']>0)
+                        $flag_work=1;
+//                         $time_t = $time_tc;
                 }
             else
                 $time_t = 0;
@@ -1444,14 +1489,58 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
             $norm_time = round((float)str_replace(',', '.', $norm_time)*$kol_e,2);
             $norm_time = str_replace('.', ',', $norm_time);
 
-            if($u1<>'Транспортні послуги')
+//            if($u1<>'Транспортні послуги')
+//                $sql = "select zp,common_minus,time_transp,tmc,repair,usluga,lic,verification from costwork where work=:search";
+//            else {
+//                if($rem_t=='СТІЛ')
+//                            $sql = "select a.zp,b.common_minus,a.time_transp,a.tmc,a.repair,a.usluga,lic,verification from costwork a
+//                            left join a_transport_now b on a.work=b.model
+//                            where a.work=:search limit 1";
+//                else
+//                            $sql = "select a.zp,b.common_minus,a.time_transp,a.tmc,a.repair,a.usluga,lic,verification from costwork a
+//                            left join a_transport_now b on a.work=b.model and trim(b.place)='$rem_t'
+//                            where a.work=:search limit 1";
+//                //                            where a.work like '%$u%' limit 1";
+//            }
+
+
+
+            if($u1<>'Транспортні послуги') {
                 $sql = "select zp,common_minus,time_transp,tmc,repair,usluga,lic,verification from costwork where work=:search";
-            else
-                $sql = "select a.zp,b.common_minus,a.time_transp,a.tmc,a.repair,a.usluga,lic,verification from costwork a
+                $sql1 = "select zp,common_minus,time_transp,tmc,repair,usluga,lic,verification from costwork_old where work=:search";
+            }
+            else {
+                if($rem_t=='СТІЛ')
+                    if($date_doc>='2021-03-15')
+                    $sql = "select a.zp,b.common_minus,a.time_transp,a.tmc,a.repair,a.usluga,lic,verification from costwork a
+                            left join a_transport_now b on a.work=b.model 
+                            where a.work=:search limit 1";
+                    else
+                        $sql = "select a.zp,b.common_minus,a.time_transp,a.tmc,a.repair,a.usluga,lic,verification from costwork a
+                            left join a_transport b on a.work=b.model 
+                            where a.work=:search limit 1";
+                else
+                    if($date_doc>='2021-03-15')
+                    $sql = "select a.zp,b.common_minus,a.time_transp,a.tmc,a.repair,a.usluga,lic,verification from costwork a
+                            left join a_transport_now b on a.work=b.model and trim(b.place)='$rem_t'
+                            where a.work=:search limit 1";
+                    else
+                        $sql = "select a.zp,b.common_minus,a.time_transp,a.tmc,a.repair,a.usluga,lic,verification from costwork a
                             left join a_transport b on a.work=b.model and trim(b.place)='$rem_t'
                             where a.work=:search limit 1";
+                //                            where a.work like '%$u%' limit 1";
+                $sql1=$sql;
+            }
+//debug($u);
+//debug($sql);
+//return;
 
-            $z1 = viewschet::findBySql($sql, [':search' => "$u"])->asArray()->all();
+
+
+            $z1 = viewschet::findBySql($sql ,[':search' => "$u"])->asArray()->all();
+            if(count($z1) == 0){
+                $z1 = viewschet::findBySql($sql1 ,[':search' => "$u"])->asArray()->all();
+            }
 //            debug($z1);
 //            debug($sql);
 //            debug($u);
@@ -1460,12 +1549,17 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
             $zp = round((float)str_replace(',', '.', $z1[0]['zp'])*$kol_e,2);
             $zp_e = round(0.22 * $zp, 2);
             $verification = $z1[0]['verification'];     // Поверка
+            if($verification_s<>0) $verification=$verification_s;
             if($u1<>'Транспортні послуги')
                 $cm = $z1[0]['common_minus'];
             else
                 $cm = round($z1[0]['common_minus']*$time_tc,2);
 
-            $cm = round((float)str_replace(',', '.', $cm)*$kol_e,2);
+            $cm = round(((float)str_replace(',', '.', $cm))* ((int) $kol_e),2);
+
+//            debug($z1[0]['common_minus']);
+//            return;
+
             $cm_tr = $cm;
             $cm = str_replace('.', ',', $cm);
 
@@ -1488,10 +1582,17 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                 $nomer = $z1[0]['nomer'];
             else
                 $nomer = '';
-
-            $sql = "select * from vw_transport a where a.number=:search";
+            if($date_doc>='2021-03-15')
+                 $sql = "select * from vw_transport a where a.number=:search";
+            else
+                $sql = "select * from vw_transport_old a where a.number=:search";
 
             $z1 = viewschet::findBySql($sql, [':search' => "$nomer"])->asArray()->all();
+
+//            debug($nomer);
+//            debug($sql);
+//            debug($z1);
+//            return;
 
 
             if (count($z1) > 0 && $lic==0) {
@@ -1509,7 +1610,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                 $c95w = $z1[0]['cost_95_work'];
                 $cdfw = $z1[0]['cost_df_work'];
                 $cgw = $z1[0]['cost_g_work'];
-                $cm_tr = $z1[0]['common_minus'];;
+                $cm_tr = $z1[0]['common_minus'];
             } else {
                 $oil = '0';
                 $amort = '0';
@@ -1526,6 +1627,9 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
             }
             $esv = 22;
 
+//            debug($cdfw);
+//            return;
+
             // Транспорт проезд
             $fuel_92 = (float)str_replace(',', '.', $c92);
             $fuel_95 = (float)str_replace(',', '.', $c95);
@@ -1535,11 +1639,11 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
             $time_tc = (float)str_replace(',', '.', $time_tc);
             $cm_tr = (float)str_replace(',', '.', $cm_tr);
 
-            //debug($fuel_92);
+//            debug($fuel_df);
+//            return;
 
             if ($tr_usl == 0)
                 $time_prostoy = round((float)str_replace(',', '.', $time_prostoy)*$kol_e,2);
-
 
             $oil_c = (float)str_replace(',', '.', $oil);
             $amort_c = (float)str_replace(',', '.', $amort);
@@ -1552,6 +1656,11 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
             $amort = round($amort_c * $time_t, 2);
             $zp_drive_c = (float)str_replace(',', '.', $wage);
             $zp_drive = round($zp_drive_c * $time_t, 2);
+
+//            debug($time_t);
+//            return;
+//            debug($fuel_df);
+//            return;
 
             // Транспорт простой
             $oil_prostoy = round($oil_c * $time_prostoy, 2);
@@ -1583,6 +1692,9 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
             $fuel_df_work = round($fuel_df_work * $time_work, 2);
             $fuel_g_work = round($fuel_g_work * $time_work, 2);
 
+//            debug($fuel_df_work);
+//            return;
+
             // --Подсчет итога--
             // Топливо:
             $fuel_92 = $fuel_92 + $fuel_92_work;        // 92-й бензин
@@ -1590,10 +1702,20 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
             $fuel_df = $fuel_df + $fuel_df_work;        // Диз. топливо
             $fuel_g = $fuel_g + $fuel_g_work;           // Газ
             // Другие показатели
+//            debug($oil);
+//            debug($oil_prostoy);
+//            debug($oil_work);
+
+//            debug($fuel_df);
+//            return;
+
+
             $oil = $oil + $oil_prostoy+$oil_work;                 // Масло
             $amort = $amort + $amort_prostoy+$amort_work;           // Аммортизация
             $zp_drive = $zp_drive + $zp_drive_prostoy+$zp_drive_work;  // Зарплата водителей
 
+
+        if ($flag_work==0) {
             if ($time_t == 0) {
                 $fuel_92 = 0;
                 $fuel_95 = 0;
@@ -1603,9 +1725,14 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                 $zp_drive = 0;
                 $amort = 0;
             }
+        }
 
             if(($fuel_92+$fuel_95+$fuel_df+$fuel_g)>0) $priz_proezd=1;
             else $priz_proezd=0;
+
+//            debug($priz_proezd);
+//            return;
+
             $time_drive=$time_t;
             if($time_t>0)
                 $time_t = $time_t + $time_prostoy;
@@ -1652,8 +1779,12 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
             $norm_time = trim($z[0]['norm_time']);
 
             $sql = "select a.zp,a.common_minus,a.time_transp,a.tmc,a.repair,a.usluga,a.other,
-                    b.* from costwork a left join a_transport b on trim(a.work)=trim(b.number) 
+                    b.* from costwork a left join a_transport_now b on trim(a.work)=trim(b.number) 
                     where a.work=:search";
+
+//            debug($sql);
+//            debug($u);
+//            return;
 
             $z1 = viewschet::findBySql($sql, [':search' => "$u"])->asArray()->all();
             $zp = (float)str_replace(',', '.', $z1[0]['zp']);
@@ -1722,9 +1853,11 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
 
             // --Подсчет итога--
             // Другие показатели
+
             $oil = $oil_move + $oil_prostoy;                 // Масло
             $amort = $amort_move + $amort_prostoy;           // Аммортизация
             $zp_drive = $wage_move + $zp_drive_prostoy;  // Зарплата водителей
+
 
             if ($time_t == 0) {
                 $fuel_92 = 0;
@@ -1786,18 +1919,19 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
 //        debug($summa_delivery);
 //        debug($zp_dd);
 //        return;
+
+
 //        $zp_e = $zp_e+round(round($summa_delivery/1.22,2)*0.22,2);
         $zp_edd = round(round($summa_delivery/1.22,2)*0.22,2);
         $zp = str_replace('.', ',', $zp);
         $zp_dd = str_replace('.', ',', $zp_dd);
         $zp_e = str_replace('.', ',', $zp_e);
         $zp_edd = str_replace('.', ',', $zp_edd);
+        $tmc = str_replace('.', ',', $tmc);
 
-//        debug($tmc);
-//        return;
+
 
         if ($priz_proezd==0 || $tr_usl==1) {
-
             $e[0] = 'CK01';         // const
             $e[1] = $n_work;       // № услуги
             $e[2] = $code_mvp;    //  МВП пока const
@@ -1825,12 +1959,17 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
             $e[24] = '';       // № договора
             $e[25] = $norm_time;    // Нормативные трудозатраты бригады
             $e[26] = $time_tc;        // Нормативные трудозатраты водителей
+
+//            debug($e);
+//            return;
+
             fputs($f, "\n");
             $content = implode(";", $e);
             $content = mb_convert_encoding($content, 'CP1251', mb_detect_encoding($content));
             fputs($f, $content);
         }
         else{
+
                 $e[0] = 'CK01';         // const
                 $e[1] = $n_work;       // № услуги
                 $e[2] = $code_mvp;    //  МВП пока const
@@ -2195,7 +2334,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                 $verification = 0;  // Поверка
 
                 $sql = "select a.zp,a.common_minus,a.time_transp,a.tmc,a.repair,a.usluga,a.other,
-                    b.* from costwork a left join a_transport b on trim(a.work)=trim(b.number) 
+                    b.* from costwork a left join a_transport_now b on trim(a.work)=trim(b.number) 
                     where a.work=:search";
                 $z1 = viewschet::findBySql($sql, [':search' => "$w"])->asArray()->all();
 
@@ -2447,7 +2586,6 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
     // Выгрузка за период в САП
     public function actionUpload_sap($date1,$date2,$usl,$id_sw)
     {
-
         $sql = "select usluga from costwork WHERE id=$usl";
         $z = viewschet::findBySql($sql)->asArray()->all();
         $u=trim($z[0]['usluga']);
@@ -2506,11 +2644,26 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
         $cnt=0;
         $summa_delivery=0;
 
-//        debug($sql);
+//        debug($z2);
 //        return;
 
         foreach($z2 as $z) {
             $kol_e=$z['kol'];
+            $sch=$z['schet'];
+//            $verification = $z['verification'];     // Поверка со счета
+
+            $res_t=$z['res'];
+            if(trim($res_t)=='Дніпропетровські РЕМ') $rem_t='ДнРЕМ';
+            if(trim($res_t)=='Вільногірські РЕМ') $rem_t='ВгРЕМ';
+            if(trim($res_t)=='Жовтоводські РЕМ') $rem_t='ЖвРЕМ';
+            if(trim($res_t)=='Гвардійські РЕМ') $rem_t='ГвРЕМ';
+            if(trim($res_t)=='Криворізькі РЕМ') $rem_t='КрРЕМ';
+            if(trim($res_t)=='Павлоградські РЕМ') $rem_t='ПвРЕМ';
+            if(trim($res_t)=='Апостолівська дільниця') $rem_t='АпРЕМ';
+            if(trim($res_t)=='Інгулецька дільниця') $rem_t='ІнРЕМ';
+            if(trim($res_t)=='СТІЛ') $rem_t='СТІЛ';
+            if(trim($res_t)=='СЗОЕ') $rem_t='СЗОЕ';
+
             if ($u1 != 'Оперативно-технічне обслуговування') {
                 $cnt++;
                 $res = mb_substr($z['contract'], 0, 2, "UTF-8");
@@ -2529,7 +2682,9 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                     $notlic=0;   // Признак нелицензированной деятельности
                 }
                 $summa_delivery=round($time_t*$model2[0]->stavka_grn,2);  // Доставка бригады
-               
+                $clear_time_t=$time_t;   // Время проезда (только для нелицензированной деятельности) - первоначальное значение
+                $clear_time_t=round($clear_time_t,2);
+
                 $time_prostoy = $z['time_prostoy'];        // Время простоя
                 $time_work = $z['time_work'];             // Время работы
                 $n_work = trim($z['n_work']);
@@ -2542,11 +2697,38 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                 $w = $z['work'];
 
                 $sql = "select zp,common_minus,time_transp,tmc,repair,usluga,lic,verification from costwork where work=:search";
+
+                if($u1<>'Транспортні послуги')
+                    $sql = "select zp,common_minus,time_transp,tmc,repair,usluga,lic,verification from costwork where work=:search";
+                else {
+                    if($rem_t=='СТІЛ')
+                        $sql = "select a.zp,b.common_minus,a.time_transp,a.tmc,a.repair,a.usluga,lic,verification from costwork a
+                            left join a_transport_now b on a.work=b.model 
+                            where a.work=:search limit 1";
+                    else
+                        $sql = "select a.zp,b.common_minus,a.time_transp,a.tmc,a.repair,a.usluga,lic,verification from costwork a
+                            left join a_transport_now b on a.work=b.model and trim(b.place)='$rem_t'
+                            where a.work=:search limit 1";
+                    //                            where a.work like '%$u%' limit 1";
+                }
+
+
                 $z1 = viewschet::findBySql($sql, [':search' => "$u"])->asArray()->all();
+
+//                debug($u);
+//                debug($z1);
+
+
                 $zp = round((float) str_replace(',', '.', $z1[0]['zp'])*$kol_e,2);
                 $zp_e = round(0.22 * $zp, 2);
                 $cm = $z1[0]['common_minus'];
                 $verification = $z1[0]['verification'];
+
+//                if($sch=='00011631') {
+//                    debug($verification);
+//
+//                }
+
                 $cm = round((float)str_replace(',', '.', $cm)*$kol_e,2);
                 $cm_tr=$cm;
                 $tmc = $z1[0]['tmc']; // ТМЦ
@@ -2585,6 +2767,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                     $c95w = $z1[0]['cost_95_work'];
                     $cdfw = $z1[0]['cost_df_work'];
                     $cgw = $z1[0]['cost_g_work'];
+                    $cm_tr = $z1[0]['common_minus'];
                 } else {
                     $oil = '0';
                     $amort = '0';
@@ -2598,7 +2781,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                     $c95w = '0';
                     $cdfw = '0';
                     $cgw = '0';
-
+                    $cm_tr = '0';
                 }
                 $esv = 22;
 
@@ -2678,9 +2861,12 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                 else $priz_proezd = 0;
 
                 if($time_t>0)
-                    $time_t = $time_t + ($notlic==1) ? $time_prostoy:0;
+                 //   $time_t = $time_t + ($notlic==1) ? $time_prostoy:0;
+                    $time_t = $time_t + $time_prostoy;
 
                 $cm_tr = round($cm_tr*$time_t,2);
+
+
                 $ff=fopen('aaa_sap.txt','w+');
                 fputs($ff,$notlic);
                 fputs($ff,"\n");
@@ -2691,6 +2877,8 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                 // Преобразуем точку в запятую в показателях
                 $time_t = str_replace('.', ',', $time_t);
                 $oil = str_replace('.', ',', $oil);
+                $verification = str_replace('.', ',', $verification);
+                $clear_time_t = str_replace('.', ',', $clear_time_t);
                 $fuel_92 = str_replace('.', ',', $fuel_92);
                 $fuel_95 = str_replace('.', ',', $fuel_95);
                 $fuel_df = str_replace('.', ',', $fuel_df);
@@ -2719,7 +2907,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                 $verification = 0;  // Поверка
 
                 $sql = "select a.zp,a.common_minus,a.time_transp,a.tmc,a.repair,a.usluga,a.other,
-                    b.* from costwork a left join a_transport b on trim(a.work)=trim(b.number) 
+                    b.* from costwork a left join a_transport_now b on trim(a.work)=trim(b.number) 
                     where a.work=:search";
                 $z1 = viewschet::findBySql($sql, [':search' => "$w"])->asArray()->all();
 
@@ -2832,12 +3020,22 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
             fputs($f, $hap);
 
             // Добавляем к зарплате сумму доставки бригады
+            $zp_dd = round($summa_delivery/1.22,2);
+            $zp_edd = round(round($summa_delivery/1.22,2)*0.22,2);
+
             $zp = (float)str_replace(',', '.', $zp);
             $zp_e = (float)str_replace(',', '.', $zp_e);
-            $zp = $zp+round($summa_delivery/1.22,2);
-            $zp_e = $zp_e+round(round($summa_delivery/1.22,2)*0.22,2);
+//            $zp = $zp+round($summa_delivery/1.22,2);
+//            $zp_e = $zp_e+round(round($summa_delivery/1.22,2)*0.22,2);
             $zp = str_replace('.', ',', $zp);
+            $zp_dd = str_replace('.', ',', $zp_dd);
+            $zp_edd = str_replace('.', ',', $zp_edd);
             $zp_e = str_replace('.', ',', $zp_e);
+            $tmc = str_replace('.', ',', $tmc);
+//            if($sch=='00011631') {
+//                debug($verification);
+//                return;
+//            }
 
             if ($priz_proezd == 0 || $tr_usl == 1) {
 
@@ -2893,7 +3091,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                 $e[16] = 0;        // Аммортизация транспорт
                 $e[17] = 0;        // Коммандировки
                 $e[18] = 0;        // Коммандировки
-                $e[19] = 0;        // Поверка средств учета
+                $e[19] = $verification;        // Поверка средств учета
                 $e[20] = $other;        // other
                 $e[21] = $repair;        // Ремонт
                 $e[22] = $cm;        // Общепроизводственные затраты
@@ -2913,10 +3111,11 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                 else
                     $e[1] = '2300000385';       // № услуги
 
+
                 $e[2] = $code_mvp;    //  МВП пока const
                 $e[3] = 0;        // ТМЦ
-                $e[4] = 0;        // Зарплата бригады
-                $e[5] = 0;     // Соц. взнос от зарплаты бригады
+                $e[4] = $zp_dd;        // Зарплата бригады
+                $e[5] = $zp_edd;     // Соц. взнос от зарплаты бригады
                 $e[6] = 0;        // Коммандировки
                 $e[7] = 0;       // Коммандировки
                 $e[8] = 0;      // Коммандировки
@@ -2936,7 +3135,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                 $e[22] = $cm_tr;        // Общепроизводственные затраты
                 $e[23] = $sch;     // Счет
                 $e[24] = '';       // № договора
-                $e[25] = 0;      // Нормативные трудозатраты бригады
+                $e[25] = $clear_time_t;      // Нормативные трудозатраты бригады
                 $e[26] = $time_t;        // Нормативные трудозатраты водителей
                 fputs($f, "\n");
                 $content = implode(";", $e);
@@ -3067,7 +3266,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
          }
 
          if($role<>11) {
-             $sql = 'select distinct a.*,b.Director,b.parrent_nazv,b.mail,
+             $sql = 'select distinct a.*,b.Director,b.parrent_nazv,b.mail,b.chief,b.n_dov,b.d_dov,
                 case when a.res in ("СДІЗП","СЗОЕ","СЦ","СПС") then e.exec_person else c.exec_person end as exec_person,
                 case when a.res in ("СДІЗП","СЗОЕ","СЦ","СПС") then e.exec_person_pp else c.exec_person_pp end as exec_person_pp,
                 case when a.res in ("СДІЗП","СЗОЕ","СЦ","СПС") then e.exec_post else c.exec_post end as exec_post,
@@ -3083,7 +3282,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
          }
          else
          {
-             $sql = 'select distinct a.*,b.Director,b.parrent_nazv,b.mail,'
+             $sql = 'select distinct a.*,b.Director,b.parrent_nazv,b.mail,b.chief,b.n_dov,b.d_dov,'
                  . 'c.exec_person,c.exec_person_pp,c.exec_post,c.exec_post_pp,c.assignment,c.date_assignment,c.usluga as usl'
                  . ' from vschet a,spr_res b,spr_uslug c,costwork d'
                  . ' where a.res=b.nazv and a.usluga=d.work '
@@ -3339,12 +3538,12 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                     'hap' => $k1,    //cтрока шапки таблицы
                     'data_model' => 1,
                     'columns' => ['status_sch','inn','nazv','addr','tel','schet','contract',
-                        'usluga','summa','summa_beznds','summa_work','summa_delivery','summa_transport','res','date'],
+                        'usluga','summa','summa_beznds','summa_work','summa_delivery','summa_transport','res','date','date_opl_n','act_date'],
                     'headers' => ['status_sch' => 'Cтатус заявки','inn' => 'ІНН','nazv' => 'Споживач','addr'=> 'Адрес','tel' => 'Телефон',
                         'schet' => 'Рахунок','contract' => '№ договору', 'usluga' => 'Послуга','summa' => 'Сума,грн.:','summa_beznds' => 'Сума без ПДВ,грн.:',
                         'summa_work' => 'Вартість робіт,грн.:','summa_delivery' => 'Доставка бригади,грн.:',
                         'summa_transport' => 'Транспорт всього,грн.:',
-                        'res' => 'Виконавча служба:','date' => 'Дата'],
+                        'res' => 'Виконавча служба:','date' => 'Дата','date_opl_n' => 'Дата оплати','act_date' => 'Дата акта вик. робіт'],
                 ]);}
             return;
         }
@@ -3382,14 +3581,14 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
         $usl = $usluga[0]->usluga;
 
         if(empty($usl))
-        $sql = "Select cast(min(id) as char(3)) as nomer,concat(cast(min(id) as char(3)),'  ',trim(work),'  ',cast(cast_4 as char(10))) as work "
+        $sql = "Select cast(min(id) as char(4)) as nomer,concat(cast(min(id) as char(4)),'  ',trim(work),'  ',cast(cast_4 as char(10))) as work "
                 . "from costwork where calc_ind=$calc_ind group by work,cast_4 ";
         else
         {
             switch($usl) {
                 case "Послуги з технічного обслуговування об'єктів":
                     $usl1 = "Послуги з технічного обслуговування об";
-                    $sql = "Select min(id) as nomer,concat(cast(min(id) as char(3)),'  ',trim(work),'  ',cast(cast_4 as char(10))) as work "
+                    $sql = "Select min(id) as nomer,concat(cast(min(id) as char(4)),'  ',trim(work),'  ',cast(cast_4 as char(10))) as work "
                         . "from costwork where usluga like " . "'%" . $usl1 . "%'" . " group by work,cast_4";
                     break;
                 case "Оперативно-технічне обслуговування":
@@ -3398,7 +3597,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
 //                        . "from costwork where usluga like " . "'%" . $usl1 . "%'" .
 //                        ' and rem='.$res." group by work";
 
-                    $sql = "Select min(id) as nomer,concat(cast(min(id) as char(3)),'  ',trim(work)) as work "
+                    $sql = "Select min(id) as nomer,concat(cast(min(id) as char(4)),'  ',trim(work)) as work "
                         . "from costwork where usluga like " . "'%" . $usl1 . "%'" .
                         " group by work";
 
@@ -3431,6 +3630,9 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                         case 8:
                             $r = $r . 'Krr';
                             break;
+                        case 15:
+                            $r = $r . 'Stil';
+                            break;
                         case 9:
                             $r = 'a.Szoe';
                             break;
@@ -3442,20 +3644,20 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                             break;
                     }
 
-                    $sql = "Select min(a.id) as nomer,concat(cast(min(a.id) as char(3)),
+                    $sql = "Select min(a.id) as nomer,concat(cast(min(a.id) as char(4)),
                          IF(b.rabota is null,' -','  '),trim(a.work),'  ',cast(a.cast_4 as char(10)),' ','грн.') as work "  // - нет данных в поле rabota< , + есть данные
-                        . "from costwork a inner join transport b on a.$r=b.nomer
+                        . "from costwork a inner join transport_now b on a.$r=b.nomer
                         where a.usluga =" . "'" . $usl . "'"
                         . " and b.locale=$res and a.calc_ind=$calc_ind group by a.work,b.rabota,a.cast_4";
                         //. " and id_res=".$res." group by work";
+//                var_dump($sql);
 
                     break;
                 default:
-                        $sql = "Select min(id) as nomer,concat(cast(min(id) as char(3)),
+                        $sql = "Select min(id) as nomer,concat(cast(min(id) as char(4)),
                         '  ',trim(work),'  ',cast(cast_4 as char(10)),' ','грн.') as work "
                         . "from costwork where usluga =" . "'" . $usl . "'" . " and calc_ind=$calc_ind group by work,cast_4";
             }
-
         }
 //        var_dump($sql);
         $works = Calc::findBySql($sql)->all();
@@ -3525,6 +3727,9 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                         case 8:
                             $r = $r . 'Krr';
                             break;
+                        case 15:
+                            $r = $r . 'Stil';
+                            break;
                         case 9:
                             $r = 'a.Szoe';
                             break;
@@ -3538,7 +3743,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
 
                     $sql = "Select min(a.id) as nomer,concat(cast(min(a.id) as char(3)),
                          IF(b.rabota is null,' -','  '),trim(a.work)) as work "  // - нет данных в поле rabota< , + есть данные
-                        . "from costwork a inner join transport b on a.$r=b.nomer
+                        . "from costwork a inner join transport_now b on a.$r=b.nomer
                         where a.usluga =" . "'" . $usl . "'"
                         . " and b.locale=$res group by a.work,b.rabota";
                         //. " and id_res=".$res." group by work";
@@ -3765,7 +3970,6 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
     //    Сброс в Excel результатов рассчета
     public function actionExcel($kind,$nazv,$rabota,$delivery,$transp,$all,$nds,$all_nds,$nazv1)
     {
-
         $k1='Результат розрахунку для послуги: '.$nazv;
         $param = 0;
         $model = new forExcel();
@@ -3778,9 +3982,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
         $model->nds = $nds;
         $model->all_nds = $all_nds;
 
-
         if ($kind == 1) {
-
             \moonland\phpexcel\Excel::widget([
                 'models' => $model,
                 'mode' => 'export', //default value as 'export'
@@ -3819,6 +4021,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
         }
         if($mod=='schet')
             $model = viewschet::find()->where('id=:id',[':id'=>$id])->one();
+
             $nazv = $model->schet;
             $inn = $model->inn;
             $res = $model->res;
@@ -3848,10 +4051,22 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
         $z1 = viewschet::findBySql($sql, [':search' => "$usl"])->asArray()->all();
         if (count($z1) > 0)
             $nomer = $z1[0]['nomer'];
-        else
-            $nomer = '';
+        else {
+            $sql = "select $pole as nomer from costwork_old a where a.work=:search and $pole is not null";
+            $z1 = viewschet::findBySql($sql, [':search' => "$usl"])->asArray()->all();
+            if (count($z1) > 0)
+                $nomer = $z1[0]['nomer'];
+            else
+                $nomer = '';
+        }
 
         $z1 = viewschet::findBySql($sql, [':search' => "$usl"])->asArray()->all();
+
+//        debug($sql);
+//        debug($usl);
+//        debug($z1);
+//        return;
+
         if (count($z1) > 0)
             $nomer = $z1[0]['nomer'];
         else
@@ -3883,23 +4098,32 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
            $data_res = spr_res::find()->select('id,mail')->where('nazv=:nazv',[':nazv' => $res])->all();
         }
         //$mail = $data_res[0]->mail;
-        $id_res = $data_res[0]->id;
+         $id_res = $data_res[0]->id;
 
-        if($id_res==4)
-            $data_koord = vspr_res_koord::find()->where('id_res=:id',[':id' => $id_res])->
-                andwhere('type_usl=:exec',[':exec' => $exec])->all();
-        else
-            $data_koord = vspr_res_koord::find()->where('id_res=:id',[':id' => $id_res])->all();
+        if($id_res==4) {
+            $data_koord = vspr_res_koord::find()->where('id_res=:id', [':id' => $id_res])->
+            andwhere('type_usl=:exec', [':exec' => $exec])->all();
+//            debug(1);
+//            return;
+        }
+        else {
+            $data_koord = vspr_res_koord::find()->where('id_res=:id', [':id' => $id_res])->all();
+//            debug($id_res);
+//            return;
+        }
         $mail = $data_koord[0]->email;
 
 
         if ($model->load(Yii::$app->request->post()))
         {
+            date_default_timezone_set('Europe/Kiev');
             $model1 = schet::find()->where('id=:id',[':id'=>$id])->one();
             $model1->status = $model->status;
             $model1->read_z = $model->read_z;
             $model1->adres = $model->adres;
             $model1->date_edit = date("Y-m-d");
+            $model1->time_edit = date("h:i");
+            $model1->office_edit = $role;
             $model1->why_refusal = $model->why_refusal;
 
             $model1->user = $_SERVER['REMOTE_ADDR'];  // Запись IP - адреса
@@ -4106,7 +4330,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
 //                . ' where a.res=b.nazv and a.usluga=d.work '
 //                . ' and c.usluga=d.usluga'
 //                . ' and (schet=:search or cast(schet as dec(10,0)) in (' . $sch1 . "))";
-           $sql = 'select distinct a.*,b.Director,b.parrent_nazv,b.mail,
+           $sql = 'select distinct a.*,b.Director,b.parrent_nazv,b.mail,b.chief,b.n_dov,b.d_dov,
                 case when a.res in ("СДІЗП","СЗОЕ","СЦ","СПС") then e.exec_person else c.exec_person end as exec_person,
                 case when a.res in ("СДІЗП","СЗОЕ","СЦ","СПС") then e.exec_person_pp else c.exec_person_pp end as exec_person_pp,
                 case when a.res in ("СДІЗП","СЗОЕ","СЦ","СПС") then e.exec_post else c.exec_post end as exec_post,
@@ -4122,7 +4346,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
         }
         else
         {
-            $sql = 'select distinct a.*,b.Director,b.parrent_nazv,b.mail,'
+            $sql = 'select distinct a.*,b.Director,b.parrent_nazv,b.mail,b.chief,b.n_dov,b.d_dov,'
                 . 'c.exec_person,c.exec_person_pp,c.exec_post,c.exec_post_pp,c.assignment,c.date_assignment,c.usluga as usl'
                 . ' from vschet a,spr_res b,spr_uslug c,costwork d'
                 . ' where a.res=b.nazv and a.usluga=d.work '
@@ -4164,7 +4388,8 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
         $sch = Yii::$app->request->post('sch');
         $sch1 = Yii::$app->request->post('sch1');
         if(empty($sch1)) $sch1='0';
-         $sql = "select * from vschet where schet=:search";
+        $sql = "select distinct a.*,case when b.usluga is null then a.usluga else b.usluga end as usl from vschet a left JOIN
+                    costwork b on trim(a.usluga)=trim(b.work) where a.schet=:search";
         //$sql = "select * from vschet where (schet=:search or cast(schet as dec(10,0)) in (".$sch1."))";
         $model = viewschet::findBySql($sql,[':search'=>"$sch"])->asArray()->all();
 //        debug($model);
@@ -4724,10 +4949,8 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
 
 
     // Сброс аналитики в Excel
-
     public function actionAnalytics_excel()
     {
-
         $session = Yii::$app->session;
         if($session->has('sql_analytics'))
             $sql = $session->get('sql_analytics');
@@ -4745,12 +4968,12 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                 return;
             }
 
-
             $cols = [
             'id' => 'ID',
             'inn' => 'ІНН:',
             'schet' => 'Заявка:',
             'usluga' => 'Послуга, яка заказується споживачем:',
+            'usl' => 'Напрямок робіт:',
             'summa' => 'Сума з ПДВ,грн.:',
             'okpo' => 'ЄДРПОУ:',
             'regsvid' => '№ рег. посвідч.',
@@ -4784,43 +5007,38 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
             'read_z' => 'Прочитана',
             'pib_dir' => 'П.І.Б. уповноваженої особи',
             'post_dir' => 'Посада уповноваженої особи',
+            'kol' => 'Кількість',
         ];
 
             // Формирование массива названий колонок
             $list='';  // Список полей для сброса в Excel
             $h=[];
             $i=0;
+            $s='';
+            $ss='';
 
              foreach($a as $v){
-
                  $col="'".$v."'";
-                 $key = in_array($v, $cols);
-                 debug($key);
+                 $key = array_key_exists($v, $cols);
                  if($key){
-                     $h[$i]['col']=$col;
-                     //$h[$i]['name']="'".$cols[$key]."'";
+                     $s.=$col.',';
+                     $nazv = $cols[$v];
+                     $ss.=$col . '=>' . "'" . $nazv . "'" .',';
                  }
                  $i++;
-
             }
-            debug($h);
-            return;
-
-            $k1='Результат аналітики';
-             \moonland\phpexcel\Excel::widget([
-                    'models' => $data,
-
-                    'mode' => 'export', //default value as 'export'
+             $z=" \moonland\phpexcel\Excel::widget([
+                    'models' => ".'$data,'.
+                    "'mode' => 'export', //default value as 'export'
                     'format' => 'Excel2007',
-                    'hap' => $k1,    //cтрока шапки таблицы
+                    'hap' => 'Результат аналітики',   
                     'data_model' => 1,
-                    'columns' => $a,
-                    'headers' => ['status_sch' => 'Cтатус заявки','summa_beznds' => 'Сума без ПДВ,грн.:'],
-                ]);
+                    'columns' => [". $s .'],' .
+                    "'headers' => [" . $ss .'],' .
+                "]);";
+             eval($z);
              return;
-
         }
-
 
     // Аналитика по данным заявок
     public function actionAnalytics()
@@ -4886,13 +5104,18 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
             else
                 $ka5=1;
 
+            if(empty($model->gra_kol) || is_null($model->gra_kol))
+                $ka6=0;
+            else
+                $ka6=1;
+
             if(empty($model->grh_having) || is_null($model->grh_having))
                 $kh1=0;
             else
                 $kh1=1;
 
 
-            $kr=$k1+$k2+$k3+$k4+$k5+$k6+$ka1+$ka2+$ka3+$ka4+$ka5+$kh1;
+            $kr=$k1+$k2+$k3+$k4+$k5+$k6+$ka1+$ka2+$ka3+$ka4+$ka5+$ka6+$kh1;
             if($kr==0)
                 $select = 'select * from vw_analit ';
             else{
@@ -4911,7 +5134,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
 
                 }
 
-                 if(($ka1+$ka2+$ka3+$ka4+$ka5)>=1){
+                 if(($ka1+$ka2+$ka3+$ka4+$ka5+$ka5)>=1){
 
                      if($model->gra_oper==1) $o='SUM(';
                      if($model->gra_oper==2) $o='MAX(';
@@ -4939,6 +5162,10 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                          $select1.=$o.'summa_delivery'.') as summa_delivery'.',';
                          $select2.=$o.'summa_delivery'.')';
                      }
+                     if($ka6==1){
+                         $select1.='COUNT('.'*'.') as kol'.',';
+                         $select2.=$o.'kol'.')';
+                     }
                          $select1=substr($select1,0,strlen($select1)-1);
 
                      //debug($select);
@@ -4956,6 +5183,13 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
             }
             $sql='';
             // WHERE
+            if(!empty($model->date_act1)){
+                $sql.=' and date_akt>='."'".$model->date_act1."'";
+            }
+            if(!empty($model->date_act2)){
+                $sql.=' and date_akt<='."'".$model->date_act2."'";
+            }
+
             if(!empty($model->date1)){
                  $sql.=' and date>='."'".$model->date1."'";
             }
@@ -5419,7 +5653,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
     }
 
     // Импорт с выписки для проставления оплаты
-    // с OTP банка финансовому отделу атоматом (для новой выписки с банка
+    // с OTP банка финансовому отделу автоматом (для новой выписки с банка
     //    формат выписки поменялся 04.08.2020)
     public function actionImport_otp_new() {
         $model = new Import_otp();
@@ -5464,15 +5698,20 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                 $date = $vals[$i]['attributes']['BOOKEDDATE'];   // Дата оплаты
 
                 if(trim($vals[$i]['attributes']['DOCSUBTYPESNAME'])=='Меморіальний ордер' ||
+                    trim($vals[$i]['attributes']['DOCSUBTYPESNAME'])=='входящий документ' ||
+                    trim($vals[$i]['attributes']['DOCSUBTYPESNAME'])=='Межбанковский мемордер' ||
                     trim($vals[$i]['attributes']['DOCSUBTYPESNAME'])=='Платіжне доручення' ||
                     trim($vals[$i]['attributes']['DOCSUBTYPESNAME'])=='Мемориальный ордер' ||
                     trim($vals[$i]['attributes']['DOCSUBTYPESNAME'])=='Платежное поручение' ||
                     trim($vals[$i]['attributes']['DOCSUBTYPESNAME'])=='Вход мем ордер по СЄП') {
                     $s1 = $vals[$i]['attributes']['PLATPURPOSE'];
+//                    debug($s1);
                     $pattern = '/000\d{6}\s/';
                     preg_match('/000\d{6}\s/', $s1, $match);
-                    if (isset($match[0]))
+                    if (isset($match[0])) {
+//                        debug($match[0]);
                         $match[0] = substr($match[0], 1);
+                    }
                     else {
                         $pattern = '/00\d{6}\s/';
                         preg_match('/00\d{6}\s/', $s1, $match);
@@ -5486,6 +5725,17 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                              $match[0]=str_replace(',','',$match[0]);
 
                      }
+                    if (!isset($match[0])){
+                        $pattern = '/00\d{6}.\s/';
+                        preg_match('/00\d{6}./', $s1, $match);
+                        if (isset($match[0]))
+                            $match[0]=str_replace('.','',$match[0]);
+
+                    }
+                    if (!isset($match[0])){
+                        $pattern = '/00\d{6}$/';
+                        preg_match('/00\d{6}$/', $s1, $match);
+                    }
 //                    debug($s1);
 //                    debug($match);
 //
@@ -5523,6 +5773,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
 
 //                       debug('11111111111');
 //                       debug($res);
+//                       return;
 
                     // Выявление  правильного № счета из нескольких счетов
                     preg_match_all($pattern, $s1, $all_schets);
@@ -5888,4 +6139,5 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
         Yii::$app->user->logout();
         return $this->goHome();
     }
+
 }

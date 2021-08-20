@@ -55,6 +55,13 @@ $this->title = 'Аналітика';
             <?= $form->field($model, 'date_opl2')->widget(\yii\jui\DatePicker::classname(), [
                 'language' => 'uk',
             ]) ?>
+
+                <?= $form->field($model, 'date_act1')->widget(\yii\jui\DatePicker::classname(), [
+                    'language' => 'uk',
+                ]) ?>
+                <?= $form->field($model, 'date_act2')->widget(\yii\jui\DatePicker::classname(), [
+                    'language' => 'uk',
+                ]) ?>
             
              <?=$form->field($model, 'usluga')->
             dropDownList(ArrayHelper::map(
@@ -126,6 +133,7 @@ $this->title = 'Аналітика';
                 <?= $form->field($model, 'gra_summa_work')->checkbox(); ?>
                 <?= $form->field($model, 'gra_summa_transport')->checkbox(); ?>
                 <?= $form->field($model, 'gra_summa_delivery')->checkbox(); ?>
+                <?= $form->field($model, 'gra_kol')->checkbox(); ?>
             </div>
              <div class="pole-grf">
                 <?= $form->field($model, 'gra_oper')->

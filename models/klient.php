@@ -51,6 +51,7 @@ class Klient extends \yii\db\ActiveRecord
             'date_z' => 'Бажана дата отримання послуги:',
             'pib_dir' => 'П.І.Б. уповноваженої особи:',
             'post_dir' => 'Посада уповноваженої особи:',
+            'budget_org' => 'Бюджетна організація:',
             
         ];
     }
@@ -63,7 +64,7 @@ class Klient extends \yii\db\ActiveRecord
             [['tel','priz_nds','okpo','regsvid','reg',
               'person','date_reg','email','fio_dir','contact_person'], 'safe'],
 
-            [['adr_work','comment','date_z','pib_dir','post_dir','woinn'], 'safe'],
+            [['adr_work','comment','date_z','pib_dir','post_dir','woinn','budget_org'], 'safe'],
 
 //            ['inn','string','length'=>[10,10],'tooShort'=>'ІНН повинно бути 10 значним',
 //                'tooLong'=>'ІНН повинно бути 10 значним'],

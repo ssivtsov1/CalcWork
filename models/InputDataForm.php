@@ -34,6 +34,7 @@ class InputDataForm extends Model
     public $mvp1;              // Место возникновения прибыли
     public $calc_ind=1;         // Вид калькуляции
     private $_user;
+    public $verification;               // Поверка
 
     public function attributeLabels()
     {
@@ -56,7 +57,7 @@ class InputDataForm extends Model
             'region' => 'Область:',
             'mvp' => 'Підрозділ:',
             'calc_ind' => 'Вид калькуляції:',
-
+            'verification' => 'Повірка:',
         ];
     }
 
@@ -81,6 +82,7 @@ class InputDataForm extends Model
             ['mvp1', 'safe'],
             ['time_prostoy', 'safe'],
             ['calc_ind', 'safe'],
+            ['verification', 'safe'],
         ];
     }
 

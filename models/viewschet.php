@@ -47,11 +47,13 @@ class Viewschet extends \yii\db\ActiveRecord
             'date' => 'Дата заявки:',
             'email' => 'Адреса ел. почти:',
             'time' => 'Час:',
+            'time_edit' => 'Час редагування:',
             'surely' => 'Передзвонити:',
             'status' => '* Статус заявки:',
             'status_sch' => 'Статус заявки:',
             'date_z' => '* Бажана дата отримання послуги:',
             'date_opl' => 'Дата оплати:',
+            'date_edit' => 'Дата редагування:',
             'date_akt' => 'Дата акта виконаних робіт:',
             'date_exec' => 'Дата виконання роботи:',
             'act_work' => '№ акта виконаних робіт:',
@@ -70,6 +72,7 @@ class Viewschet extends \yii\db\ActiveRecord
             'kol' => 'Кількість калькуляц. одиниць',
             'time_t' => 'Час проїзду, годин:',
             'n_work' => '№ САП:',
+            'act_date' => 'Дата акта',
         ];
     }
 
@@ -81,8 +84,8 @@ class Viewschet extends \yii\db\ActiveRecord
                 'okpo','nazv','addr','tel','summa_work','fio_dir','why_refusal',
                 'summa_delivery','summa_transport','summa_beznds','plat_yesno',
                 'priz_nds','email','adres','status','status_sch',
-                'comment','res','time','date_z','date_exec','date_opl',
-                'contract','geo','kol','union_sch','main_u','read_z','pib_dir','post_dir'], 'safe'],
+                'comment','res','time','date_z','date_exec','date_opl','date_opl_n',
+                'contract','geo','kol','union_sch','main_u','read_z','pib_dir','post_dir','act_date'], 'safe'],
 //            ['date_z', 'compare',
 //                'compareValue' => date('Y-m-d'), 'operator' => '>=',
 //                'type' => 'string','message' => "Введено минулу дату"],
@@ -180,7 +183,6 @@ class Viewschet extends \yii\db\ActiveRecord
     //  Формирование поля для РЭС
     public static function tr_res($res)
     {
-
         $r = 'a.T_';
         switch ($res) {
             case 'Ап':
@@ -221,6 +223,12 @@ class Viewschet extends \yii\db\ActiveRecord
                 break;
             case 'СП':
                 $r =$r . 'Sp';
+                break;
+            case 'СТ':
+                $r =$r . 'Stil';
+                break;
+            case 'СР':
+                $r =$r . 'Srza';
                 break;
 
         }

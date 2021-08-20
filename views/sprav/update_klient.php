@@ -29,6 +29,12 @@ use app\models\spr_res;
     <?= $form->field($model, 'addr')->textarea(['rows' => 3, 'cols' => 25]) ?>
     <?= $form->field($model, 'tel') ?>
     <?= $form->field($model, 'email') ?>
+    <?= $form->field($model, 'budget_org')->checkbox([
+        'labelOptions' => [
+            'style' => 'padding-left:10px;padding-top:10px;'
+        ],
+        'disabled' => false
+    ]); ?>
     
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'ОК' : 'OK', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

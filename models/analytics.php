@@ -14,6 +14,8 @@ class Analytics extends Model
     public $date2;             // Дата заявки конечный период
     public $date_opl1;         // Дата оплаты заявки начальный период
     public $date_opl2;         // Дата оплаты заявки конечный период
+    public $date_act1;         // Дата акта вып. работ начальный период
+    public $date_act2;         // Дата акта вып. работ конечный период
     public $usluga;            // Вид услуги 
     public $work;              // Вид работы
     public $gr_status=0;         // статус заявки [груп. опер.]
@@ -28,6 +30,7 @@ class Analytics extends Model
     public $gra_summa_work=0;        // Сумма стоимости работы [груп. опер. поле в агрегатной функции]
     public $gra_summa_transport=0;   // Сумма стоимости проезда [груп. опер. поле в агрегатной функции]
     public $gra_summa_delivery=0;    // Сумма стоимости доставки бригады [груп. опер. поле в агрегатной функции]
+    public $gra_kol=0;        // Добавити кількість
     public $gra_oper;          // Группировочная операция (sum,max,min ...)
     public $grh_having;        // Фильтровочно - группировочная операция (внутри having: =, >, < ...)
     public $grh_value;         // Значение внутри having
@@ -48,6 +51,8 @@ class Analytics extends Model
             'date2' => 'Дата заявки кінцева:',
             'date_opl1' => 'Дата оплати початкова:',
             'date_opl2' => 'Дата оплати кінцева:',
+            'date_act1' => 'Дата акта початкова:',
+            'date_act2' => 'Дата акта кінцева:',
             'gr_status' => 'Статус заявки:',
             'gr_status_sch' => 'Статус заявки:',
             'gr_res' => 'Підрозділ:',
@@ -60,6 +65,7 @@ class Analytics extends Model
             'gra_summa_work' => 'Сума роботи:',
             'gra_summa_transport' => 'Сума транспорту:',
             'gra_summa_delivery' => 'Сума дост. бригади:',
+            'gra_kol' => 'Добавити кількість:',
             'gra_oper' => 'Операція:',
             'grh_having' => 'Операція:',
             'grh_value' => 'Значення:',
@@ -82,6 +88,7 @@ class Analytics extends Model
             ['gra_summa_work', 'safe'],
             ['gra_summa', 'safe'],
             ['gra_summa_beznds', 'safe'],
+            ['gra_kol', 'safe'],
             ['status', 'safe'],
             ['status_sch', 'safe'],
             ['gr_usluga', 'safe'],

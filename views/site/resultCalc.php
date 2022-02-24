@@ -12,8 +12,10 @@ use yii\helpers\Url;
 use yii\web\Response;
 use app\models\forExcel;
 //debug($model1[0]);
-
-$time_t = round($distance / 45,2);
+if($distance<0.45)
+    $time_t = round($distance / 45,3);
+else
+    $time_t = round($distance / 45,2);
 
 $time_work = str_replace(',','.',$time_work);
 $time_prostoy = str_replace(',','.',$time_prostoy);

@@ -1,10 +1,13 @@
 <?php
 
+use app\models\Spr_res;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use app\models\status_sch;
+use app\models\describe_fields;
+use yii\bootstrap\Modal;
 $this->title = 'Аналітика';
 
 ?>
@@ -158,10 +161,59 @@ $this->title = 'Аналітика';
                             9 => 'Вартість робіт',10 => 'Транспорт всього',11 => 'Доставка бригади'],['prompt'=>'Виберіть поле']) ?>
                 <?= $form->field($model, 'grs_dir')->
                         dropDownList([1 => 'За збільшенням',2 => 'За зменшенням'],['prompt'=>'Виберіть вид сортування']) ?>
+
+                <?= $form->field($model, 'sql')->textarea(['rows' => 12, 'cols' => 85]); ?>
+
                 
             </div>
                         
             <div class="form-group">
+                <?= Html::button('SQL',
+                    ['class' => 'btn btn-primary','onClick' => 'f_sql()']); ?>
+
+                <? Modal::begin([
+                'header' => '<h3>Опис полів</h3>',
+                'toggleButton' => [
+                'label' => 'Поля аналітики',
+                'tag' => 'button',
+                'class' => 'btn btn-success',
+                ]
+                ]);
+                $desc=describe_fields::findbysql(
+                    "select * from describe_fields where "
+                    . 'name_table=:name_table' . ' order by field' ,[':name_table' => 'vw_analit'])->all();
+                ?>
+                <table width="600px" class="table table-bordered table-hover table-condensed ">
+            <thead>
+            <tr>
+                <th width="30px">№ </th>
+                <th width="150px">Назва таблиці</th>
+                <th width="150px">Назва поля</th>
+                <th width="150px">Опис поля</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?
+            $i=1;
+            foreach ($desc as $v) {
+                ?>
+                <tr>
+                    <td><?= $i ?></td>
+                    <td><?= $v['name_table'] ?></td>
+                    <td><?= $v['field'] ?></td>
+                    <td><?= $v['describe_f'] ?></td>
+                </tr>
+             <?
+                $i++;
+                }
+            ?>
+
+                </tbody>
+                </table>
+                <?php
+                Modal::end();
+                ?>
+
                 <?= Html::submitButton('OK', ['onClick' => 'proc_ok()'],
                         ['class' => 'btn btn-primary']); ?>
 
@@ -227,26 +279,88 @@ $this->title = 'Аналітика';
             $('.pole-gra').show();
     }
     
-    function proc_ok(){
-       if($('#analytics-gra_oper').val()==5) return;
-       if(localStorage.getItem("gr_status_sch")=='true' ||
-          localStorage.getItem("gr_date")=='true' ||
-          localStorage.getItem("gr_date_opl")=='true' ||
-          localStorage.getItem("gr_usluga")=='true' ||
-          localStorage.getItem("gr_usl")=='true' ||
-          localStorage.getItem("gr_res")=='true') {
-          
-          if(!($('#analytics-gra_summa').prop("checked") ||
-             $('#analytics-gra_summa_beznds').prop("checked") ||
-             $('#analytics-gra_summa_work').prop("checked") ||
-             $('#analytics-gra_summa_transport').prop("checked") ||
-             $('#analytics-gra_summa_delivery').prop("checked"))){
+    function proc_ok() {
+        if ($('#analytics-gra_oper').val() == 5) return;
+        if (localStorage.getItem("gr_status_sch") == 'true' ||
+            localStorage.getItem("gr_date") == 'true' ||
+            localStorage.getItem("gr_date_opl") == 'true' ||
+            localStorage.getItem("gr_usluga") == 'true' ||
+            localStorage.getItem("gr_usl") == 'true' ||
+            localStorage.getItem("gr_res") == 'true') {
+
+            if (!($('#analytics-gra_summa').prop("checked") ||
+                $('#analytics-gra_summa_beznds').prop("checked") ||
+                $('#analytics-gra_summa_work').prop("checked") ||
+                $('#analytics-gra_summa_transport').prop("checked") ||
+                $('#analytics-gra_summa_delivery').prop("checked"))) {
                 alert('Введіть поле групування!');
                 $('#analytics-ord').val("error");
             }
-       }
-      
-       
+        }
+    }
+    function f_sql(){
+        // Готовим аргументы для передачи в ajax запрос
+        var res = $('#analytics-res').val();
+        var status = $('#analytics-status').val();
+        var date1 = $('#analytics-date1').val();
+        var date2 = $('#analytics-date2').val();
+        var date_opl1 = $('#analytics-date_opl1').val();
+        var date_opl2 = $('#analytics-date_opl2').val();
+        var date_act1 = $('#analytics-date_act1').val();
+        var date_act2 = $('#analytics-date_act2').val();
+        var usluga = $('#analytics-usluga').val();
+        var work = $('#analytics-work').val();
+        var gr_res = $('#analytics-gr_res').prop('checked');
+        var gr_status_sch = $('#analytics-gr_status_sch').prop('checked');
+        var gr_date = $('#analytics-gr_date').prop('checked');
+        var gr_date_opl = $('#analytics-gr_date_opl').prop('checked');
+        var gr_usluga = $('#analytics-gr_usluga').prop('checked');
+        var gr_usl = $('#analytics-gr_usl').prop('checked');
+        var gra_summa = $('#analytics-gra_summa').prop('checked');
+        var gra_summa_beznds = $('#analytics-gra_summa_beznds').prop('checked');
+        var gra_summa_work = $('#analytics-gra_summa_work').prop('checked');
+        var gra_summa_transport = $('#analytics-gra_summa_transport').prop('checked');
+        var gra_summa_delivery = $('#analytics-gra_summa_delivery').prop('checked');
+        var gra_kol = $('#analytics-gra_kol').prop('checked');
+        var gra_oper = $('#analytics-gra_oper').val();
+        var grh_having = $('#analytics-grh_having').val();
+        var grh_value = $('#analytics-grh_value').val();
+        var grs_sort = $('#analytics-grs_sort').val();
+        var grs_dir = $('#analytics-grs_dir').val();
+        var ord = $('#analytics-ord').val();
+        // alert(gr_usl);
+
+        $.ajax({
+            url: '/CalcWork/web/site/get_sql_analyt'
+            // dataType: 'text',
+          ,
+            data: {res: res, status: status, date1: date1,
+                date2: date2,date_opl1: date_opl1,
+                date_opl2: date_opl2, date_act1: date_act1,date_act2: date_act2,
+                usluga: usluga, work: work, gr_res: gr_res,gr_status_sch: gr_status_sch,
+                gr_date: gr_date, gr_date_opl: gr_date_opl, gr_usluga: gr_usluga, gr_usl: gr_usl,
+                gra_summa: gra_summa, gra_summa_beznds: gra_summa_beznds, gra_summa_work: gra_summa_work,
+                gra_summa_transport: gra_summa_transport,gra_summa_delivery: gra_summa_delivery,
+                gra_kol: gra_kol,gra_oper: gra_oper,  grh_having: grh_having,grh_value: grh_value,
+                grs_sort: grs_sort,grs_dir: grs_dir,ord: ord
+            },
+            type: 'GET',
+
+            success: function(result){
+                // alert(res.work);
+                $('#analytics-sql').val(result.sql);
+                if(!result) alert('Данные не верны!');
+            },
+            error: function (data) {
+                console.log('Error', data);
+            },
+
+        });
+
+    setTimeout(function () {
+        $('.hasFocus').focus();
+    }, 300);
+
     }
     
   

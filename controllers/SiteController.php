@@ -1064,7 +1064,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                 from costwork where work=:search group by lic';
         $model2 = Calc::findBySql($sql,[':search'=>"$vid_w"])->all();
 
-//            debug($model2);
+//            debug($vid_w);
 //            return;
 
         if($model2[0]['lic']==1)  $distance=0;    // Если лицензированная деятельность - тогда расстояние не учитывать
@@ -1389,9 +1389,12 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
         $sch = Yii::$app->request->post('sch');
         $sch1 = Yii::$app->request->post('sch1');
         if(empty($sch1)) $sch1='0';
-        $sql = "select distinct a.*,case when b.usluga is null then a.usluga else b.usluga end as usl from vschet a left JOIN
-                    costwork b on trim(a.usluga)=trim(b.work) where a.schet=:search";
+//        $sql = "select distinct a.*,case when b.usluga is null then a.usluga else b.usluga end as usl from vschet a left JOIN
+//                    costwork b on trim(a.usluga)=trim(b.work) where a.schet=:search";
         //$sql = "select * from vschet where (schet=:search or cast(schet as dec(10,0)) in (".$sch1."))";
+        $sql = "select distinct a.*,case when b.usluga is null then a.usluga else 
+case when (b.short_work is null or b.short_work='') then b.work else b.short_work end end as usl from vschet a left JOIN
+ costwork b on trim(a.usluga)=trim(b.work) where a.schet=:search";
         $model = viewschet::findBySql($sql,[':search'=>"$sch"])->asArray()->all();
 //        debug($model);
 //        return;
@@ -1452,7 +1455,6 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                 from costwork_old where work=:search group by lic';
                 $model2 = Calc::findBySql($sql1,[':search'=>"$u"])->all();
             }
-
 
             $pole = viewschet::tr_res($res);  // Определение поля с данными по автомобилю
             $time_tc=0;
@@ -1558,6 +1560,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
             $cm = round(((float)str_replace(',', '.', $cm))* ((int) $kol_e),2);
 
 //            debug($z1[0]['common_minus']);
+//            debug($cm);
 //            return;
 
             $cm_tr = $cm;
@@ -1576,6 +1579,9 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                 $time_prostoy = $z1[0]['time_transp']; // Время простоя
 
             $sql = "select $pole as nomer from costwork a where a.work=:search and $pole is not null";
+
+//            debug($sql);
+//            debug($u);
 
             $z1 = viewschet::findBySql($sql, [':search' => "$u"])->asArray()->all();
             if (count($z1) > 0)
@@ -1732,6 +1738,8 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
 
 //            debug($priz_proezd);
 //            return;
+
+
 
             $time_drive=$time_t;
             if($time_t>0)
@@ -2186,6 +2194,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                     $nomer = '';
 
                 $sql = "select * from vw_transport a where a.number=:search";
+
 
                 $z1 = viewschet::findBySql($sql, [':search' => "$nomer"])->asArray()->all();
                 if (count($z1) > 0 && $lic==0) {
@@ -3227,6 +3236,10 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                 . ' and c.id=14'
                 . ' and (schet=:search or cast(schet as dec(10,0)) in ('.$sch1."))".' limit 1';
         }
+
+//        debug($sql);
+//        return;
+
         $model1 = viewschet::findBySql($sql,[':search'=>"$sch"])->asArray()->all();
 
         $model = new InputData();
@@ -3291,7 +3304,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
          }
          $model = viewschet::findBySql($sql,[':search'=>"$sch"])->asArray()->all();
 
-//         debug($model);
+//         debug($sql);
 //        return;
 
          $q=count($model);
@@ -3537,9 +3550,9 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
                     'format' => 'Excel2007',
                     'hap' => $k1,    //cтрока шапки таблицы
                     'data_model' => 1,
-                    'columns' => ['status_sch','inn','nazv','addr','tel','schet','contract',
+                    'columns' => ['status_sch','n_work','inn','nazv','adres','tel','schet','contract',
                         'usluga','summa','summa_beznds','summa_work','summa_delivery','summa_transport','res','date','date_opl_n','act_date'],
-                    'headers' => ['status_sch' => 'Cтатус заявки','inn' => 'ІНН','nazv' => 'Споживач','addr'=> 'Адрес','tel' => 'Телефон',
+                    'headers' => ['status_sch' => 'Cтатус заявки','n_work' => '№ САП','inn' => 'ІНН','nazv' => 'Споживач','adres'=> 'Адрес','tel' => 'Телефон',
                         'schet' => 'Рахунок','contract' => '№ договору', 'usluga' => 'Послуга','summa' => 'Сума,грн.:','summa_beznds' => 'Сума без ПДВ,грн.:',
                         'summa_work' => 'Вартість робіт,грн.:','summa_delivery' => 'Доставка бригади,грн.:',
                         'summa_transport' => 'Транспорт всього,грн.:',
@@ -3830,7 +3843,9 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
         curl_setopt($ch, CURLOPT_URL,$url );
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $output = curl_exec($ch);
+
         curl_close($ch);
+
         $output = json_decode($output,true);
 
         return ['success' => true, 'output' => $output];
@@ -4388,9 +4403,12 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
         $sch = Yii::$app->request->post('sch');
         $sch1 = Yii::$app->request->post('sch1');
         if(empty($sch1)) $sch1='0';
-        $sql = "select distinct a.*,case when b.usluga is null then a.usluga else b.usluga end as usl from vschet a left JOIN
-                    costwork b on trim(a.usluga)=trim(b.work) where a.schet=:search";
+//        $sql = "select distinct a.*,case when b.usluga is null then a.usluga else b.usluga end as usl from vschet a left JOIN
+//                    costwork b on trim(a.usluga)=trim(b.work) where a.schet=:search";
         //$sql = "select * from vschet where (schet=:search or cast(schet as dec(10,0)) in (".$sch1."))";
+        $sql = "select distinct a.*,case when b.usluga is null then a.usluga else 
+case when (b.short_work is null or b.short_work='') then b.work else b.short_work end end as usl from vschet a left JOIN
+ costwork b on trim(a.usluga)=trim(b.work) where a.schet=:search";
         $model = viewschet::findBySql($sql,[':search'=>"$sch"])->asArray()->all();
 //        debug($model);
 //        return;
@@ -5040,286 +5058,592 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
              return;
         }
 
+    // Создание SQL запроса для аналитики
+    public function actionGet_sql_analyt($res, $status, $date1,
+                                         $date2,$date_opl1, $date_opl2, $date_act1,$date_act2,
+                                         $usluga, $work, $gr_res,$gr_status_sch,
+                                         $gr_date, $gr_date_opl, $gr_usluga,$gr_usl,
+                                         $gra_summa, $gra_summa_beznds, $gra_summa_work,
+                                         $gra_summa_transport,$gra_summa_delivery,
+                                         $gra_kol,$gra_oper, $grh_having,$grh_value,
+                                         $grs_sort,$grs_dir,$ord)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $sql='';
+        if($gr_status_sch=='false')
+            $k1=0;
+        else
+            $k1=1;
+        if($gr_res=='false')
+            $k2=0;
+        else
+            $k2=1;
+
+        if($gr_date=='false')
+            $k3=0;
+        else
+            $k3=1;
+
+        if($gr_date_opl=='false')
+            $k4=0;
+        else
+            $k4=1;
+
+        if($gr_usluga=='false')
+            $k5=0;
+        else
+            $k5=1;
+
+        if($gr_usl=='false')
+            $k6=0;
+        else
+            $k6=1;
+
+        if($gra_summa=='false')
+            $ka1=0;
+        else
+            $ka1=1;
+
+        if($gra_summa_beznds=='false')
+            $ka2=0;
+        else
+            $ka2=1;
+
+        if($gra_summa_work=='false')
+            $ka3=0;
+        else
+            $ka3=1;
+
+        if($gra_summa_transport=='false')
+            $ka4=0;
+        else
+            $ka4=1;
+
+        if($gra_summa_delivery=='false')
+            $ka5=0;
+        else
+            $ka5=1;
+
+        if($gra_kol=='false')
+            $ka6=0;
+        else
+            $ka6=1;
+
+//        $sql=$ka5;
+//        return ['success' => true, 'sql' => $sql];
+
+
+        if(empty($grh_having) || is_null($grh_having))
+            $kh1=0;
+        else
+            $kh1=1;
+
+        $kr=$k1+$k2+$k3+$k4+$k5+$k6+$ka1+$ka2+$ka3+$ka4+$ka5+$ka6+$kh1;
+
+        if($kr==0)
+            $select = 'select * from vw_analit ';
+        else{
+            $select='';
+            $select1='';
+            $select2='';
+            if(($k1+$k2+$k3+$k4+$k5+$k6)>=1){
+                $mas=explode(" ",$ord);
+                $gr='';
+                foreach($mas as $v){
+                    $gr.=substr($v,3).',';
+                }
+                $gr=substr($gr,1,strlen($gr));
+                $select=$gr;
+
+
+            }
+
+            if(($ka1+$ka2+$ka3+$ka4+$ka5+$ka6)>=1){
+
+                if($gra_oper==1) $o='SUM(';
+                if($gra_oper==2) $o='MAX(';
+                if($gra_oper==3) $o='MIN(';
+                if($gra_oper==4) $o='AVG(';
+                if($gra_oper==5) $o='COUNT(';
+                if($ka1==1) {
+                    $select1.=$o.'summa'.') as summa'.',';
+                    $select2.=$o.'summa'.')';
+
+                }
+                if($ka2==1){
+                    $select1.=$o.'summa_beznds'.') as summa_beznds'.',';
+                    $select2.=$o.'summa_beznds'.')';
+                }
+                if($ka3==1){
+                    $select1.=$o.'summa_work'.') as summa_work'.',';
+                    $select2.=$o.'summa_work'.')';
+                }
+                if($ka4==1){
+                    $select1.=$o.'summa_transport'.') as summa_transport'.',';
+                    $select2.=$o.'summa_transport'.')';
+                }
+                if($ka5==1){
+                    $select1.=$o.'summa_delivery'.') as summa_delivery'.',';
+                    $select2.=$o.'summa_delivery'.')';
+                }
+                if($ka6==1){
+                    $select1.='COUNT('.'*'.') as kol'.',';
+                    $select2.=$o.'kol'.')';
+                }
+                $select1=substr($select1,0,strlen($select1)-1);
+
+                //debug($select);
+
+            }
+            if($gra_oper==5){
+                $select1='COUNT(*) as kol';
+
+            }
+            if(!empty($select1))
+                $select = 'select '.$select.$select1.' from vw_analit ';
+            else
+                $select = 'select '.$select.' from vw_analit ';
+        }
+
+
+
+        $sql='';
+        if(!empty($date_act1)){
+            $sql.=' and date_akt>='."'".$date_act1."'";
+        }
+        if(!empty($date_act2)){
+            $sql.=' and date_akt<='."'".$date_act2."'";
+        }
+
+        if(!empty($date1)){
+            $sql.=' and date>='."'".$date1."'";
+        }
+        if(!empty($date2)){
+            $sql.=' and date<='."'".$date2."'";
+        }
+
+        if(!empty($date_opl1)){
+            $sql.=' and date_opl>='."'".$date_opl1."'";
+        }
+        if(!empty($date_opl2)){
+            $sql.=' and date_opl<='."'".$date_opl2."'";
+        }
+
+        if(!empty($res)){
+            $res=spr_res::findbysql(
+                "select nazv from spr_res where "
+                . 'id=:id ',[':id' => $res])->all();
+            $sql.=' and res='."'".$res[0]->nazv."'";
+        }
+        if(!empty($status))
+            $sql.=' and status='.$status;
+        if(trim($work)=='style="font-size:') $work='';
+        if(!empty($work) && !is_null($work)){
+            $work = spr_costwork::findbysql('Select work from costwork where '
+                . 'id=:id ',[':id' => $work])
+                ->all();
+
+            $sql.=' and usluga='."'".$work[0]->work."'";
+        }
+        if(!empty($usluga)){
+            $usl = spr_costwork::findbysql('Select usluga from costwork where '
+                . 'id=:id ',[':id' => $usluga])
+                ->all();
+            $sql.=' and usl='."'".$usl[0]->usluga."'";
+
+        }
+        if(!empty($sql))
+            $sql=$select.' where '.mb_substr($sql,4,400,"UTF-8");
+        else{
+            $sql=$select;
+        }
+
+
+
+        // Добавляем GROUP BY
+        if(!empty($gr)){
+            $gr=substr($gr,0,strlen($gr)-1);
+            $sql.=' GROUP BY '.$gr;
+        }
+        // Добавляем HAVING
+        $having='';
+        $oh='';
+        if(!empty($grh_having)){
+            $kh1=$grh_having;
+            if(!empty($grh_value)){
+                $having = ' HAVING '.$select2;
+
+                switch ($kh1) {
+                    case 1:
+                        $oh='=';
+                        break;
+                    case 2:
+                        $oh='>';
+                        break;
+                    case 3:
+                        $oh='>=';
+                        break;
+                    case 4:
+                        $oh='<';
+                        break;
+                    case 5:
+                        $oh='<=';
+                        break;
+                    case 6:
+                        $oh='<>';
+                        break;
+
+                }
+                $having.=$oh.$grh_value;
+                $sql.=$having;
+            }
+        }
+        // Добавляем ORDER BY
+        $orderby='';
+        $oo='';
+        if(!empty($grs_sort)){
+            $ks1=$grs_sort;
+            switch ($ks1) {
+                case 1:
+                    $oo='res';
+                    break;
+                case 2:
+                    $oo='status_sch';
+                    break;
+                case 3:
+                    $oo='date';
+                    break;
+                case 4:
+                    $oo='date_opl';
+                    break;
+                case 5:
+                    $oo='usl';
+                    break;
+                case 6:
+                    $oo='usluga';
+                    break;
+                case 7:
+                    $oo='summa';
+                    break;
+                case 8:
+                    $oo='summa_beznds';
+                    break;
+                case 9:
+                    $oo='summa_work';
+                    break;
+                case 10:
+                    $oo='summa_transport';
+                    break;
+                case 11:
+                    $oo='summa_delivery';
+                    break;
+
+            }
+            $orderby = ' ORDER BY '.$oo;
+            if(!empty($grs_dir)){
+                if($grs_dir==2) $orderby.=' DESC ';
+            }
+            $sql.=$orderby;
+        }
+//        debug($sql);
+//            return;
+
+        return ['success' => true, 'sql' => $sql];
+
+
+    }
+
+
     // Аналитика по данным заявок
     public function actionAnalytics()
     {
         $model = new analytics();
-        if ($model->load(Yii::$app->request->post())){
-            if($model->ord=='error') {echo 'Введіть поле групування!'; return;}
+        if ($model->load(Yii::$app->request->post())) {
+            if (empty($model->sql)) {
+            if ($model->ord == 'error') {
+                echo 'Введіть поле групування!';
+                return;
+            }
             // Генерация SQL-запроса
 
-            if(empty($model->gr_status_sch) || is_null($model->gr_status_sch))
-                $k1=0;
+            if (empty($model->gr_status_sch) || is_null($model->gr_status_sch))
+                $k1 = 0;
             else
-                $k1=1;
+                $k1 = 1;
 
 
-            if(empty($model->gr_res) || is_null($model->gr_res))
-                $k2=0;
+            if (empty($model->gr_res) || is_null($model->gr_res))
+                $k2 = 0;
             else
-                $k2=1;
+                $k2 = 1;
 
-            if(empty($model->gr_date) || is_null($model->gr_date))
-                $k3=0;
+            if (empty($model->gr_date) || is_null($model->gr_date))
+                $k3 = 0;
             else
-                $k3=1;
+                $k3 = 1;
 
-            if(empty($model->gr_date_opl) || is_null($model->gr_date_opl))
-                $k4=0;
+            if (empty($model->gr_date_opl) || is_null($model->gr_date_opl))
+                $k4 = 0;
             else
-                $k4=1;
+                $k4 = 1;
 
-            if(empty($model->gr_usluga) || is_null($model->gr_usluga))
-                $k5=0;
+            if (empty($model->gr_usluga) || is_null($model->gr_usluga))
+                $k5 = 0;
             else
-                $k5=1;
+                $k5 = 1;
 
-            if(empty($model->gr_usl) || is_null($model->gr_usl))
-                $k6=0;
+            if (empty($model->gr_usl) || is_null($model->gr_usl))
+                $k6 = 0;
             else
-                $k6=1;
+                $k6 = 1;
 
-            if(empty($model->gra_summa) || is_null($model->gra_summa) || $model->gra_summa=='')
-                $ka1=0;
+            if (empty($model->gra_summa) || is_null($model->gra_summa) || $model->gra_summa == '')
+                $ka1 = 0;
             else
-                $ka1=1;
+                $ka1 = 1;
 
-            if(empty($model->gra_summa_beznds) || is_null($model->gra_summa_beznds))
-                $ka2=0;
+            if (empty($model->gra_summa_beznds) || is_null($model->gra_summa_beznds))
+                $ka2 = 0;
             else
-                $ka2=1;
+                $ka2 = 1;
 
-            if(empty($model->gra_summa_work) || is_null($model->gra_summa_work))
-                $ka3=0;
+            if (empty($model->gra_summa_work) || is_null($model->gra_summa_work))
+                $ka3 = 0;
             else
-                $ka3=1;
+                $ka3 = 1;
 
-            if(empty($model->gra_summa_transport) || is_null($model->gra_summa_transport))
-                $ka4=0;
+            if (empty($model->gra_summa_transport) || is_null($model->gra_summa_transport))
+                $ka4 = 0;
             else
-                $ka4=1;
+                $ka4 = 1;
 
-            if(empty($model->gra_summa_delivery) || is_null($model->gra_summa_delivery))
-                $ka5=0;
+            if (empty($model->gra_summa_delivery) || is_null($model->gra_summa_delivery))
+                $ka5 = 0;
             else
-                $ka5=1;
+                $ka5 = 1;
 
-            if(empty($model->gra_kol) || is_null($model->gra_kol))
-                $ka6=0;
+            if (empty($model->gra_kol) || is_null($model->gra_kol))
+                $ka6 = 0;
             else
-                $ka6=1;
+                $ka6 = 1;
 
-            if(empty($model->grh_having) || is_null($model->grh_having))
-                $kh1=0;
+            if (empty($model->grh_having) || is_null($model->grh_having))
+                $kh1 = 0;
             else
-                $kh1=1;
+                $kh1 = 1;
 
 
-            $kr=$k1+$k2+$k3+$k4+$k5+$k6+$ka1+$ka2+$ka3+$ka4+$ka5+$ka6+$kh1;
-            if($kr==0)
+            $kr = $k1 + $k2 + $k3 + $k4 + $k5 + $k6 + $ka1 + $ka2 + $ka3 + $ka4 + $ka5 + $ka6 + $kh1;
+            if ($kr == 0)
                 $select = 'select * from vw_analit ';
-            else{
-                $select='';
-                $select1='';
-                $select2='';
-                if(($k1+$k2+$k3+$k4+$k5+$k6)>=1){
-                    $mas=explode(" ",$model->ord);
-                    $gr='';
-                    foreach($mas as $v){
-                        $gr.=substr($v,3).',';
+            else {
+                $select = '';
+                $select1 = '';
+                $select2 = '';
+                if (($k1 + $k2 + $k3 + $k4 + $k5 + $k6) >= 1) {
+                    $mas = explode(" ", $model->ord);
+                    $gr = '';
+                    foreach ($mas as $v) {
+                        $gr .= substr($v, 3) . ',';
                     }
-                    $gr=substr($gr,1,strlen($gr));
-                    $select=$gr;
+                    $gr = substr($gr, 1, strlen($gr));
+                    $select = $gr;
 
 
                 }
 
-                 if(($ka1+$ka2+$ka3+$ka4+$ka5+$ka5)>=1){
+                if (($ka1 + $ka2 + $ka3 + $ka4 + $ka5 + $ka5) >= 1) {
 
-                     if($model->gra_oper==1) $o='SUM(';
-                     if($model->gra_oper==2) $o='MAX(';
-                     if($model->gra_oper==3) $o='MIN(';
-                     if($model->gra_oper==4) $o='AVG(';
-                     if($model->gra_oper==5) $o='COUNT(';
-                     if($ka1==1) {
-                         $select1.=$o.'summa'.') as summa'.',';
-                         $select2.=$o.'summa'.')';
+                    if ($model->gra_oper == 1) $o = 'SUM(';
+                    if ($model->gra_oper == 2) $o = 'MAX(';
+                    if ($model->gra_oper == 3) $o = 'MIN(';
+                    if ($model->gra_oper == 4) $o = 'AVG(';
+                    if ($model->gra_oper == 5) $o = 'COUNT(';
+                    if ($ka1 == 1) {
+                        $select1 .= $o . 'summa' . ') as summa' . ',';
+                        $select2 .= $o . 'summa' . ')';
 
-                     }
-                     if($ka2==1){
-                         $select1.=$o.'summa_beznds'.') as summa_beznds'.',';
-                         $select2.=$o.'summa_beznds'.')';
-                     }
-                     if($ka3==1){
-                          $select1.=$o.'summa_work'.') as summa_work'.',';
-                          $select2.=$o.'summa_work'.')';
-                     }
-                     if($ka4==1){
-                         $select1.=$o.'summa_transport'.') as summa_transport'.',';
-                         $select2.=$o.'summa_transport'.')';
-                     }
-                     if($ka5==1){
-                         $select1.=$o.'summa_delivery'.') as summa_delivery'.',';
-                         $select2.=$o.'summa_delivery'.')';
-                     }
-                     if($ka6==1){
-                         $select1.='COUNT('.'*'.') as kol'.',';
-                         $select2.=$o.'kol'.')';
-                     }
-                         $select1=substr($select1,0,strlen($select1)-1);
+                    }
+                    if ($ka2 == 1) {
+                        $select1 .= $o . 'summa_beznds' . ') as summa_beznds' . ',';
+                        $select2 .= $o . 'summa_beznds' . ')';
+                    }
+                    if ($ka3 == 1) {
+                        $select1 .= $o . 'summa_work' . ') as summa_work' . ',';
+                        $select2 .= $o . 'summa_work' . ')';
+                    }
+                    if ($ka4 == 1) {
+                        $select1 .= $o . 'summa_transport' . ') as summa_transport' . ',';
+                        $select2 .= $o . 'summa_transport' . ')';
+                    }
+                    if ($ka5 == 1) {
+                        $select1 .= $o . 'summa_delivery' . ') as summa_delivery' . ',';
+                        $select2 .= $o . 'summa_delivery' . ')';
+                    }
+                    if ($ka6 == 1) {
+                        $select1 .= 'COUNT(' . '*' . ') as kol' . ',';
+                        $select2 .= $o . 'kol' . ')';
+                    }
+                    $select1 = substr($select1, 0, strlen($select1) - 1);
 
-                     //debug($select);
+                    //debug($select);
 
-                 }
+                }
+// --
+                if ($model->gra_oper == 5) {
+                    $select1 = 'COUNT(*) as kol';
 
-                 if($model->gra_oper==5){
-                     $select1='COUNT(*) as kol';
-
-                 }
-                if(!empty($select1))
-                    $select = 'select '.$select.$select1.' from vw_analit ';
+                }
+                if (!empty($select1))
+                    $select = 'select ' . $select . $select1 . ' from vw_analit ';
                 else
-                    $select = 'select '.$select.' from vw_analit ';
+                    $select = 'select ' . $select . ' from vw_analit ';
             }
-            $sql='';
+            $sql = '';
             // WHERE
-            if(!empty($model->date_act1)){
-                $sql.=' and date_akt>='."'".$model->date_act1."'";
+            if (!empty($model->date_act1)) {
+                $sql .= ' and date_akt>=' . "'" . $model->date_act1 . "'";
             }
-            if(!empty($model->date_act2)){
-                $sql.=' and date_akt<='."'".$model->date_act2."'";
-            }
-
-            if(!empty($model->date1)){
-                 $sql.=' and date>='."'".$model->date1."'";
-            }
-            if(!empty($model->date2)){
-                 $sql.=' and date<='."'".$model->date2."'";
+            if (!empty($model->date_act2)) {
+                $sql .= ' and date_akt<=' . "'" . $model->date_act2 . "'";
             }
 
-            if(!empty($model->date_opl1)){
-                 $sql.=' and date_opl>='."'".$model->date_opl1."'";
+            if (!empty($model->date1)) {
+                $sql .= ' and date>=' . "'" . $model->date1 . "'";
             }
-            if(!empty($model->date_opl2)){
-                 $sql.=' and date_opl<='."'".$model->date_opl2."'";
+            if (!empty($model->date2)) {
+                $sql .= ' and date<=' . "'" . $model->date2 . "'";
             }
 
-            if(!empty($model->res)){
-                $res=spr_res::findbysql(
+            if (!empty($model->date_opl1)) {
+                $sql .= ' and date_opl>=' . "'" . $model->date_opl1 . "'";
+            }
+            if (!empty($model->date_opl2)) {
+                $sql .= ' and date_opl<=' . "'" . $model->date_opl2 . "'";
+            }
+// ---
+            if (!empty($model->res)) {
+                $res = spr_res::findbysql(
                     "select nazv from spr_res where "
-            . 'id=:id ',[':id' => $model->res])->all();
-                $sql.=' and res='."'".$res[0]->nazv."'";
+                    . 'id=:id ', [':id' => $model->res])->all();
+                $sql .= ' and res=' . "'" . $res[0]->nazv . "'";
             }
-            if(!empty($model->status))
-                $sql.=' and status='.$model->status;
-            if(trim($model->work)=='style="font-size:') $model->work='';
-            if(!empty($model->work) && !is_null($model->work)){
+            if (!empty($model->status))
+                $sql .= ' and status=' . $model->status;
+            if (trim($model->work) == 'style="font-size:') $model->work = '';
+            if (!empty($model->work) && !is_null($model->work)) {
                 $work = spr_costwork::findbysql('Select work from costwork where '
-            . 'id=:id ',[':id' => $model->work])
-            ->all();
+                    . 'id=:id ', [':id' => $model->work])
+                    ->all();
 
-               $sql.=' and usluga='."'".$work[0]->work."'";
+                $sql .= ' and usluga=' . "'" . $work[0]->work . "'";
             }
-            if(!empty($model->usluga)){
+            if (!empty($model->usluga)) {
                 $usl = spr_costwork::findbysql('Select usluga from costwork where '
-            . 'id=:id ',[':id' => $model->usluga])
-            ->all();
-                $sql.=' and usl='."'".$usl[0]->usluga."'";
+                    . 'id=:id ', [':id' => $model->usluga])
+                    ->all();
+                $sql .= ' and usl=' . "'" . $usl[0]->usluga . "'";
 
             }
-            if(!empty($sql))
-                $sql=$select.' where '.mb_substr($sql,4,400,"UTF-8");
-            else{
-                $sql=$select;
+            if (!empty($sql))
+                $sql = $select . ' where ' . mb_substr($sql, 4, 400, "UTF-8");
+            else {
+                $sql = $select;
             }
 
             // Добавляем GROUP BY
-            if(!empty($gr)){
-                $gr=substr($gr,0,strlen($gr)-1);
-                $sql.=' GROUP BY '.$gr;
+            if (!empty($gr)) {
+                $gr = substr($gr, 0, strlen($gr) - 1);
+                $sql .= ' GROUP BY ' . $gr;
             }
             // Добавляем HAVING
-            $having='';
-            $oh='';
-             if(!empty($model->grh_having)){
-                 $kh1=$model->grh_having;
-                 if(!empty($model->grh_value)){
-                     $having = ' HAVING '.$select2;
+            $having = '';
+            $oh = '';
+            if (!empty($model->grh_having)) {
+                $kh1 = $model->grh_having;
+                if (!empty($model->grh_value)) {
+                    $having = ' HAVING ' . $select2;
 
-                     switch ($kh1) {
-                         case 1:
-                             $oh='=';
-                             break;
-                         case 2:
-                             $oh='>';
-                             break;
-                         case 3:
-                             $oh='>=';
-                             break;
-                         case 4:
-                             $oh='<';
-                             break;
-                         case 5:
-                             $oh='<=';
-                             break;
-                         case 6:
-                             $oh='<>';
-                             break;
+                    switch ($kh1) {
+                        case 1:
+                            $oh = '=';
+                            break;
+                        case 2:
+                            $oh = '>';
+                            break;
+                        case 3:
+                            $oh = '>=';
+                            break;
+                        case 4:
+                            $oh = '<';
+                            break;
+                        case 5:
+                            $oh = '<=';
+                            break;
+                        case 6:
+                            $oh = '<>';
+                            break;
 
-                     }
-                   $having.=$oh.$model->grh_value;
-                   $sql.=$having;
-                 }
-             }
-            // Добавляем ORDER BY
-            $orderby='';
-            $oo='';
-            if(!empty($model->grs_sort)){
-                $ks1=$model->grs_sort;
-                switch ($ks1) {
-                         case 1:
-                             $oo='res';
-                             break;
-                         case 2:
-                             $oo='status_sch';
-                             break;
-                         case 3:
-                             $oo='date';
-                             break;
-                         case 4:
-                             $oo='date_opl';
-                             break;
-                         case 5:
-                             $oo='usl';
-                             break;
-                         case 6:
-                             $oo='usluga';
-                             break;
-                         case 7:
-                             $oo='summa';
-                             break;
-                         case 8:
-                             $oo='summa_beznds';
-                             break;
-                         case 9:
-                             $oo='summa_work';
-                             break;
-                         case 10:
-                             $oo='summa_transport';
-                             break;
-                         case 11:
-                             $oo='summa_delivery';
-                             break;
-
-                     }
-                    $orderby = ' ORDER BY '.$oo;
-                    if(!empty($model->grs_dir)){
-                        if($model->grs_dir==2) $orderby.=' DESC ';
                     }
-                     $sql.=$orderby;
+                    $having .= $oh . $model->grh_value;
+                    $sql .= $having;
+                }
+            }
+            // Добавляем ORDER BY
+            $orderby = '';
+            $oo = '';
+            if (!empty($model->grs_sort)) {
+                $ks1 = $model->grs_sort;
+                switch ($ks1) {
+                    case 1:
+                        $oo = 'res';
+                        break;
+                    case 2:
+                        $oo = 'status_sch';
+                        break;
+                    case 3:
+                        $oo = 'date';
+                        break;
+                    case 4:
+                        $oo = 'date_opl';
+                        break;
+                    case 5:
+                        $oo = 'usl';
+                        break;
+                    case 6:
+                        $oo = 'usluga';
+                        break;
+                    case 7:
+                        $oo = 'summa';
+                        break;
+                    case 8:
+                        $oo = 'summa_beznds';
+                        break;
+                    case 9:
+                        $oo = 'summa_work';
+                        break;
+                    case 10:
+                        $oo = 'summa_transport';
+                        break;
+                    case 11:
+                        $oo = 'summa_delivery';
+                        break;
+
+                }
+                $orderby = ' ORDER BY ' . $oo;
+                if (!empty($model->grs_dir)) {
+                    if ($model->grs_dir == 2) $orderby .= ' DESC ';
+                }
+                $sql .= $orderby;
+            }
+        }
+            else
+            { // Если заполнено поле SQL
+                $sql = $model->sql;
             }
 //            debug($sql);
 //            return;
+
             $dataProvider = new ActiveDataProvider([
             'query' => viewanalit::findBySql($sql),
                 'pagination' => [
@@ -5334,7 +5658,7 @@ case when locate('_',work)>0 then substr(work,locate('_',work)+1) else '0' end a
             $session->open();
             $session->set('sql_analytics', $sql);
 
-            $model->ord = trim($model->ord);
+            $ord = trim($model->ord);
             $q_all = count($data1);
             if(count($data1))
             {    $a = array_keys($data1[0]);

@@ -100,13 +100,17 @@
 }
 .contract_center{
     width: 100%;
-    text-align: center;;
+    text-align: center;
+}
+.forprint th {
+    vertical-align: top;
 }
 .contract_center_text1 {
     //margin-left: 20px;
     font: normal 10px verdana, "Trebuchet MS", Helvetica, arial, sans-serif;
     width: 100%;
 }
+
 .qr_code {
     width: 33%;
     height: 33%;

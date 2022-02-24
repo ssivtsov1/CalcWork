@@ -211,7 +211,9 @@ if($role>0){
             <div class='rmenu' id='rmenu-klient-nazv'></div>
             
             <?= $form->field($model, 'addr')->textarea(['rows' => 3, 'cols' => 25,
-                'onDblClick' => 'rmenu($(this).val(),"#klient-addr")']) ?>
+                'onDblClick' => 'rmenu($(this).val(),"#klient-addr")',
+                'onBlur' => 'check_addr($(this).val())']) ?>
+
              <div class='rmenu' id='rmenu-klient-addr'></div>  
              
             <!--<?= $form->field($model, 'fio_dir')->textarea(['rows' => 1, 'cols' => 25]) ?>-->
@@ -256,6 +258,12 @@ if($role>0){
 <script>
     function f_inn(p){
         $("#klient-inn").val(p);
+    }
+
+    function check_addr(p){
+        var y = p.length;
+       if(y>120)
+            alert('Адреса має більше ніж 120 символів - зменшіть кількість символів.');
     }
 
     function woinn(p){

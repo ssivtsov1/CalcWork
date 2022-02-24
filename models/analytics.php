@@ -38,6 +38,7 @@ class Analytics extends Model
     public $grs_dir;           // Направление сортировки
     public $ord='';               // Порядок группировки полей 
     public $kol;
+    public $sql;                    // sql запрос результата аналитики
     
 
     public function attributeLabels()
@@ -72,6 +73,7 @@ class Analytics extends Model
             'grs_sort' => 'Поле сортування:',
             'grs_dir' => 'Вид сортування:',
             'kol' => 'Кількість:',
+            'sql' => 'SQL:',
             
         ];
     }
@@ -109,6 +111,7 @@ class Analytics extends Model
             ['grs_dir', 'safe'],
             ['ord', 'safe'],
             ['kol', 'safe'],
+            ['sql', 'safe'],
         ];
     }
 

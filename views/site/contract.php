@@ -7,11 +7,14 @@ $year = date('Y');
 //debug($model[0]);
 //return;
 $pos = strpos($model[0]['res'], 'РЕМ');
-if ($pos === false) {
+$pos1 = strpos($model[0]['res'], 'дільниця');
+if ($pos === false && $pos1 === false) {
     $res=0;
 } else {
     $res=1;
 }
+
+
 //debug($res);
 //return;
 ?>
@@ -51,7 +54,10 @@ if ($pos === false) {
 </span>
 <span class="contract_center_text" >
     <?php
+
 //    debug($res);
+//    debug($model[0]);
+
      $session = Yii::$app->session;
         if($session->has('contract_hap')) {
             if($session->get('contract_hap')==1)
@@ -338,7 +344,7 @@ if ($pos === false) {
         <th width="300px">
             <div class="contract_center">
             <span class="span_single"> 
-                &laquo; <?= Html::encode("ВИКОНАВЕЦЬ") ?>&raquo; 
+                &laquo;<?= Html::encode("ВИКОНАВЕЦЬ") ?>&raquo;
             </span>
             </div>
            
@@ -402,8 +408,8 @@ if ($pos === false) {
                     <?= Html::encode(mb_ucfirst('Начальник РЕМ', 'UTF-8')) ?>
                 <?php endif; ?>
              </span>
-             <br>
-             <br>
+<!--             <br>-->
+<!--             <br>-->
              <span class="contract_text_footer">
                  <?php if($res==0): ?>
                     <?= Html::encode("________________________/".$model[0]['exec_person']." / ") ?>
@@ -469,15 +475,23 @@ if ($pos === false) {
                   ?>
                  </span>
                  <br>
-                 <span class="contract_text_footer"> 
-                    <?= Html::encode("тел. ".$model[0]['tel']) ?>
+                 <span class="contract_text_footer">
+                     <?php
+                    if(!empty($model[0]['tel']) && strlen(trim($model[0]['tel']))>0) {
+                          echo Html::encode("тел. " . $model[0]['tel']);
+                      }
+                      else
+                          echo Html::encode("тел. __________________");
+                      ?>
                  </span>
                  <br>
                 <br>
              <span class="contract_text_footer"> 
                 <?php
-                if(!empty($model[0]['okpo']))   
-                    echo Html::encode($model[0]['post_dir']);
+                if(!empty($model[0]['okpo'])) {
+                    if (!empty($model[0]['post_dir']))
+                        echo Html::encode($model[0]['post_dir']);
+                }
                 else
                      echo Html::encode("Фізична особа");
                 
@@ -491,7 +505,9 @@ if ($pos === false) {
                     echo Html::encode("________________________ ".$model[0]['nazv']);
                 else
                 {
-                    echo Html::encode("________________________ ".$model[0]['pib_dir']);
+//                    if (!empty($model[0]['pib_dir']))
+                         echo Html::encode("________________________ ".$model[0]['pib_dir']);
+                         echo '<br>';
                 }
                 ?>
              </span>  

@@ -12,10 +12,10 @@ $this->title = 'Результат аналітики';
 <div class="site-spr1">
 
     <h3><?= Html::encode($this->title) ?></h3>
-Всього: 13<?= GridView::widget([
+Всього: 1<?= GridView::widget([
             'dataProvider' => $dataProvider,'tableOptions' => ['class' => 'table table-striped table-bordered table-condensed'],
             'summary' => false,
             'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            'usluga','summa','kol',] ]); ?> </div><?php echo Html::a('Сброс в Excel', ['site/analytics_excel'],
+            'status_sch','summa',] ]); ?> </div><?php echo Html::a('Сброс в Excel', ['site/analytics_excel'],
                 ['class' => 'btn btn-info']); ?>

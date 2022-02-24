@@ -73,6 +73,7 @@ AppAsset::register($this);
             echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
                 'items' => [
+                    ['label' => 'Вхід', 'url' => str_replace('/web','',Url::toRoute('site/cek')), 'linkOptions' => ['data-method' => 'post']],
                     ['label' => 'Головна', 'url' => ['/site/index']],
 
                     ['label' => 'Довідники', 'url' => ['/site/index'],
@@ -111,6 +112,7 @@ AppAsset::register($this);
                  echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
                 'items' => [
+                    ['label' => 'Вхід', 'url' => str_replace('/web','',Url::toRoute('site/cek')), 'linkOptions' => ['data-method' => 'post']],
                     ['label' => 'Головна', 'url' => ['/site/index']],
 
                     ['label' => 'Довідники', 'url' => ['/site/index'],
@@ -149,6 +151,7 @@ AppAsset::register($this);
                  echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
                 'items' => [
+                    ['label' => 'Вхід', 'url' => str_replace('/web','',Url::toRoute('site/cek')), 'linkOptions' => ['data-method' => 'post']],
                     ['label' => 'Головна', 'url' => ['/site/index']],
 
                     ['label' => 'Довідники', 'url' => ['/site/index'],
@@ -184,6 +187,7 @@ AppAsset::register($this);
                     echo Nav::widget([
                         'options' => ['class' => 'navbar-nav navbar-right'],
                         'items' => [
+                            ['label' => 'Вхід', 'url' => str_replace('/web','',Url::toRoute('site/cek')), 'linkOptions' => ['data-method' => 'post']],
                             ['label' => 'Головна', 'url' => ['/site/index']],
 
                             ['label' => 'Довідники', 'url' => ['/site/index'],
@@ -219,6 +223,7 @@ AppAsset::register($this);
                     echo Nav::widget([
                         'options' => ['class' => 'navbar-nav navbar-right'],
                         'items' => [
+                            ['label' => 'Вхід', 'url' => str_replace('/web','',Url::toRoute('site/cek')), 'linkOptions' => ['data-method' => 'post']],
                             ['label' => 'Головна', 'url' => ['/site/index']],
 
                             ['label' => 'Довідники', 'url' => ['/site/index'],
@@ -253,6 +258,7 @@ AppAsset::register($this);
                     echo Nav::widget([
                         'options' => ['class' => 'navbar-nav navbar-right'],
                         'items' => [
+                            ['label' => 'Вхід', 'url' => str_replace('/web','',Url::toRoute('site/cek')), 'linkOptions' => ['data-method' => 'post']],
                             ['label' => 'Головна', 'url' => ['/site/index']],
 
                             ['label' => 'Довідники', 'url' => ['/site/index'],
@@ -287,6 +293,7 @@ AppAsset::register($this);
                     echo Nav::widget([
                         'options' => ['class' => 'navbar-nav navbar-right'],
                         'items' => [
+                            ['label' => 'Вхід', 'url' => str_replace('/web','',Url::toRoute('site/cek')), 'linkOptions' => ['data-method' => 'post']],
                             ['label' => 'Головна', 'url' => ['/site/index']],
 
                             ['label' => 'Довідники', 'url' => ['/site/index'],
@@ -321,6 +328,7 @@ AppAsset::register($this);
                     echo Nav::widget([
                         'options' => ['class' => 'navbar-nav navbar-right'],
                         'items' => [
+                            ['label' => 'Вхід', 'url' => str_replace('/web','',Url::toRoute('site/cek')), 'linkOptions' => ['data-method' => 'post']],
                             ['label' => 'Головна', 'url' => ['/site/index']],
 
                             ['label' => 'Довідники', 'url' => ['/site/index'],
@@ -355,6 +363,7 @@ AppAsset::register($this);
             echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
                 'items' => [
+                    ['label' => 'Вхід', 'url' => str_replace('/web','',Url::toRoute('site/cek')), 'linkOptions' => ['data-method' => 'post']],
                     ['label' => 'Головна', 'url' => ['/site/index']],
                     ['label' => 'Сервіс', 'url' => ['/site/index'],
                         'options' => ['id' => 'down_menu'],
@@ -379,6 +388,7 @@ AppAsset::register($this);
         {echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
                 'items' => [
+                    ['label' => 'Вхід', 'url' => str_replace('/web','',Url::toRoute('site/cek')), 'linkOptions' => ['data-method' => 'post']],
                     ['label' => 'Головна', 'url' => ['/site/index']],
                     ['label' => 'Про программу', 'url' => ['/site/about']],
                     ['label' => 'Контакти', 'url' => ['/site/contact']],

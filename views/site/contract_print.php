@@ -4,8 +4,10 @@ use yii\helpers\Html;
 $this->title = "";
 $this->params['breadcrumbs'][] = $this->title;
 $year = date('Y');
+
 $pos = strpos($model[0]['res'], 'РЕМ');
-if ($pos === false) {
+$pos1 = strpos($model[0]['res'], 'дільниця');
+if ($pos === false && $pos1 === false) {
     $res=0;
 } else {
     $res=1;
@@ -36,6 +38,9 @@ if ($pos === false) {
             </th>
             <th width="20%">
                 <div class="act_center_text_right">
+                    <? for($j=0;$j<70;$j++) {?>
+                         &nbsp;
+                    <? }?>
                     <?= Html::encode("_____________$year р.") ?>
                 </div>
             </th>
@@ -46,7 +51,7 @@ if ($pos === false) {
 
 <span class="contract_center_text_bold" >
     <?= Html::encode("Приватне акціонерне товариство ".'"'.
-        "Підприємство з експлуатації електричних мереж  ".'"'."Центральна енергетична компанія".'"');?>
+        "Підприємство з експлуатації електричних мереж  ".'"'."Центральна енергетична компанія".'",');?>
 </span>
 <span class="contract_center_text" >
     <?php
@@ -54,7 +59,7 @@ if ($pos === false) {
     if($session->has('contract_hap')) {
         if($session->get('contract_hap')==1)
             if($res==0) {
-                echo Html::encode(",іменоване надалі " . '"' . " ВИКОНАВЕЦЬ" . '"' .
+                echo Html::encode("іменоване надалі " . '"' . " ВИКОНАВЕЦЬ" . '"' .
                     ", в особі " . $model[0]['exec_post_pp'] . ' ' . $model[0]['exec_person_pp'] . ", що діє на підставі доручення №" .
                     $model[0]['assignment'] . ' від ' . $model[0]['date_assignment'] . ' р.' . ", з одного боку, і " .
                     $model[0]['nazv'] . ", іменований надалі " . '"' . " ЗАМОВНИК" . '"' . ", в особі " .
@@ -63,7 +68,7 @@ if ($pos === false) {
                     ", домовилися про нижченаведене:");
             }
             else
-                echo Html::encode(",іменоване надалі ".'"'." ВИКОНАВЕЦЬ".'"'.
+                echo Html::encode("іменоване надалі ".'"'." ВИКОНАВЕЦЬ".'"'.
                     ", в особі ".'начальника РЕМ'.' '. $model[0]['chief'].", що діє на підставі доручення №".
                     $model[0]['n_dov'].' від '.$model[0]['d_dov'].' р.'.", з одного боку, і ".
                     $model[0]['nazv'].", іменований надалі ".'"'." ЗАМОВНИК".'"'.", в особі ".
@@ -82,7 +87,7 @@ if ($pos === false) {
     }
     else
         if($res==0) {
-            echo Html::encode(",іменоване надалі " . '"' . " ВИКОНАВЕЦЬ" . '"' .
+            echo Html::encode("іменоване надалі " . '"' . " ВИКОНАВЕЦЬ" . '"' .
                 ", в особі " . $model[0]['exec_post_pp'] . ' ' . $model[0]['exec_person_pp'] . ", що діє на підставі доручення №" .
                 $model[0]['assignment'] . ' від ' . $model[0]['date_assignment'] . ' р.' . ", з одного боку, і " .
                 $model[0]['nazv'] . ", іменований надалі " . '"' . " ЗАМОВНИК" . '"' . ", в особі " .
@@ -91,7 +96,7 @@ if ($pos === false) {
                 ", домовилися про нижченаведене:");
         }
         else
-            echo Html::encode(",іменоване надалі " . '"' . " ВИКОНАВЕЦЬ" . '"' .
+            echo Html::encode("іменоване надалі " . '"' . " ВИКОНАВЕЦЬ" . '"' .
                 ", в особі " . 'начальника РЕМ' . ' ' . $model[0]['chief'] . ", що діє на підставі доручення №" .
                 $model[0]['n_dov'] . ' від ' . $model[0]['d_dov'] . ' р.' . ", з одного боку, і " .
                 $model[0]['nazv'] . ", іменований надалі " . '"' . " ЗАМОВНИК" . '"' . ", в особі " .
@@ -328,12 +333,12 @@ if ($pos === false) {
     </span>
 </div>
     
-     <table width="600px" class="table table-bordered ">
+     <table width="600px" class="table table-bordered forprint ">
     <tr>
         <th width="300px">
             <div class="contract_center">
             <span class="span_single"> 
-                &laquo; <?= Html::encode("ВИКОНАВЕЦЬ") ?>&raquo; 
+                &laquo;<?= Html::encode("ВИКОНАВЕЦЬ") ?>&raquo;
             </span>
             </div>
            
@@ -397,8 +402,8 @@ if ($pos === false) {
                     <?= Html::encode(mb_ucfirst('Начальник РЕМ', 'UTF-8')) ?>
                 <?php endif; ?>
              </span>
-                 <br>
-                 <br>
+<!--                 <br>-->
+<!--                 <br>-->
                  <span class="contract_text_footer">
                  <?php if($res==0): ?>
                      <?= Html::encode("________________________/".$model[0]['exec_person']." / ") ?>
@@ -463,15 +468,24 @@ if ($pos === false) {
                   ?>
                  </span>
                  <br>
-                 <span class="contract_text_footer"> 
-                    <?= Html::encode("тел. ".$model[0]['tel']) ?>
+                 <span class="contract_text_footer">
+                     <?php
+                      if(!empty($model[0]['tel']) && strlen(trim($model[0]['tel']))>0) {
+                          echo Html::encode("тел. " . $model[0]['tel']);
+
+                      }
+                      else
+                          echo Html::encode("тел. __________________");
+                     ?>
                  </span>
                  <br>
                 <br>
              <span class="contract_text_footer"> 
                 <?php
-                if(!empty($model[0]['okpo']))   
-                    echo Html::encode($model[0]['post_dir']);
+                if(!empty($model[0]['okpo'])) {
+                    if (!empty($model[0]['post_dir']))
+                        echo Html::encode($model[0]['post_dir']);
+                }
                 else
                      echo Html::encode("Фізична особа");
                 
@@ -485,7 +499,13 @@ if ($pos === false) {
                     echo Html::encode("________________________ ".$model[0]['nazv']);
                 else
                 {
-                    echo Html::encode("________________________ ".$model[0]['pib_dir']);
+//                    if (!empty($model[0]['pib_dir']))
+                     for($j=0;$j<17;$j++) { ?>
+                         &nbsp;
+                     <?php
+                     }
+                        echo Html::encode("________________________ ".$model[0]['pib_dir']);
+                        echo '<br>';
                 }
                 ?>
              </span>  
